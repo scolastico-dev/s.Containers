@@ -10,8 +10,9 @@ if [ -n "$CRON_STARTUP" ]; then
   $CRON_STARTUP
 fi
 
-echo "Preparing cron..."
 # load every env var beginning with "JOB_" and register it as a cron job
+echo "Preparing cron..."
+crontab -r
 for env_var in "${!JOB_@}"; do
   echo "Registering cron job: ${!env_var}"
   crontab -l | { cat; echo "${!env_var}"; } | crontab -

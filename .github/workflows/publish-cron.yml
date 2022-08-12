@@ -3,6 +3,7 @@ name: Publish Cron
 on:
   push:
     branches: [ "main" ]
+    paths: [ "cron/**" ]
 
 env:
   REGISTRY: ghcr.io
@@ -25,5 +26,6 @@ jobs:
           registry: docker.pkg.github.com
           directory: ./cron/
           dockerfile: ./cron/Dockerfile
+          addLatest: true
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }} 
