@@ -24,5 +24,6 @@ jobs:
           image: s.containers/cron
           registry: docker.pkg.github.com
           directory: ./cron/
+          dockerfile: ./cron/Dockerfile
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }} 
