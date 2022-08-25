@@ -2,7 +2,7 @@ FROM debian:bullseye
 MAINTAINER Joschua Becker EDV <support@scolasti.co>
 
 RUN apt-get update
-RUN apt-get install -y curl wget lftp zip unzip git cron
+RUN apt-get install -y cron
 RUN apt-get clean
 
 COPY entrypoint.sh /entrypoint.sh
