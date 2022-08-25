@@ -19,8 +19,8 @@ jobs:
         with:
           image: s.Containers/cron
           registry: docker.pkg.github.com
-          directory: ./cron/
-          dockerfile: ./cron/Dockerfile
+          directory: ./src/cron/
+          dockerfile: ./src/cron/Dockerfile
           addLatest: true
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }} 
