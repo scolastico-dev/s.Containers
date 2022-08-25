@@ -1,4 +1,4 @@
-# `s.Containers/cron`
+# `s.containers/cron`
 ### [Back to index](../..)
 
 ## Why?
@@ -15,7 +15,7 @@ Setup and start cronjobs in a docker container. Very useful for docker compose s
 version: "3"
 services:
   cron:
-    image: ghcr.io/scolastico-dev/s.Containers/cron:latest
+    image: ghcr.io/scolastico-dev/s.containers/cron:latest
     environment:
       - CRON_TZ=Europe/Berlin
       - JOB_HELLO_WORLD_ONE=* * * * * echo "Hello World One!"

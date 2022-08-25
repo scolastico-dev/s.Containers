@@ -15,7 +15,7 @@ the `latest` tag of every container.
 ## Index
 Click on the name for more infos.
 
-### [`s.Containers/cron`](./src/cron)
+### [`s.containers/cron`](./src/cron)
 The cron container is for easy creation of cron jobs and intended for the usage inside a
 docker compose stack. **It is not intended for the usage outside a docker compose stack.
 For that use native cron!**
