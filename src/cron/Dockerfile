@@ -5,7 +5,7 @@ RUN apt-get update
 RUN apt-get install -y curl wget lftp zip unzip git cron
 RUN apt-get clean
 
-COPY ./entrypoint.sh /entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/bin/bash"]
 CMD ["/entrypoint.sh"]

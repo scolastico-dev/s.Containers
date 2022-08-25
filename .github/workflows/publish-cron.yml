@@ -3,12 +3,7 @@ name: Publish Cron
 on:
   push:
     branches: [ "main" ]
-    paths: [ "cron/**" ]
-
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
-
+    paths: [ "src/cron/**", ".github/workflows/publish-cron.yml" ]
 
 jobs:
   build:
@@ -20,9 +15,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - uses: mr-smithers-excellent/docker-build-push@v3
+      - uses: mr-smithers-excellent/docker-build-push@v5
         with:
-          image: s.containers/cron
+          image: s.Containers/cron
           registry: docker.pkg.github.com
           directory: ./cron/
           dockerfile: ./cron/Dockerfile
