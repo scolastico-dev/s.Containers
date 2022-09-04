@@ -3,6 +3,7 @@
 
 ## Why?
 Setup and start cronjobs in a docker container. Very useful for docker compose stacks.
+Also the output of the cronjobs is logged to the console.
 
 ## Environment Variables
 | Name           | Type   | Default Value | Description                                                    |
