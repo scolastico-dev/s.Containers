@@ -18,7 +18,7 @@ jobs:
       - uses: mr-smithers-excellent/docker-build-push@v5
         with:
           image: s.containers/cron
-          registry: docker.pkg.github.com
+          registry: ghcr.io
           directory: ./src/cron/
           dockerfile: ./src/cron/Dockerfile
           addLatest: true
