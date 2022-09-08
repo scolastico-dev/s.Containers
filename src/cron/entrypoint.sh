@@ -6,8 +6,10 @@ if [ -n "$CRON_TZ" ]; then
 fi
 
 if [ -n "$CRON_STARTUP" ]; then
-  echo "Running CRON_STARTUP: $CRON_STARTUP"
-  $CRON_STARTUP
+  echo "$CRON_STARTUP" | while read -r line; do
+    echo "Running: $line"
+    eval "$line"
+  done
 fi
 
 # load every env var beginning with "JOB_" and register it as a cron job
