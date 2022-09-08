@@ -20,6 +20,9 @@ services:
     image: ghcr.io/scolastico-dev/s.containers/cron:latest
     environment:
       - CRON_TZ=Europe/Berlin
+      - |-
+        CRON_STARTUP=apt update
+        apt install net-tools
       - JOB_HELLO_WORLD_ONE=* * * * * echo "Hello World One!"
       - >-
         JOB_HELLO_WORLD_TWO=* * * * *
