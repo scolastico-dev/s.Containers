@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.default-input {
+  @apply transition duration-150 ease-in-out;
+  @apply bg-zinc-700 text-zinc-100 rounded py-1 px-4 my-1 mx-2;
+  @apply focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:border-zinc-500;
+}
+
+button {
+    @apply default-input;
+    @apply hover:bg-zinc-600 active:bg-zinc-800;
+}
+
+input {
+    @apply default-input;
+}
+
+select {
+    @apply default-input px-0;
+}
+
+tr>th:first-child, tr>th:last-child {
+    @apply border-x-0;
+}
+
+tr>th {
+    @apply border-b-2 border-x-2 border-zinc-700;
+}
+
+tbody>tr:nth-child(even) {
+    @apply bg-zinc-600;
+}
+
+tr>th, tr>td {
+    @apply text-start px-2;
+}

@@ -1,0 +1,44 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "PATHS=./example/*.yml nuxt dev",
+    "dev:auth": "echo Username and password is admin! && USER_ADMIN=\"\\$argon2id\\$v=19\\$m=16,t=2,p=1\\$NmNzc1I1ZDFVcmJDMHBqdw\\$S0aUDnDvg1xFDjPJdXOZpQ\" npm run dev",
+    "dev:docker": "docker stop -t 0 tmp-dev-wce & SOURCEMAP=true pnpm build && docker build -t tmp . && docker run --rm --name=tmp-dev-wce --env=PATHS=/cfg/*.yml --volume=$(pwd)/example/:/cfg/ -p 3000:3000 -d tmp:latest",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.13",
+    "nuxt": "3.0.0",
+    "postcss": "^8.4.20",
+    "tailwindcss": "^3.2.4"
+  },
+  "dependencies": {
+    "@codemirror/lang-cpp": "^6.0.2",
+    "@codemirror/lang-css": "^6.0.1",
+    "@codemirror/lang-html": "^6.4.0",
+    "@codemirror/lang-java": "^6.0.1",
+    "@codemirror/lang-javascript": "^6.1.2",
+    "@codemirror/lang-json": "^6.0.1",
+    "@codemirror/lang-markdown": "^6.0.5",
+    "@codemirror/lang-php": "^6.0.1",
+    "@codemirror/lang-python": "^6.1.1",
+    "@codemirror/lang-rust": "^6.0.1",
+    "@codemirror/lang-sql": "^6.3.3",
+    "@codemirror/lang-xml": "^6.0.1",
+    "@codemirror/language": "^6.3.2",
+    "@codemirror/legacy-modes": "^6.3.1",
+    "@codemirror/theme-one-dark": "^6.1.0",
+    "argon2": "^0.30.2",
+    "axios": "^1.2.2",
+    "codemirror": "^6.0.1",
+    "glob": "^8.0.3",
+    "memorystorage": "^0.12.0",
+    "mime": "^3.0.0",
+    "minimatch": "^5.1.2",
+    "vue": "^3.2.45",
+    "vue-codemirror": "^6.1.1"
+  }
+}
