@@ -16,7 +16,7 @@ Easily edit config files in a web interface without much extra effort. Slim desi
 ## Ports
 | Port | Description       |
 |------|-------------------|
-| 8080 | The web interface |
+| 3000 | The web interface |
 
 ## Example
 ```yaml
@@ -30,5 +30,5 @@ services:
       - USER_admin=$argon2id$v=19$m=4096,t=3,p=1$PzOv6FpU1z+U6wB4Ylq3Gg$XjZB4N4WgR8o0TQc7/0JwQ
       - PATHS=/config/*.json,/config/*.yml
     ports:
-      - '8080:8080'
+      - '3000:3000'
 ```
