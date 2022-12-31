@@ -92,7 +92,7 @@ export default {
     if (!this.path.startsWith('./')) this.path = '/' + this.path;
     const file = this.path.split('/').pop()
     const type = mime.getType(file.split('.').pop());
-    Object.keys(this.languages).forEach(lang => {
+    if (type) Object.keys(this.languages).forEach(lang => {
       if (type.includes(lang)) this.language = lang;
     })
     this.setLang(this.language)
