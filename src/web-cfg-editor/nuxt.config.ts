@@ -14,14 +14,4 @@ export default defineNuxtConfig({
         server: true,
         client: process.env.SOURCEMAP === 'true',
     },
-    vite: {
-        plugins: [
-            wasm(),
-        ],
-        optimizeDeps: {
-            exclude: [
-                "argon2-browser"
-            ]
-        }
-    },
 })
