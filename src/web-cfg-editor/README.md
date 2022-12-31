@@ -2,7 +2,7 @@
 ### [Back to index](../../README.md)
 
 ## Why?
-Easily edit config files in a web interface. The editor does 
+Easily edit config files in a web interface without much extra effort. Slim design by default.
 
 ## Environment Variables
 | Name           | Type   | Default Value | Description                                                                                                                    |
