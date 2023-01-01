@@ -23,3 +23,6 @@ For that use native cron!**
 ### [`s.Containers/web-cfg-editor`](./src/web-cfg-editor/README.md)
 Easily edit config files in a web interface which can be secured with authentication.
 The editor does not support the editing of binary files.
+
+### [`s.containers/hastebin`](./src/hastebin/README.md)
+A simple, lightweight pastebin that allows you to share snippets of code with others.
