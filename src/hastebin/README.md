@@ -43,6 +43,8 @@ version: "3"
 services:
   app:
     image: ghcr.io/scolastico-dev/s.containers/hastebin:latest
+    depends_on:
+      - redis
     environment:
       STORAGE_TYPE: redis
       STORAGE_HOST: redis
