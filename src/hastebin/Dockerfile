@@ -20,3 +20,4 @@ RUN chmod 755 entrypoint.sh
 EXPOSE 7777
 ENV STORAGE_TYPE file
 CMD [ "./entrypoint.sh" ]
+STOPSIGNAL SIGKILL
