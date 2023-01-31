@@ -9,16 +9,16 @@ and enable you an easy way to deploy your website directly to the container.
 Sure there are other ways like sftp or rsync but a simple post request with a zip file is much easier.
 
 ## Environment Variables
-| Name                                         | Type   | Default Value | Description                                                    |
-|----------------------------------------------|--------|---------------|----------------------------------------------------------------|
-| `APP_PORT`                                   | number | `3000`        | The host to bind to.                                           |
-| `APP_LOCATIONS_<name>_PATH`                  | string | `null`        | The port to bind to.                                           |
-| `APP_LOCATIONS_<name>_OVERRIDES_USER`        | number | `null`        | The length of the key to generate.                             |
-| `APP_LOCATIONS_<name>_OVERRIDES_GROUP`       | number | `null`        | The maximum length of a paste.                                 |
-| `APP_LOCATIONS_<name>_OVERRIDES_PERMISSIONS` | number | `null`        | The maximum age of static files.                               |
-| `APP_LOCATIONS_<name>_KEY_TYPE`              | string | `key`         | Whether to re-compress static assets.                          |
-| `APP_LOCATIONS_<name>_KEY_SECRET`            | string | `null`        | The logging level.                                             |
-| `MD5_ITERATIONS`                             | number | `50`          | The logging type.                                              |
+| Name                                         | Type   | Default Value | Description                              |
+|----------------------------------------------|--------|---------------|------------------------------------------|
+| `PORT`                                       | number | `3000`        | The port to bind to.                     |
+| `MD5_ITERATIONS`                             | number | `50`          | The number of iterations to perform MD5. |
+| `APP_LOCATIONS_<name>_PATH`                  | string | `null`        | The path of the location.                |
+| `APP_LOCATIONS_<name>_OVERRIDES_USER`        | number | `null`        | The user override value.                 |
+| `APP_LOCATIONS_<name>_OVERRIDES_GROUP`       | number | `null`        | The group override value.                |
+| `APP_LOCATIONS_<name>_OVERRIDES_PERMISSIONS` | number | `null`        | The permissions override value.          |
+| `APP_LOCATIONS_<name>_KEY_TYPE`              | string | `key`         | The key type. (key or md5)               |
+| `APP_LOCATIONS_<name>_KEY_SECRET`            | string | `null`        | The secret value.                        |
 
 ## Example
 ```yaml
