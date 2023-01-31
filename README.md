@@ -26,3 +26,7 @@ The editor does not support the editing of binary files.
 
 ### [`s.containers/hastebin`](./src/hastebin/README.md)
 A simple, lightweight pastebin that allows you to share snippets of code with others.
+
+### [`s.containers/deployment-api`](./src/deployment-api/README.md)
+Tired of using sftp or rsync to deploy your files? This container will enable you to
+deploy your files directly to the container via a simple post request with a zip file.

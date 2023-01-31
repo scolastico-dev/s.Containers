@@ -1,4 +1,4 @@
-name: Publish Cron
+name: Publish Hastebin
 
 on:
   push:
@@ -29,4 +29,4 @@ jobs:
           dockerfile: ./src/hastebin/Dockerfile
           addLatest: true
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }} 
+          password: ${{ secrets.GITHUB_TOKEN }}
