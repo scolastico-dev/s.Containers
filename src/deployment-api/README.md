@@ -39,11 +39,10 @@ services:
     ports:
       - "3000:3000"
 
-  redis:
+  web:
     image: httpd:2
     volumes:
-      - data:/data
-    entrypoint: redis-server --appendonly yes
+      - data:/var/www/html
 
 volumes:
   data:
