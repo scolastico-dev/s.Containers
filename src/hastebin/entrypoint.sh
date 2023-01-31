@@ -10,6 +10,8 @@ if [[ -d "$DOCUMENTS_PATH" ]]; then
     fi
   done
 fi
+# q: command to generate a tmp file and get the name of it as env
+# a:
 
 # write config file from environment vars
 cat > config.js <<EOF
