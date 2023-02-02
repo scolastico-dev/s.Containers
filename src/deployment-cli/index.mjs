@@ -1,7 +1,7 @@
 import { spawn } from 'child_process';
 import * as crypto from 'crypto';
-import * as axios from 'axios';
 import * as fs from 'fs';
+import axios from 'axios';
 
 function runCommand(command, args, options = {}) {
   return new Promise((resolve, reject) => {
