@@ -34,22 +34,21 @@ export default (): Configuration => {
     const match = name.match(r);
     if (!match) continue;
     const [_, locationName, key] = match;
-    let location = locations.splice(locations.findIndex(l => l.name === locationName), 1)?.[0];
-    if (!location) {
-      location = {
-        name: locationName,
+    const index = locations.findIndex(l => l.name === locationName);
+    let location = {
+      name: locationName,
         path: '',
         key: {
-          type: null,
+        type: null,
           secret: '',
-        },
-        overrides: {
-          user: null,
+      },
+      overrides: {
+        user: null,
           group: null,
           permissions: null,
-        },
-      };
-    }
+      },
+    };
+    if (index !== -1) location = locations.splice(index, 1)[0];
     if (String(key).startsWith('OVERRIDES_')) {
       const [_, k] = key.split('_');
       location.overrides[k.toLowerCase()] = Number(value);
