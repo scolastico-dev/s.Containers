@@ -21,8 +21,9 @@ export class ProcessorService {
   async process(file: Express.Multer.File, location: LocationConfig) {
     const tmpFile = tmp.fileSync();
     fs.writeFileSync(tmpFile.name, file.buffer);
-    fs.rmSync(location.path, {recursive: true});
-    fs.mkdirSync(location.path, {recursive: true});
+    fs.readdirSync(location.path).forEach((p) => {
+      fs.rmSync(path.join(location.path, p), {recursive: true});
+    });
     await new Promise((resolve, reject) => {
       decompress(tmpFile.name, location.path)
         .then(() => resolve(true))
