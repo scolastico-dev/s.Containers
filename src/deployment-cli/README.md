@@ -35,3 +35,29 @@ or use this one-liner:
 ```bash
 docker run -it --rm -v $(pwd)/from/:/from -e SECRET=0000-0000-0000-0000-0000-0000-0000 -e ITERATIONS=100 -e SERVER_URL=https://deploy.example.com -e SERVER_NAME=web ghcr.io/scolastico-dev/s.containers/deployment-cli:latest
 ```
+
+or use this gitlab ci example:
+```yaml
+stages:
+  # ...
+  - deploy
+
+# [...]
+
+deploy:
+  stage: deploy
+  when: manual
+  image: ghcr.io/scolastico-dev/s.containers/deployment-cli:latest
+#  needs:
+#    - job: build
+#      artifacts: true
+  script:
+    - >-
+      cd /app &&
+      SECRET=$DEPLOY_KEY
+      ITERATIONS=100
+      SERVER_URL=https://deploy-almazoo.scolasti.co
+      SERVER_NAME=vue
+      UPLOAD_DIR=$CI_PROJECT_DIR/dist
+      node /app/index.mjs
+```
