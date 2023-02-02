@@ -30,3 +30,6 @@ A simple, lightweight pastebin that allows you to share snippets of code with ot
 ### [`s.containers/deployment-api`](./src/deployment-api/README.md)
 Tired of using sftp or rsync to deploy your files? This container will enable you to
 deploy your files directly to the container via a simple post request with a zip file.
+
+### [`s.containers/deployment-cli`](./src/deployment-cli/README.md)
+A simple cli tool to deploy files to the deployment-api container.
