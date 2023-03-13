@@ -33,3 +33,7 @@ deploy your files directly to the container via a simple post request with a zip
 
 ### [`s.containers/deployment-cli`](./src/deployment-cli/README.md)
 A simple cli tool to deploy files to the deployment-api container.
+
+### [`s.containers/compose-file-loader`](./src/compose-file-loader/README.md)
+Wanted ever to load configs into volumes from a docker-compose file like config maps
+from kubernetes? This container will enable you to do that.
