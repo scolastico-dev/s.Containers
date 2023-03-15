@@ -7,4 +7,4 @@ RUN npm install -g pnpm && \
     pnpm i
 
 ENV NODE_ENV=production
-CMD ["node", "index.mjs"]
+CMD ["node", "index.js"]

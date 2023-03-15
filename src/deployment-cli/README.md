@@ -59,5 +59,5 @@ deploy:
       SERVER_URL=https://deploy-almazoo.scolasti.co
       SERVER_NAME=vue
       UPLOAD_DIR=$CI_PROJECT_DIR/dist
-      node /app/index.mjs
+      node /app/index.js
 ```

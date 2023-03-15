@@ -8,17 +8,31 @@ configuration files to your containers, eliminating the necessity for
 composing deployment instructions for said files.
 
 ## Environment Variables
-| Name                                | Type   | Default Value | Description                     |
-|-------------------------------------|--------|---------------|---------------------------------|
-| `FILE_<name>_PATH`                  | string | `null`        | The path of the file.           |
-| `FILE_<name>_CONTENT`               | string | `null`        | The content of the file.        |
-| `FILE_<name>_URL`                   | string | `null`        | The url of the file. (download) |
-| `FILE_<name>_UNSECURE`              | bool   | `false`       | Allow non-https urls.           |
-| `FILE_<name>_OVERRIDES_USER`        | number | `1000`        | The user override value.        |
-| `FILE_<name>_OVERRIDES_GROUP`       | number | `1000`        | The group override value.       |
-| `FILE_<name>_OVERRIDES_PERMISSIONS` | number | `777`         | The permissions override value. |
+| Name                                | Type   | Default Value | Description                                               |
+|-------------------------------------|--------|---------------|-----------------------------------------------------------|
+| `FILE_<name>_PATH`                  | string | `null`        | The path of the file.                                     |
+| `FILE_<name>_CONTENT`               | string | `null`        | The content of the file.                                  |
+| `FILE_<name>_URL`                   | string | `null`        | The url of the file. (download)                           |
+| `FILE_<name>_UNSECURE`              | bool   | `false`       | Allow non-https urls.                                     |
+| `FILE_<name>_OVERRIDES_USER`        | number | `1000`        | The user override value.                                  |
+| `FILE_<name>_OVERRIDES_GROUP`       | number | `1000`        | The group override value.                                 |
+| `FILE_<name>_OVERRIDES_PERMISSIONS` | number | `777`         | The permissions override value.                           |
+| `FILE_<name>_MODE`                  | string | `create`      | The mode of the file.                                     |
+| `FILE_<name>_REGEX`                 | string | `null`        | The regex to replace.                                     |
+| `FILE_<name>_FAIL_ON_ERROR`         | bool   | `false`       | Fail on error.                                            |
+| `ORDER`                             | string | `null`        | Comma separated list of file names.                       |
 
 `FILE_<name>_PATH` and either `FILE_<name>_CONTENT` or `FILE_<name>_URL` are required.
+
+### Possible Modes
+| Mode      | Description                                                                  |
+|-----------|------------------------------------------------------------------------------|
+| `create`  | Creates the file if it does not exist.                                       |
+| `update`  | Updates the file if it exists.                                               |
+| `delete`  | Deletes the file if it exists.                                               |
+| `replace` | Replaces the file if it exists.                                              |
+| `append`  | Appends the file if it exists.                                               |
+| `prepend` | Prepends the file if it exists.                                              |
 
 ## Example
 ```yml
@@ -38,4 +52,10 @@ services:
         {
         "foo": "bar"
         }
+      FILE_DELETEFIRST_PATH: /tmp/myVolume/keys.txt
+      FILE_DELETEFIRST_MODE: delete
+      FILE_KEYS_PATH: /tmp/myVolume/keys.txt
+      FILE_KEYS_URL: https://raw.githubusercontent.com/scolastico-dev/s.containers/master/src/compose-file-loader/README.md
+      FILE_KEYS_MODE: create
+      ORDER: DELETEFIRST,KEYS
 ```
