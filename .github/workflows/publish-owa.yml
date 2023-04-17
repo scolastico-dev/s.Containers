@@ -1,0 +1,44 @@
+name: Publish OWA Docker image
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  push:
+    branches: [ "main" ]
+    paths: [ "src/owa/**", ".github/workflows/publish-owa.yml" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    steps:
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+      - name: Get current OWA Docker image version
+        id: get-current-version
+        run: echo "::set-output name=version::$(docker inspect --format '{{ index .Config.Env 0 | replace "OWA_VERSION=" "" }}' ghcr.io/s.containers/owa:latest)"
+      - name: Get latest OWA version
+        id: get-latest-version
+        run: echo "::set-output name=version::$(curl -s https://api.github.com/repos/Open-Web-Analytics/Open-Web-Analytics/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")') | sort -V | tail -n1"
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Build and push Docker image
+        if: steps.get-current-version.outputs.version != steps.get-latest-version.outputs.version
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: s.containers/owa
+          registry: ghcr.io
+          directory: ./src/owa/
+          dockerfile: ./src/owa/Dockerfile
+          addLatest: true
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          buildArgs:
+            - OWA_VERSION=${{ steps.get-latest-version.outputs.version }}
