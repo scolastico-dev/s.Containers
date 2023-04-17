@@ -58,4 +58,8 @@ services:
         //define('OWA_CACHE_OBJECTS', true);
         //define('OWA_CONFIGURATION_ID', '1');
         ?>
+
+volumes:
+  cfg:
+  db:
 ```

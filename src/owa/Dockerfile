@@ -20,4 +20,5 @@ RUN wget https://github.com/Open-Web-Analytics/Open-Web-Analytics/releases/downl
 RUN a2enmod rewrite
 
 COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 CMD ["/entrypoint.sh"]
