@@ -20,6 +20,13 @@ RUN wget https://github.com/Open-Web-Analytics/Open-Web-Analytics/releases/downl
 RUN a2enmod rewrite
 RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
 
+RUN sed -i 's/ErrorLog .*/ErrorLog \/proc\/self\/fd\/2/' /etc/apache2/apache2.conf && \
+    sed -i 's/LogLevel .*/LogLevel error/' /etc/apache2/apache2.conf && \
+    echo 'ServerSignature Off\nServerTokens Prod' >> /etc/apache2/apache2.conf && \
+    a2enmod headers
+
+RUN echo 'log_errors = On\nerror_log = /proc/self/fd/2\nerror_reporting = E_ERROR | E_PARSE' >> /usr/local/etc/php/conf.d/docker-php-errors.ini
+
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 CMD ["/entrypoint.sh"]
