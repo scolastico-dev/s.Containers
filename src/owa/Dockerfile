@@ -1,4 +1,4 @@
-FROM php:7.4-apache
+FROM php:8.2-apache
 MAINTAINER Joschua Becker EDV <support@scolasti.co>
 
 RUN apt-get update && \
@@ -18,6 +18,7 @@ RUN wget https://github.com/Open-Web-Analytics/Open-Web-Analytics/releases/downl
     chmod -R 755 ./*
 
 RUN a2enmod rewrite
+RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh

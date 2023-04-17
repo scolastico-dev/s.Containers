@@ -39,7 +39,7 @@ services:
       ORDER: delete,config
       FILE_DELETE_PATH: /tmp/cfg/owa-config.php
       FILE_DELETE_MODE: delete
-      FILE_CONFIG_PATH: /tmp/cfg/config.json
+      FILE_CONFIG_PATH: /tmp/cfg/owa-config.php
       FILE_CONFIG_CONTENT: |
         <?php
         define('OWA_DB_TYPE', 'mysql');
