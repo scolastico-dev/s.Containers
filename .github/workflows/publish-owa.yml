@@ -40,5 +40,4 @@ jobs:
           addLatest: true
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          buildArgs:
-            - OWA_VERSION=${{ steps.get-latest-version.outputs.version }}
+          buildArgs: OWA_VERSION=${{ steps.get-latest-version.outputs.version }}
