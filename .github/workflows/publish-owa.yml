@@ -38,7 +38,6 @@ jobs:
           registry: ghcr.io
           directory: ./src/owa/
           dockerfile: ./src/owa/Dockerfile
-#          addLatest: true
           tags: ${{ steps.get-latest-version.outputs.version }},latest
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
