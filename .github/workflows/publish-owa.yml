@@ -28,10 +28,10 @@ jobs:
         id: get-latest-version
         run: echo "::set-output name=version::$(curl -s https://api.github.com/repos/Open-Web-Analytics/Open-Web-Analytics/releases/latest | jq -r '.tag_name')"
       - name: Checkout repository
-        if: steps.get-current-version.outputs.version != steps.get-latest-version.outputs.version
+        if: github.event_name == 'schedule' && steps.get-current-version.outputs.version != steps.get-latest-version.outputs.version
         uses: actions/checkout@v2
       - name: Build and push Docker image
-        if: steps.get-current-version.outputs.version != steps.get-latest-version.outputs.version
+        if: github.event_name == 'schedule' && steps.get-current-version.outputs.version != steps.get-latest-version.outputs.version
         uses: mr-smithers-excellent/docker-build-push@v5
         with:
           image: s.containers/owa

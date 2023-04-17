@@ -1,4 +1,5 @@
 FROM php:7.4-apache
+MAINTAINER Joschua Becker EDV <support@scolasti.co>
 
 RUN apt-get update && \
     apt-get install -y wget && \
@@ -17,3 +18,6 @@ RUN wget https://github.com/Open-Web-Analytics/Open-Web-Analytics/releases/downl
     chmod -R 755 ./*
 
 RUN a2enmod rewrite
+
+COPY entrypoint.sh /entrypoint.sh
+CMD ["/entrypoint.sh"]
