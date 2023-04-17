@@ -37,3 +37,7 @@ A simple cli tool to deploy files to the deployment-api container.
 ### [`s.containers/compose-file-loader`](./src/compose-file-loader/README.md)
 Wanted ever to load configs into volumes from a docker-compose file like config maps
 from kubernetes? This container will enable you to do that.
+
+### [`s.containers/owa`](./src/owa/README.md)
+A simple container to run the open web analytics (OWA) server. OWA is a free and open
+source web analytics platform.
