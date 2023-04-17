@@ -28,6 +28,7 @@ jobs:
         id: get-latest-version
         run: echo "::set-output name=version::$(curl -s https://api.github.com/repos/Open-Web-Analytics/Open-Web-Analytics/releases/latest | jq -r '.tag_name')"
       - name: Checkout repository
+        if: steps.get-current-version.outputs.version != steps.get-latest-version.outputs.version
         uses: actions/checkout@v2
       - name: Build and push Docker image
         if: steps.get-current-version.outputs.version != steps.get-latest-version.outputs.version
@@ -37,7 +38,8 @@ jobs:
           registry: ghcr.io
           directory: ./src/owa/
           dockerfile: ./src/owa/Dockerfile
-          addLatest: true
+#          addLatest: true
+          tags: ${{ steps.get-latest-version.outputs.version }},latest
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           buildArgs: OWA_VERSION=${{ steps.get-latest-version.outputs.version }}
