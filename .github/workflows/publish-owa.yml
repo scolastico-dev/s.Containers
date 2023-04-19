@@ -29,22 +29,32 @@ jobs:
         id: get-current-version
         run: |
           version=$(docker inspect --format '{{ index .Config.Labels "OWA_VERSION" }}' ghcr.io/s.containers/owa:latest)
-          echo "::set-output name=version::$version"
+          echo "CURRENT_VERSION=$version" >> $GITHUB_ENV
       - name: Get latest OWA version
         id: get-latest-version
-        run: echo "::set-output name=version::$(curl -s https://api.github.com/repos/Open-Web-Analytics/Open-Web-Analytics/releases/latest | jq -r '.tag_name')"
+        run: |
+          version=$(curl -s https://api.github.com/repos/Open-Web-Analytics/Open-Web-Analytics/releases/latest | jq -r '.tag_name')
+          echo "LATEST_VERSION=$version" >> $GITHUB_ENV
       - name: Checkout repository
-        if: github.event_name != 'schedule' || steps.get-current-version.outputs.version != steps.get-latest-version.outputs.version
+        if: github.event_name != 'schedule' || env.CURRENT_VERSION != env.LATEST_VERSION
         uses: actions/checkout@v2
+      - name: Extract tags
+        if: github.event_name != 'schedule' || env.CURRENT_VERSION != env.LATEST_VERSION
+        run: |
+          version=${{ env.LATEST_VERSION }}
+          major=$(echo $version | cut -d. -f1)
+          minor=$(echo $version | cut -d. -f1-2)
+          tags="$version,v$minor,v$major"
+          echo "TAGS=$tags" >> $GITHUB_ENV
       - name: Build and push Docker image
-        if: github.event_name != 'schedule' || steps.get-current-version.outputs.version != steps.get-latest-version.outputs.version
+        if: github.event_name != 'schedule' || env.CURRENT_VERSION != env.LATEST_VERSION
         uses: mr-smithers-excellent/docker-build-push@v5
         with:
           image: s.containers/owa
           registry: ghcr.io
           directory: ./src/owa/
           dockerfile: ./src/owa/Dockerfile
-          tags: ${{ steps.get-latest-version.outputs.version }},${{ steps.get-latest-version.outputs.version }}-$(date +%Y%m%d)-$(date +%s),latest
+          tags: ${{ env.TAGS }},${{ env.LATEST_VERSION }},${{ env.LATEST_VERSION }}-$(date +%Y%m%d)-$(date +%s),latest
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          buildArgs: OWA_VERSION=${{ steps.get-latest-version.outputs.version }}
+          buildArgs: OWA_VERSION=${{ env.LATEST_VERSION }}
