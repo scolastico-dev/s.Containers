@@ -7,4 +7,5 @@ RUN npm install -g pnpm && \
     pnpm i
 
 ENV NODE_ENV=production
+ENV SLEEP_AFTER=10000
 CMD ["node", "index.js"]

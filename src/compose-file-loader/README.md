@@ -22,6 +22,7 @@ composing deployment instructions for said files.
 | `FILE_<name>_FAIL_ON_ERROR`         | bool   | `false`       | Fail on error.                                            |
 | `ORDER`                             | string | `null`        | Comma separated list of file names.                       |
 | `SLEEP`                             | number | `0`           | Sleep time in milliseconds.                               |
+| `SLEEP_AFTER`                       | number | `10000`       | Sleep time in milliseconds after all files are processed. |
 
 `FILE_<name>_PATH` and either `FILE_<name>_CONTENT` or `FILE_<name>_URL` are required.
 

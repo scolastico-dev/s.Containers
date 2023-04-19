@@ -113,11 +113,15 @@ function processFiles() {
   }
 }
 
+async function sleep(ms, reason) {
+  if (!ms) return;
+  if (typeof ms !== 'number') ms = parseInt(ms, 10);
+  console.log(`Sleeping for ${ms} ms ${reason ? `(${reason})` : ''}`);
+  await new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 (async () => {
-  if (process.env.SLEEP) {
-    const sleep = parseInt(process.env.SLEEP, 10);
-    console.log(`Sleeping for ${sleep} ms`);
-    await new Promise((resolve) => setTimeout(resolve, sleep));
-  }
+  await sleep(process.env.SLEEP, 'before');
   processFiles();
+  await sleep(process.env.SLEEP_AFTER, 'after');
 })();
