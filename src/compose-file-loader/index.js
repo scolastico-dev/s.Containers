@@ -37,23 +37,25 @@ function processEnv() {
       failOnError: process.env[`${prefix}_FAIL_ON_ERROR`] === 'true',
     });
   }
-  const sort = (process.env.SORT || '')
+  const sort = (process.env.ORDER || process.env.SORT || '')
     .split(',')
     .map((s) => 'FILE_' + s.trim())
-    .filter((s) => s.length > 0);
+    .filter((s) => s.length > 5);
+  console.log('Sort order:');
+  console.log(JSON.stringify(sort, null, 2));
   const inSort = files.filter((f) => sort.indexOf(f.prefix) !== -1);
   const notInSort = files.filter((f) => sort.indexOf(f.prefix) === -1);
-  return [
+  const ret = [
     ...inSort.sort((a, b) => sort.indexOf(a.prefix) - sort.indexOf(b.prefix)),
     ...notInSort.sort((a, b) => a.prefix.localeCompare(b.prefix)),
   ]
+  console.log('Loaded files:');
+  console.log(JSON.stringify(ret, null, 2));
+  return ret;
 }
 
 function processFiles() {
-  const env = processEnv();
-  console.log('Loaded files:');
-  console.log(JSON.stringify(env, null, 2));
-  for (const file of env) {
+  for (const file of processEnv()) {
     if (file.url && !file.unsecure && !file.url.startsWith('https')) {
       console.error(`URL for ${file.prefix} is not secure. Skipping.`);
       if (file.failOnError) process.exit(1);

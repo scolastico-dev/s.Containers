@@ -1,6 +1,6 @@
 {
   "scripts": {
     "start": "node index.js",
-    "dev": "FILE_TEST_PATH=./test.txt FILE_TEST_CONTENT=Hello node index.js"
+    "dev": "FILE_TEST_PATH=./test.txt FILE_TEST_CONTENT=Hello FILE_TEST_DELETE_PATH=./test.txt FILE_TEST_DELETE_MODE=delete ORDER=TEST_DELETE,TEST SLEEP_AFTER=0 node index.js"
   }
 }
