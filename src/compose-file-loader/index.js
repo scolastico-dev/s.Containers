@@ -48,7 +48,10 @@ function processEnv() {
 }
 
 function processFiles() {
-  for (const file of processEnv()) {
+  const env = processEnv();
+  console.log('Loaded files:');
+  console.log(JSON.stringify(env, null, 2));
+  for (const file of env) {
     if (file.url && !file.unsecure && !file.url.startsWith('https')) {
       console.error(`URL for ${file.prefix} is not secure. Skipping.`);
       if (file.failOnError) process.exit(1);
