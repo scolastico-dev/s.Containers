@@ -44,7 +44,7 @@ jobs:
           registry: ghcr.io
           directory: ./src/owa/
           dockerfile: ./src/owa/Dockerfile
-          tags: ${{ steps.get-latest-version.outputs.version }},${{ steps.get-latest-version.outputs.version }}-$(date +%Y%m%d)-$(date +%s)
+          tags: ${{ steps.get-latest-version.outputs.version }},${{ steps.get-latest-version.outputs.version }}-$(date +%Y%m%d)-$(date +%s),latest
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           buildArgs: OWA_VERSION=${{ steps.get-latest-version.outputs.version }}
