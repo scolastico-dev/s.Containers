@@ -37,14 +37,19 @@ function processEnv() {
       failOnError: process.env[`${prefix}_FAIL_ON_ERROR`] === 'true',
     });
   }
-  const sort = (process.env.SORT || '').split(',').map((s) => s.trim()).filter((s) => s.length > 0);
-  // sort by prefix (without FILE_ and _PATH) and append non-sorted files
+  const sort = (process.env.SORT || '')
+    .replaceAll(' ', '')
+    .split(',')
+    .map((s) => 'FILE_' + s.trim())
+    .filter((s) => s.length > 0);
   return files.sort((a, b) => {
-    if (sort.length === 0) return 0;
-    if (sort.indexOf(a.prefix) === -1) return 1;
-    if (sort.indexOf(b.prefix) === -1) return -1;
-    return sort.indexOf(a.prefix) - sort.indexOf(b.prefix);
-  });
+    const aIndex = sort.indexOf(a.prefix);
+    const bIndex = sort.indexOf(b.prefix);
+    if (aIndex === -1 && bIndex === -1) return 0;
+    if (aIndex === -1) return 1;
+    if (bIndex === -1) return -1;
+    return aIndex - bIndex;
+  })
 }
 
 function processFiles() {
