@@ -113,4 +113,11 @@ function processFiles() {
   }
 }
 
-processFiles();
+(async () => {
+  if (process.env.SLEEP) {
+    const sleep = parseInt(process.env.SLEEP, 10);
+    console.log(`Sleeping for ${sleep} ms`);
+    await new Promise((resolve) => setTimeout(resolve, sleep));
+  }
+  processFiles();
+})();

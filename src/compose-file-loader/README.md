@@ -21,6 +21,7 @@ composing deployment instructions for said files.
 | `FILE_<name>_REGEX`                 | string | `null`        | The regex to replace.                                     |
 | `FILE_<name>_FAIL_ON_ERROR`         | bool   | `false`       | Fail on error.                                            |
 | `ORDER`                             | string | `null`        | Comma separated list of file names.                       |
+| `SLEEP`                             | number | `0`           | Sleep time in milliseconds.                               |
 
 `FILE_<name>_PATH` and either `FILE_<name>_CONTENT` or `FILE_<name>_URL` are required.
 
@@ -44,6 +45,8 @@ services:
     volumes:
       - myVolume:/tmp/myVolume
     environment:
+      ORDER: DELETEFIRST,KEYS
+      SLEEP: 5000
       FILE_CONFIG_PATH: /tmp/myVolume/config.json
       FILE_CONFIG_OVERRIDES_USER: 1000
       FILE_CONFIG_OVERRIDES_GROUP: 1000
@@ -57,5 +60,4 @@ services:
       FILE_KEYS_PATH: /tmp/myVolume/keys.txt
       FILE_KEYS_URL: https://raw.githubusercontent.com/scolastico-dev/s.containers/master/src/compose-file-loader/README.md
       FILE_KEYS_MODE: create
-      ORDER: DELETEFIRST,KEYS
 ```
