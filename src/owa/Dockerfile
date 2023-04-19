@@ -33,4 +33,6 @@ RUN sed -i 's/ErrorLog .*/ErrorLog \/proc\/self\/fd\/2/' /etc/apache2/apache2.co
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+
+LABEL OWA_VERSION=${OWA_VERSION}
 CMD ["/entrypoint.sh"]

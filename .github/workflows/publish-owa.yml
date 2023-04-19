@@ -21,10 +21,15 @@ jobs:
           registry: ghcr.io
           username: ${{github.actor}}
           password: ${{secrets.GITHUB_TOKEN}}
+      - name: Pull current OWA Docker image
+        if: github.event_name == 'schedule'
+        run: docker pull ghcr.io/scolastico-dev/s.containers/owa:latest
       - name: Get current OWA Docker image version
         if: github.event_name == 'schedule'
         id: get-current-version
-        run: echo "::set-output name=version::$(docker inspect --format '{{ index .Config.Env 0 | replace "OWA_VERSION=" "" }}' ghcr.io/s.containers/owa:latest)"
+        run: |
+          version=$(docker inspect --format '{{ index .Config.Labels "OWA_VERSION" }}' ghcr.io/s.containers/owa:latest)
+          echo "::set-output name=version::$version"
       - name: Get latest OWA version
         id: get-latest-version
         run: echo "::set-output name=version::$(curl -s https://api.github.com/repos/Open-Web-Analytics/Open-Web-Analytics/releases/latest | jq -r '.tag_name')"
@@ -39,7 +44,7 @@ jobs:
           registry: ghcr.io
           directory: ./src/owa/
           dockerfile: ./src/owa/Dockerfile
-          tags: ${{ steps.get-latest-version.outputs.version }},${{ steps.get-latest-version.outputs.version }}-$(date +%Y%m%d),latest
+          tags: ${{ steps.get-latest-version.outputs.version }},${{ steps.get-latest-version.outputs.version }}-$(date +%Y%m%d)-$(date +%s)
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           buildArgs: OWA_VERSION=${{ steps.get-latest-version.outputs.version }}
