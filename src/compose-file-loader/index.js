@@ -38,15 +38,15 @@ function processEnv() {
     });
   }
   const sort = (process.env.SORT || '')
-    .replaceAll(' ', '')
     .split(',')
     .map((s) => 'FILE_' + s.trim())
     .filter((s) => s.length > 0);
   const inSort = files.filter((f) => sort.indexOf(f.prefix) !== -1);
   const notInSort = files.filter((f) => sort.indexOf(f.prefix) === -1);
-  return inSort
-    .sort((a, b) => sort.indexOf(a.prefix) - sort.indexOf(b.prefix))
-    .concat(notInSort);
+  return [
+    ...inSort.sort((a, b) => sort.indexOf(a.prefix) - sort.indexOf(b.prefix)),
+    ...notInSort.sort((a, b) => a.prefix.localeCompare(b.prefix)),
+  ]
 }
 
 function processFiles() {
