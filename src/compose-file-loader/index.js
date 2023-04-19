@@ -42,14 +42,11 @@ function processEnv() {
     .split(',')
     .map((s) => 'FILE_' + s.trim())
     .filter((s) => s.length > 0);
-  return files.sort((a, b) => {
-    const aIndex = sort.indexOf(a.prefix);
-    const bIndex = sort.indexOf(b.prefix);
-    if (aIndex === -1 && bIndex === -1) return 0;
-    if (aIndex === -1) return 1;
-    if (bIndex === -1) return -1;
-    return aIndex - bIndex;
-  })
+  const inSort = files.filter((f) => sort.indexOf(f.prefix) !== -1);
+  const notInSort = files.filter((f) => sort.indexOf(f.prefix) === -1);
+  return inSort
+    .sort((a, b) => sort.indexOf(a.prefix) - sort.indexOf(b.prefix))
+    .concat(notInSort);
 }
 
 function processFiles() {
