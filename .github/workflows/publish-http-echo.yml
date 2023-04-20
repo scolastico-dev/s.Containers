@@ -1,0 +1,32 @@
+name: Publish HTTP Echo
+
+on:
+  push:
+    branches: [ "main" ]
+    paths: [ "src/http-echo/**", ".github/workflows/publish-http-echo.yml" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+      - uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: s.containers/http-echo
+          registry: ghcr.io
+          directory: ./src/http-echo/
+          dockerfile: ./src/http-echo/Dockerfile
+          addLatest: true
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }} 

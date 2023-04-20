@@ -41,3 +41,7 @@ from kubernetes? This container will enable you to do that.
 ### [`s.containers/owa`](./src/owa/README.md)
 A simple container to run the open web analytics (OWA) server. OWA is a free and open
 source web analytics platform.
+
+### [`s.containers/http-echo`](./src/http-echo/README.md)
+Debugging your reverse proxy? Or just want to see what the server would receive? This
+container will echo the request it receives.
