@@ -1,4 +1,4 @@
-name: Publish OWA Docker image
+name: Publish OWA
 
 on:
   schedule:
@@ -28,7 +28,7 @@ jobs:
         if: github.event_name == 'schedule'
         id: get-current-version
         run: |
-          version=$(docker inspect --format '{{ index .Config.Labels "OWA_VERSION" }}' ghcr.io/s.containers/owa:latest)
+          version=$(docker inspect --format '{{ index .Config.Labels "OWA_VERSION" }}' ghcr.io/scolastico-dev/s.containers/owa:latest)
           echo "CURRENT_VERSION=$version" >> $GITHUB_ENV
       - name: Get latest OWA version
         id: get-latest-version
