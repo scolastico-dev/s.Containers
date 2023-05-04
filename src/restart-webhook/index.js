@@ -6,7 +6,7 @@ const port = process.env.PORT || 3000;
 const stdErrFun = data => console.error(`stderr: ${data}`)
 const stdDeathFun = code => console.log(`child process exited with code ${code}`)
 
-const ENV_REGEX = /^CFG_(\w+)_(IMAGE|CONTAINER|TOKEN|CLEANUP|KEEP)$/;
+const ENV_REGEX = /^CFG_(\w+)_(IMAGE|CONTAINER|TOKEN|CLEANUP|KEEP|REGISTRY|USER|PASS)$/;
 
 const cfg = {};
 
@@ -43,6 +43,51 @@ function runDockerCommand(args, onData, onError, onClose) {
   command.on('close', onClose);
 }
 
+async function pullImage(entry) {
+  if (entry.registry && entry.user && entry.pass) {
+    console.log(`Logging in to registry ${entry.registry}...`);
+    await new Promise((resolve) => {
+      runDockerCommand(
+        ['login', entry.registry, '-u', entry.user, '-p', entry.pass],
+        data => console.log(`stdout: ${data}`),
+        stdErrFun,
+        code => {
+          stdDeathFun(code);
+          resolve();
+        }
+      );
+    });
+  }
+
+  console.log(`Pulling image ${entry.image}...`);
+  await new Promise((resolve) => {
+    runDockerCommand(
+      ['pull', entry.image],
+      data => console.log(`stdout: ${data}`),
+      stdErrFun,
+      code => {
+        stdDeathFun(code);
+        resolve();
+      }
+    );
+  });
+
+  if (entry.registry && entry.user && entry.pass) {
+    console.log(`Logging out from registry ${entry.registry}...`);
+    await new Promise((resolve) => {
+      runDockerCommand(
+        ['logout', entry.registry],
+        data => console.log(`stdout: ${data}`),
+        stdErrFun,
+        code => {
+          stdDeathFun(code);
+          resolve();
+        }
+      );
+    });
+  }
+}
+
 app.get('/:token', async (req, res) => {
   console.log(`Received request: ${req.method} ${req.url} from ${req.ip}`);
   const token = req.params.token;
@@ -61,20 +106,7 @@ app.get('/:token', async (req, res) => {
 
   console.log(`Starting operation for ${entryName}...`);
 
-  if (entry.image) {
-    console.log(`Pulling image ${entry.image}...`);
-    await new Promise((resolve) => {
-      runDockerCommand(
-        ['pull', entry.image],
-        data => console.log(`stdout: ${data}`),
-        stdErrFun,
-        code => {
-          stdDeathFun(code);
-          resolve();
-        }
-      );
-    });
-  }
+  if (entry.image) await pullImage(entry);
 
   if (entry.container) {
     console.log(`Restarting container ${entry.container}...`);

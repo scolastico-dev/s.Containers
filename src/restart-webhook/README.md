@@ -10,16 +10,19 @@ scenarios where you want to automate container management or integrate with
 CI/CD pipelines.
 
 ## Environment Variables
-| Name                       | Type    | Default Value | Description                                                           |
-|----------------------------|---------|---------------|-----------------------------------------------------------------------|
-| `CFG_<name>_IMAGE`         | string  | `null`        | The name of the Docker image to update.                               |
-| `CFG_<name>_CONTAINER`     | string  | `null`        | The name of the Docker container to restart.                          |
-| `CFG_<name>_TOKEN`         | string  | `null`        | The token used to authenticate the API call.                          |
-| `CFG_<name>_CLEANUP`       | boolean | `null`        | If `true`, the last image will be deleted.                            |
-| `CFG_<name>_KEEP`          | integer | `null`        | The number of old images to keep.                                     |
-| `DEFAULT_CLEANUP`          | boolean | `false`       | The default value for cleanup if not specified in the CFG.            |
-| `DEFAULT_KEEP`             | integer | `1`           | The default number of old images to keep if not specified in the CFG. |
-| `PORT`                     | integer | `3000`        | The port to bind to.                                                  |
+| Name                   | Type    | Default Value | Description                                                           |
+|------------------------|---------|---------------|-----------------------------------------------------------------------|
+| `CFG_<name>_IMAGE`     | string  | `null`        | The name of the Docker image to update.                               |
+| `CFG_<name>_CONTAINER` | string  | `null`        | The name of the Docker container to restart.                          |
+| `CFG_<name>_TOKEN`     | string  | `null`        | The token used to authenticate the API call.                          |
+| `CFG_<name>_CLEANUP`   | boolean | `null`        | If `true`, the last image will be deleted.                            |
+| `CFG_<name>_KEEP`      | integer | `null`        | The number of old images to keep.                                     |
+| `CFG_<name>_REGISTRY`  | string  | `null`        | The registry to pull the image from. Optional if the image is public. |
+| `CFG_<name>_USER`      | string  | `null`        | The user to authenticate with the registry.                           |
+| `CFG_<name>_PASS`      | string  | `null`        | The password to authenticate with the registry.                       |
+| `DEFAULT_CLEANUP`      | boolean | `false`       | The default value for cleanup if not specified in the CFG.            |
+| `DEFAULT_KEEP`         | integer | `1`           | The default number of old images to keep if not specified in the CFG. |
+| `PORT`                 | integer | `3000`        | The port to bind to.                                                  |
 
 The API provides an endpoint that accepts GET requests at `/<token>`, where
 `<token>` is the value of the `CFG_<name>_TOKEN` environment variable.
