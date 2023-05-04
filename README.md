@@ -45,3 +45,7 @@ source web analytics platform.
 ### [`s.containers/http-echo`](./src/http-echo/README.md)
 Debugging your reverse proxy? Or just want to see what the server would receive? This
 container will echo the request it receives.
+
+### [`s.containers/restart-webhook`](./src/restart-webhook/README.md)
+Restart Webhook provides an easy way to automatically update and restart Docker
+containers or images based on a simple API call.

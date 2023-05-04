@@ -1,0 +1,21 @@
+version: "3"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      CFG_ECHO_IMAGE: ghcr.io/scolastico-dev/s.containers/http-echo:latest
+      CFG_ECHO_CONTAINER: http-echo
+      CFG_ECHO_TOKEN: your_unique_token_that_should_be_at_least_32_characters_long_1
+      CFG_ECHO_KEEP: 3
+      DEFAULT_CLEANUP: true
+  echo:
+    image: ghcr.io/scolastico-dev/s.containers/http-echo:latest
+    container_name: http-echo
+    ports:
+      - "8080:3000"
