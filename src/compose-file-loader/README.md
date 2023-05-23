@@ -35,6 +35,11 @@ composing deployment instructions for said files.
 | `replace` | Replaces the file if it exists.                                              |
 | `append`  | Appends the file if it exists.                                               |
 | `prepend` | Prepends the file if it exists.                                              |
+| `perm`    | Sets only the permissions of the file if it exists.                          |
+| `permr`   | Sets only the permissions of the file if it exists recursively.              |
+| `mkdir`   | Creates the directory if it does not exist.                                  |
+
+`mkdir`, `perm`, `permr` and `delete` do not accept `FILE_<name>_CONTENT` or `FILE_<name>_URL`.
 
 ## Example
 ```yml

@@ -56,6 +56,7 @@ function processEnv() {
 
 function processFiles() {
   for (const file of processEnv()) {
+    file.mode = file.mode.toLowerCase();
     if (file.url && !file.unsecure && !file.url.startsWith('https')) {
       console.error(`URL for ${file.prefix} is not secure. Skipping.`);
       if (file.failOnError) process.exit(1);
@@ -112,7 +113,25 @@ function processFiles() {
           fs.writeFileSync(file.path, newContent);
           applyOverrides(file.path, file.overridesUser, file.overridesGroup, file.overridesPermissions);
         }
-      }
+      } else if (file.mode === 'perm') {
+        if (fs.existsSync(file.path)) {
+          applyOverrides(file.path, file.overridesUser, file.overridesGroup, file.overridesPermissions);
+        }
+      } else if (file.mode === 'permr') {
+        const chmod = (path) => {
+          if (fs.existsSync(path)) {
+            applyOverrides(path, file.overridesUser, file.overridesGroup, file.overridesPermissions);
+          }
+          if (fs.lstatSync(path).isDirectory()) {
+            for (const subPath of fs.readdirSync(path)) {
+              chmod(path + '/' + subPath);
+            }
+          }
+        }
+        chmod(file.path);
+      } else if (file.mode === 'mkdir') {
+        fs.mkdirSync(file.path, { recursive: true });
+      } else throw new Error(`Unknown mode ${file.mode} for ${file.prefix}`);
     } catch (error) {
       console.error(`Error processing ${file.prefix}: ${error.message}`);
       if (file.failOnError) process.exit(1);
