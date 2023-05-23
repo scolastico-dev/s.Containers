@@ -27,17 +27,20 @@ composing deployment instructions for said files.
 `FILE_<name>_PATH` and either `FILE_<name>_CONTENT` or `FILE_<name>_URL` are required.
 
 ### Possible Modes
-| Mode      | Description                                                                  |
-|-----------|------------------------------------------------------------------------------|
-| `create`  | Creates the file if it does not exist.                                       |
-| `update`  | Updates the file if it exists.                                               |
-| `delete`  | Deletes the file if it exists.                                               |
-| `replace` | Replaces the file if it exists.                                              |
-| `append`  | Appends the file if it exists.                                               |
-| `prepend` | Prepends the file if it exists.                                              |
-| `perm`    | Sets only the permissions of the file if it exists.                          |
-| `permr`   | Sets only the permissions of the file if it exists recursively.              |
-| `mkdir`   | Creates the directory if it does not exist.                                  |
+| Mode      | Description                                                            | Needs `CONTENT` or `URL`                              |
+|-----------|------------------------------------------------------------------------|-------------------------------------------------------|
+| `create`  | Creates the file if it does not exist.                                 | Yes                                                   |
+| `update`  | Updates the file if it exists.                                         | Yes                                                   |
+| `delete`  | Deletes the file if it exists.                                         | No                                                    |
+| `replace` | Replaces the file if it exists.                                        | Yes                                                   |
+| `append`  | Appends the file if it exists.                                         | Yes                                                   |
+| `prepend` | Prepends the file if it exists.                                        | Yes                                                   |
+| `perm`    | Sets only the permissions of the file if it exists.                    | No                                                    |
+| `permr`   | Sets only the permissions of the file if it exists recursively.        | No                                                    |
+| `mkdir`   | Creates the directory if it does not exist.                            | No                                                    |
+| `unzip`   | Unzips a zip file to a directory.                                      | Yes, but content will be handled as a path to a file. |
+| `exists`  | Checks if the file exists. (Throws an error if it does not exist.)     | No                                                    |
+| `missing` | Checks if the file does not exist. (Throws an error if it does exist.) | No                                                    |
 
 `mkdir`, `perm`, `permr` and `delete` do not accept `FILE_<name>_CONTENT` or `FILE_<name>_URL`.
 

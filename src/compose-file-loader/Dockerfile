@@ -3,8 +3,8 @@ MAINTAINER Joschua Becker EDV <support@scolasti.co>
 
 WORKDIR  /app
 COPY . /app
-RUN npm install -g pnpm && \
-    pnpm i
+
+RUN apk add --no-cache unzip
 
 ENV NODE_ENV=production
 ENV SLEEP_AFTER=10000

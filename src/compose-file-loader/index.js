@@ -2,6 +2,7 @@ const fs = require('fs');
 const https = require('https');
 const http = require('http');
 const url = require('url');
+const child = require('child_process');
 
 function downloadFile(url, dest, cb) {
   const protocol = url.startsWith('https') ? https : http;
@@ -131,6 +132,21 @@ function processFiles() {
         chmod(file.path);
       } else if (file.mode === 'mkdir') {
         fs.mkdirSync(file.path, { recursive: true });
+      } else if (file.mode === 'unzip') {
+        if (file.url) {
+          downloadFile(file.url, '/app/tmp.zip', () => {
+            child.execSync(`unzip -d ${file.path} /app/tmp.zip`);
+            fs.rmSync('/app/tmp.zip');
+            applyOverrides(file.path, file.overridesUser, file.overridesGroup, file.overridesPermissions);
+          });
+        } else {
+          child.execSync(`unzip -d ${file.path} ${file.content}`);
+          applyOverrides(file.path, file.overridesUser, file.overridesGroup, file.overridesPermissions);
+        }
+      } else if (file.mode === 'exists') {
+        if (!fs.existsSync(file.path)) throw new Error(`File ${file.path} does not exist`);
+      } else if (file.mode === 'missing') {
+        if (fs.existsSync(file.path)) throw new Error(`File ${file.path} exists`);
       } else throw new Error(`Unknown mode ${file.mode} for ${file.prefix}`);
     } catch (error) {
       console.error(`Error processing ${file.prefix}: ${error.message}`);
