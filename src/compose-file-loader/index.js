@@ -135,12 +135,12 @@ function processFiles() {
       } else if (file.mode === 'unzip') {
         if (file.url) {
           downloadFile(file.url, '/app/tmp.zip', () => {
-            child.execSync(`unzip -d ${file.path} /app/tmp.zip`);
+            child.execSync(`unzip -o -q -d ${file.path} /app/tmp.zip`);
             fs.rmSync('/app/tmp.zip');
             applyOverrides(file.path, file.overridesUser, file.overridesGroup, file.overridesPermissions);
           });
         } else {
-          child.execSync(`unzip -d ${file.path} ${file.content}`);
+          child.execSync(`unzip -o -q -d ${file.path} ${file.content}`);
           applyOverrides(file.path, file.overridesUser, file.overridesGroup, file.overridesPermissions);
         }
       } else if (file.mode === 'exists') {
