@@ -49,3 +49,7 @@ container will echo the request it receives.
 ### [`s.containers/restart-webhook`](./src/restart-webhook/README.md)
 Restart Webhook provides an easy way to automatically update and restart Docker
 containers or images based on a simple API call.
+
+### [`s.containers/websocket-relay`](./src/websocket-relay/README.md)
+The WebSocket Relay is a container that functions similarly to ngrok, making it ideal
+for forwarding local pages to a publicly accessible server.
