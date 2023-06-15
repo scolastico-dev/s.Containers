@@ -20,6 +20,15 @@ const wss = new WebSocket.Server({ server, verifyClient: (info, done) => {
   done(true);
 }});
 
+process.on('SIGINT', () => {
+  try {
+    app.close();
+    server.close();
+    wss.close();
+  } catch (ignored) {}
+  process.exit();
+})
+
 wss.on('connection', (ws) => {
   console.log('Client connected');
   currentClient = ws;

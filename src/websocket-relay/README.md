@@ -54,7 +54,14 @@ And run this on your local machine:
 ```bash
 docker run --rm --name websocket-relay \
   -e SERVER_URL=ws://your-server:3000 \
-  -e SERVER_TOKEN=YourSecretToken \
-  -e LOCAL_URL  http://localhost:3000 \
+  -e CLIENT_TOKEN=YourSecretToken \
+  -e LOCAL_URL=http://localhost:3000 \
+  --network=host \
   ghcr.io/scolastico-dev/s.containers/websocket-relay:latest
+```
+
+Or in one line:
+
+```bash
+docker run --rm --name websocket-relay -e SERVER_URL=ws://your-server:3000 -e CLIENT_TOKEN=YourSecretToken -e LOCAL_URL=http://localhost:3000 --network=host ghcr.io/scolastico-dev/s.containers/websocket-relay:latest
 ```

@@ -17,6 +17,13 @@ serverUrlWithToken.searchParams.set('token', clientToken);
 
 const ws = new WebSocket(serverUrlWithToken.href);
 
+process.on('SIGINT', () => {
+  try {
+    ws.close();
+  } catch (ignored) {}
+  process.exit();
+})
+
 ws.on('open', () => {
   console.log('Connected to server');
 });
