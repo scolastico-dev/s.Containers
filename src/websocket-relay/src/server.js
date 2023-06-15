@@ -57,9 +57,14 @@ wss.on('connection', (ws) => {
 });
 
 app.all('*', async (req, res) => {
+  console.log(`Handle: ${req.method} ${req.path}`);
   if (!currentClient) return res.status(500).send('Server error: No client connected');
   const id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-  const request = {id, method: req.method, path: req.path, headers: req.headers, body: req.body};
+  const request = {
+    id, method: req.method, path: req.path,
+    headers: req.headers, body: req.body,
+    query: req.query, ip: req.ip,
+  };
   currentClient.send(JSON.stringify(request));
   requestQueue[id] = {res};
   while (requestQueue[id]) await new Promise((resolve) => setTimeout(resolve, 10));

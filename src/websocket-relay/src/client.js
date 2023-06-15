@@ -30,7 +30,7 @@ ws.on('open', () => {
 
 ws.on('message', async (message) => {
   const request = JSON.parse(message);
-  console.log(`Received request: ${request.id} ${request.method} ${request.path}`);
+  console.log(`Received request: ${request.id} ${request.ip} ${request.method} ${request.path}`);
 
   try {
     const { data, status, headers } = await axios({
@@ -41,6 +41,7 @@ ws.on('message', async (message) => {
         host: new url.URL(localUrl).host,
       },
       data: request.body,
+      params: request.query,
     });
     const response = {
       id: request.id,
