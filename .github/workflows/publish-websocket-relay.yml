@@ -1,4 +1,4 @@
-name: Publish HTTP Echo
+name: Publish Websocket Relay
 
 on:
   push:
