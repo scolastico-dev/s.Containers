@@ -1,4 +1,4 @@
-# `s.containers/http-echo`
+# `s.containers/websocket-relay`
 ### [Back to index](../../README.md)
 
 ## Why?
