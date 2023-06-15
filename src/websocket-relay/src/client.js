@@ -42,6 +42,7 @@ ws.on('message', async (message) => {
       },
       data: request.body,
       params: request.query,
+      maxRedirects: 0,
     });
     const response = {
       id: request.id,
