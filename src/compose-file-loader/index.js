@@ -36,7 +36,7 @@ function processEnv() {
       mode: process.env[`${prefix}_MODE`] || 'create',
       regex: process.env[`${prefix}_REGEX`] || null,
       failOnError: process.env[`${prefix}_FAIL_ON_ERROR`] === 'false',
-      fixDirPerms: process.env[`${prefix}_FIX_DIR_PERMS`] === 'false',
+      fixDirPerms: process.env[`${prefix}_FIX_DIR_PERMS`] || 'false',
     });
   }
   const sort = (process.env.ORDER || process.env.SORT || '')
