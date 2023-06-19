@@ -8,21 +8,22 @@ configuration files to your containers, eliminating the necessity for
 composing deployment instructions for said files.
 
 ## Environment Variables
-| Name                                | Type   | Default Value | Description                                               |
-|-------------------------------------|--------|---------------|-----------------------------------------------------------|
-| `FILE_<name>_PATH`                  | string | `null`        | The path of the file.                                     |
-| `FILE_<name>_CONTENT`               | string | `null`        | The content of the file.                                  |
-| `FILE_<name>_URL`                   | string | `null`        | The url of the file. (download)                           |
-| `FILE_<name>_UNSECURE`              | bool   | `false`       | Allow non-https urls.                                     |
-| `FILE_<name>_OVERRIDES_USER`        | number | `1000`        | The user override value.                                  |
-| `FILE_<name>_OVERRIDES_GROUP`       | number | `1000`        | The group override value.                                 |
-| `FILE_<name>_OVERRIDES_PERMISSIONS` | number | `777`         | The permissions override value.                           |
-| `FILE_<name>_MODE`                  | string | `create`      | The mode of the file.                                     |
-| `FILE_<name>_REGEX`                 | string | `null`        | The regex to replace.                                     |
-| `FILE_<name>_FAIL_ON_ERROR`         | bool   | `false`       | Fail on error.                                            |
-| `ORDER`                             | string | `null`        | Comma separated list of file names.                       |
-| `SLEEP`                             | number | `0`           | Sleep time in milliseconds.                               |
-| `SLEEP_AFTER`                       | number | `10000`       | Sleep time in milliseconds after all files are processed. |
+| Name                                | Type   | Default Value | Description                                                       |
+|-------------------------------------|--------|---------------|-------------------------------------------------------------------|
+| `FILE_<name>_PATH`                  | string | `null`        | The path of the file.                                             |
+| `FILE_<name>_CONTENT`               | string | `null`        | The content of the file.                                          |
+| `FILE_<name>_URL`                   | string | `null`        | The url of the file. (download)                                   |
+| `FILE_<name>_UNSECURE`              | bool   | `false`       | Allow non-https urls.                                             |
+| `FILE_<name>_OVERRIDES_USER`        | number | `1000`        | The user override value.                                          |
+| `FILE_<name>_OVERRIDES_GROUP`       | number | `1000`        | The group override value.                                         |
+| `FILE_<name>_OVERRIDES_PERMISSIONS` | number | `777`         | The permissions override value.                                   |
+| `FILE_<name>_MODE`                  | string | `create`      | The mode of the file.                                             |
+| `FILE_<name>_REGEX`                 | string | `null`        | The regex to replace.                                             |
+| `FILE_<name>_FAIL_ON_ERROR`         | bool   | `false`       | Fail on error.                                                    |
+| `FILE_<name>_FIX_DIR_PERM`          | bool   | `false`       | Different chmod for directories. Intended to give directories +x. |
+| `ORDER`                             | string | `null`        | Comma separated list of file names.                               |
+| `SLEEP`                             | number | `0`           | Sleep time in milliseconds.                                       |
+| `SLEEP_AFTER`                       | number | `10000`       | Sleep time in milliseconds after all files are processed.         |
 
 `FILE_<name>_PATH` and either `FILE_<name>_CONTENT` or `FILE_<name>_URL` are required.
 

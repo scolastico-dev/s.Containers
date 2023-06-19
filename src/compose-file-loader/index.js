@@ -35,7 +35,8 @@ function processEnv() {
       overridesPermissions: process.env[`${prefix}_OVERRIDES_PERMISSIONS`] || '777',
       mode: process.env[`${prefix}_MODE`] || 'create',
       regex: process.env[`${prefix}_REGEX`] || null,
-      failOnError: process.env[`${prefix}_FAIL_ON_ERROR`] === 'true',
+      failOnError: process.env[`${prefix}_FAIL_ON_ERROR`] === 'false',
+      fixDirPerms: process.env[`${prefix}_FIX_DIR_PERMS`] === 'false',
     });
   }
   const sort = (process.env.ORDER || process.env.SORT || '')
@@ -124,6 +125,9 @@ function processFiles() {
             applyOverrides(path, file.overridesUser, file.overridesGroup, file.overridesPermissions);
           }
           if (fs.lstatSync(path).isDirectory()) {
+            if (file.fixDirPerms !== 'false') {
+              applyOverrides(path, file.overridesUser, file.overridesGroup, file.fixDirPerms);
+            }
             for (const subPath of fs.readdirSync(path)) {
               chmod(path + '/' + subPath);
             }
