@@ -35,7 +35,7 @@ function processEnv() {
       overridesPermissions: process.env[`${prefix}_OVERRIDES_PERMISSIONS`] || '777',
       mode: process.env[`${prefix}_MODE`] || 'create',
       regex: process.env[`${prefix}_REGEX`] || null,
-      failOnError: process.env[`${prefix}_FAIL_ON_ERROR`] === 'false',
+      failOnError: process.env[`${prefix}_FAIL_ON_ERROR`] === 'true',
       fixDirPerms: process.env[`${prefix}_FIX_DIR_PERMS`] || 'false',
     });
   }

@@ -20,7 +20,7 @@ composing deployment instructions for said files.
 | `FILE_<name>_MODE`                  | string | `create`      | The mode of the file.                                             |
 | `FILE_<name>_REGEX`                 | string | `null`        | The regex to replace.                                             |
 | `FILE_<name>_FAIL_ON_ERROR`         | bool   | `false`       | Fail on error.                                                    |
-| `FILE_<name>_FIX_DIR_PERM`          | bool   | `false`       | Different chmod for directories. Intended to give directories +x. |
+| `FILE_<name>_FIX_DIR_PERMS`         | bool   | `false`       | Different chmod for directories. Intended to give directories +x. |
 | `ORDER`                             | string | `null`        | Comma separated list of file names.                               |
 | `SLEEP`                             | number | `0`           | Sleep time in milliseconds.                                       |
 | `SLEEP_AFTER`                       | number | `10000`       | Sleep time in milliseconds after all files are processed.         |
