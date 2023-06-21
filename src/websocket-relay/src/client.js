@@ -6,6 +6,9 @@ const clientToken = process.env.CLIENT_TOKEN;
 const serverUrl = process.env.SERVER_URL;
 const localUrl = process.env.LOCAL_URL;
 const printRequestError = process.env.PRINT_REQUEST_ERROR === 'true';
+const timeout = parseInt(process.env.TIMEOUT || '10000');
+const verbose = process.env.VERBOSE === 'true';
+const debug = process.env.DEBUG === 'true' || verbose;
 
 if (!clientToken || !serverUrl || !localUrl) {
   console.error('Please set the CLIENT_TOKEN, SERVER_URL and LOCAL_URL environment variables');
@@ -33,6 +36,8 @@ ws.on('message', async (message) => {
   console.log(`Received request: ${request.id} ${request.ip} ${request.method} ${request.path}`);
 
   try {
+    if (debug) console.log(`Making request to: ${localUrl}${request.path}`);
+    if (verbose) console.log(`Request: ${JSON.stringify(request, null, 2)}`);
     const { data, status, headers } = await axios({
       method: request.method,
       url: `${localUrl}${request.path}`,
@@ -43,6 +48,7 @@ ws.on('message', async (message) => {
       data: request.body,
       params: request.query,
       maxRedirects: 0,
+      timeout,
     });
     const response = {
       id: request.id,

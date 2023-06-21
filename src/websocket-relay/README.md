@@ -32,6 +32,9 @@ As we use websockets for the background communication, we can't forward websocke
 | `CLIENT_TOKEN`             | string  | `null`        | The token to use for server authentication.                    |
 | `LOCAL_URL`                | string  | `null`        | The URL of the local server to forward requests to.            |
 | `PRINT_REQUEST_ERRORS`     | boolean | `false`       | Whether to print errors when a request fails.                  |
+| `TIMEOUT`                  | number  | `10000`       | The timeout for requests in milliseconds.                      |
+| `DEBUG`                    | boolean | `false`       | Whether to print debug messages.                               |
+| `VERBOSE`                  | boolean | `false`       | Whether to print verbose messages.                             |
 
 ## Example
 
