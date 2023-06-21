@@ -2,6 +2,7 @@ const express = require('express');
 const WebSocket = require('ws');
 const http = require('http');
 const url = require('url');
+const BodyParser = require('body-parser');
 
 let currentClient = null;
 const requestQueue = {};
@@ -56,13 +57,15 @@ wss.on('connection', (ws) => {
   });
 });
 
+app.use(BodyParser.raw({ type: '*/*' }));
+
 app.all('*', async (req, res) => {
   console.log(`Handle: ${req.method} ${req.path}`);
   if (!currentClient) return res.status(500).send('Server error: No client connected');
   const id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
   const request = {
     id, method: req.method, path: req.path,
-    headers: req.headers, body: req.body,
+    headers: req.headers, body: req.body.toString(),
     query: req.query, ip: req.ip,
   };
   currentClient.send(JSON.stringify(request));
