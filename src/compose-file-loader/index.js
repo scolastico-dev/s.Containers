@@ -30,6 +30,7 @@ function processEnv() {
       content: process.env[`${prefix}_CONTENT`],
       url: process.env[`${prefix}_URL`],
       unsecure: process.env[`${prefix}_UNSECURE`] === 'true',
+      base64: process.env[`${prefix}_BASE64`] === 'true',
       overridesUser: process.env[`${prefix}_OVERRIDES_USER`] || '1000',
       overridesGroup: process.env[`${prefix}_OVERRIDES_GROUP`] || '1000',
       overridesPermissions: process.env[`${prefix}_OVERRIDES_PERMISSIONS`] || '777',
@@ -72,16 +73,16 @@ function processFiles() {
             applyOverrides(file.path, file.overridesUser, file.overridesGroup, file.overridesPermissions);
           });
         } else {
-          fs.writeFileSync(file.path, file.content);
+          fs.writeFileSync(file.path, file.base64 ? Buffer.from(file.content, 'base64') : file.content);
           applyOverrides(file.path, file.overridesUser, file.overridesGroup, file.overridesPermissions);
         }
       } else if (file.mode === 'update' && fs.existsSync(file.path)) {
-        let fileContent = fs.readFileSync(path, 'utf8');
+        let fileContent = fs.readFileSync(file.path, 'utf8');
         if (file.regex) {
-          const regexObj = new RegExp(regex, 'g');
-          fileContent = fileContent.replace(regexObj, content);
+          const regexObj = new RegExp(file.regex, 'g');
+          fileContent = fileContent.replace(regexObj, file.base64 ? Buffer.from(file.content, 'base64') : file.content);
         } else {
-          fileContent = file.content;
+          fileContent = file.base64 ? Buffer.from(file.content, 'base64') : file.content;
         }
         fs.writeFileSync(file.path, fileContent);
         applyOverrides(file.path, file.overridesUser, file.overridesGroup, file.overridesPermissions);
@@ -98,20 +99,20 @@ function processFiles() {
             applyOverrides(file.path, file.overridesUser, file.overridesGroup, file.overridesPermissions);
           });
         } else {
-          fs.writeFileSync(file.path, file.content);
+          fs.writeFileSync(file.path, file.base64 ? Buffer.from(file.content, 'base64') : file.content);
           applyOverrides(file.path, file.overridesUser, file.overridesGroup, file.overridesPermissions);
         }
       } else if (file.mode === 'append') {
         if (fs.existsSync(file.path)) {
           const fileContent = fs.readFileSync(file.path, 'utf8');
-          const newContent = fileContent + file.content;
+          const newContent = fileContent + (file.base64 ? Buffer.from(file.content, 'base64') : file.content);
           fs.writeFileSync(file.path, newContent);
           applyOverrides(file.path, file.overridesUser, file.overridesGroup, file.overridesPermissions);
         }
       } else if (file.mode === 'prepend') {
         if (fs.existsSync(file.path)) {
           const fileContent = fs.readFileSync(file.path, 'utf8');
-          const newContent = file.content + fileContent;
+          const newContent = (file.base64 ? Buffer.from(file.content, 'base64') : file.content) + fileContent;
           fs.writeFileSync(file.path, newContent);
           applyOverrides(file.path, file.overridesUser, file.overridesGroup, file.overridesPermissions);
         }

@@ -14,6 +14,7 @@ composing deployment instructions for said files.
 | `FILE_<name>_CONTENT`               | string | `null`        | The content of the file.                                          |
 | `FILE_<name>_URL`                   | string | `null`        | The url of the file. (download)                                   |
 | `FILE_<name>_UNSECURE`              | bool   | `false`       | Allow non-https urls.                                             |
+| `FILE_<name>_BASE64`                | bool   | `false`       | Base64 decode the content. Does not work with `URL`.              |
 | `FILE_<name>_OVERRIDES_USER`        | number | `1000`        | The user override value.                                          |
 | `FILE_<name>_OVERRIDES_GROUP`       | number | `1000`        | The group override value.                                         |
 | `FILE_<name>_OVERRIDES_PERMISSIONS` | number | `777`         | The permissions override value.                                   |
