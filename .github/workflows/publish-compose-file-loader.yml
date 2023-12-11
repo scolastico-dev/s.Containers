@@ -27,6 +27,7 @@ jobs:
           registry: ghcr.io
           directory: ./src/compose-file-loader
           dockerfile: ./src/compose-file-loader/Dockerfile
+          platform: linux/amd64,linux/arm64,linux/arm/v7
           addLatest: true
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
