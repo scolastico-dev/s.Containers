@@ -22,6 +22,7 @@ A common application of this module is for CSS overrides in web applications. By
 | `MERGE_DYNAMIC_METHOD`      | enum   | `append`      | The merge method.                                       |
 | `MERGE_DYNAMIC_CACHE_TIME`  | number | `60`          | The cache time in seconds.                              |
 | `MERGE_DYNAMIC_CACHE_COUNT` | number | `0`           | The maximum length of the cache object.                 |
+| `PORT`                      | number | `3000`        | The port to bind to.                                    |
 
 Either `FILE_PATH` or `FILE_CONTENT` is required.
 

@@ -3,7 +3,7 @@ const axios = require('axios')
 const fs = require('fs')
 const app = express()
 const env = process.env
-const port = 3000
+const port = Number(env.PORT || 3000)
 
 // handle SIGINT and SIGTERM
 for (const signal of ['SIGINT', 'SIGTERM']) {
