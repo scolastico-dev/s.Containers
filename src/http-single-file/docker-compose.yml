@@ -1,0 +1,22 @@
+# This file is only for debugging purposes. It is not recommended to use it in production.
+
+version: "3"
+services:
+  static:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - FILE_CONTENT=Hello
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - static
+    ports:
+      - "3000:3000"
+    environment:
+      - FILE_CONTENT= World!
+      - MERGE_DYNAMIC_URL=http://static:3000
+      - MERGE_DYNAMIC_CACHE_COUNT=1
