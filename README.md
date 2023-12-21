@@ -68,6 +68,6 @@ containers or images based on a simple API call.
 The WebSocket Relay is a container that functions similarly to ngrok, making it ideal
 for forwarding local pages to a publicly accessible server.
 
-### ['s.containers/http-single-file'](./src/http-single-file/README.md)
+### [`s.containers/http-single-file`](./src/http-single-file/README.md)
 
 A simple container to serve a single file via http. This can be useful if you want to serve a single file or modify a single file, for example a css file.

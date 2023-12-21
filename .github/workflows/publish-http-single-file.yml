@@ -25,8 +25,8 @@ jobs:
         with:
           image: s.containers/http-single-file
           registry: ghcr.io
-          directory: ./src/http-echo/
-          dockerfile: ./src/http-echo/Dockerfile
+          directory: ./src/http-single-file/
+          dockerfile: ./src/http-single-file/Dockerfile
           addLatest: true
           multiPlatform: true
           platform: linux/amd64,linux/arm64,linux/arm/v7

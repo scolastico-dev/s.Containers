@@ -78,5 +78,6 @@ version: "3"
       - "traefik.http.routers.custom-css.rule=Host(`example.com`) && PathPrefix(`/main.css`)"
       - "traefik.http.routers.custom-css.entrypoints=websecure"
       - "traefik.http.routers.custom-css.tls.certresolver=myresolver"
-      - "traefik.services.custom-css.loadbalancer.server.port=3000"
+      - "traefik.http.services.custom-css.loadbalancer.server.port=3000"
+      - "traefik.http.services.custom-css.loadbalancer.server.scheme=http"
 ```
