@@ -69,7 +69,6 @@ for (const signal of ['SIGINT', 'SIGTERM']) {
     res.setHeader('content-type', env.FILE_TYPE || 'text/plain')
     if (!env.MERGE_DYNAMIC_URL) return res.send(content)
     try {
-      console.log(cache)
       if (cache[req.originalUrl] && cache[req.originalUrl].expires > Date.now()) {
         return res.send(cache[req.originalUrl].content)
       }
@@ -115,6 +114,6 @@ for (const signal of ['SIGINT', 'SIGTERM']) {
   })
   
   app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+    console.log(`s.containers/http-single-file listening on port ${port}`)
   })
 })()
