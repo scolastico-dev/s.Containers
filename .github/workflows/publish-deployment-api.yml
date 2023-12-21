@@ -4,7 +4,6 @@ on:
   push:
     branches: [ "main" ]
     paths: [ "src/deployment-api/**", ".github/workflows/publish-deployment-api.yml" ]
-    paths-ignore: ["src/deployment-api/README.md"]
 
 jobs:
   build:

@@ -4,7 +4,6 @@ on:
   push:
     branches: [ "main" ]
     paths: [ "src/restart-webhook/**", ".github/workflows/publish-restart-webhook.yml" ]
-    paths-ignore: [ "src/restart-webhook/README.md" ]
 
 jobs:
   build:

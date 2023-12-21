@@ -4,7 +4,6 @@ on:
   push:
     branches: [ "main" ]
     paths: [ "src/http-single-file/**", ".github/workflows/publish-http-single-file.yml" ]
-    paths-ignore: [ "src/http-single-file/README.md" ]
 
 jobs:
   build:

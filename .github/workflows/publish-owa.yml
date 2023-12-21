@@ -6,7 +6,6 @@ on:
   push:
     branches: [ "main" ]
     paths: [ "src/owa/**", ".github/workflows/publish-owa.yml" ]
-    paths-ignore: [ "src/owa/README.md" ]
 
 jobs:
   build:

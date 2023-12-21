@@ -4,7 +4,6 @@ on:
   push:
     branches: [ "main" ]
     paths: [ "src/cron/**", ".github/workflows/publish-cron.yml" ]
-    paths-ignore: [ "src/cron/README.md" ]
 
 jobs:
   build:

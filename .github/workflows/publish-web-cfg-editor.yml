@@ -4,7 +4,6 @@ on:
   push:
     branches: [ "main" ]
     paths: [ "src/web-cfg-editor/**", ".github/workflows/publish-web-cfg-editor.yml" ]
-    paths-ignore: [ "src/web-cfg-editor/README.md" ]
 
 jobs:
   build:

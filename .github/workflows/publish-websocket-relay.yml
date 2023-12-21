@@ -4,7 +4,6 @@ on:
   push:
     branches: [ "main" ]
     paths: [ "src/websocket-relay/**", ".github/workflows/publish-websocket-relay.yml" ]
-    paths-ignore: [ "src/websocket-relay/README.md" ]
 
 jobs:
   build:

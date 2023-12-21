@@ -4,7 +4,6 @@ on:
   push:
     branches: [ "main" ]
     paths: [ "src/hastebin/**", ".github/workflows/publish-hastebin.yml" ]
-    paths-ignore: [ "src/hastebin/README.md" ]
 
 jobs:
   build:
