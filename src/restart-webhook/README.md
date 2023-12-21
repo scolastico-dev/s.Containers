@@ -1,7 +1,9 @@
 # `s.containers/restart-webhook`
+
 ### [Back to index](../../README.md)
 
 ## Usage Warning
+
 I noticed that restarting containers will not update the image. Image updates
 require recreation of the containers which can be quiet tricky to achieve as
 docker containers can have a lot of configurations and dependencies.
@@ -9,8 +11,8 @@ docker containers can have a lot of configurations and dependencies.
 If you want to achieve this, I recommend to use watchtower with the Http API.
 See: https://containrrr.dev/watchtower/http-api-mode/
 
-
 ## Why?
+
 Restart Webhook provides an easy way to automatically update and restart
 Docker containers or images based on a simple API call. It is designed to
 integrate with your existing infrastructure, enabling you to trigger updates
@@ -19,6 +21,7 @@ scenarios where you want to automate container management or integrate with
 CI/CD pipelines.
 
 ## Environment Variables
+
 | Name                   | Type    | Default Value | Description                                                           |
 |------------------------|---------|---------------|-----------------------------------------------------------------------|
 | `CFG_<name>_IMAGE`     | string  | `null`        | The name of the Docker image to update.                               |
@@ -37,6 +40,7 @@ The API provides an endpoint that accepts GET requests at `/<token>`, where
 `<token>` is the value of the `CFG_<name>_TOKEN` environment variable.
 
 ## Example
+
 ```yaml
 version: "3"
 services:

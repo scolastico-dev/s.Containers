@@ -1,13 +1,16 @@
 # `s.containers/hastebin`
+
 ### [Back to index](../../README.md)
 
 ## Why?
+
 Sometimes you need to share a snippet of code with someone,
 but you don't want to send them a whole file. Hastebin is a
 simple, lightweight pastebin that allows you to share snippets
 of code with others.
 
 ## How?
+
 Big thank you to [@jacklei](https://github.com/jacklei) for the
 base docker file. Please also check out his original code
 [repo](https://github.com/jacklei/hastebin). I slightly modified
@@ -15,6 +18,7 @@ it and included it in this repo for convenience. (I don't like
 building docker images every time I want to use them)
 
 ## Environment Variables
+
 | Name                       | Type    | Default Value | Description                                                    |
 |----------------------------|---------|---------------|----------------------------------------------------------------|
 | `HOST`                     | string  | `0.0.0.0`     | The host to bind to.                                           |
@@ -38,6 +42,7 @@ building docker images every time I want to use them)
 See the [hastebin](https://github.com/toptal/haste-server) repo for more information.
 
 ## Example
+
 ```yaml
 version: "3"
 services:

@@ -1,7 +1,9 @@
 # `s.containers/websocket-relay`
+
 ### [Back to index](../../README.md)
 
 ## Why?
+
 The WebSocket Relay is a container that functions similarly to ngrok, making it ideal for forwarding local
 pages to a publicly accessible server. It acts as an intermediary between a WebSocket server and an HTTP
 client, allowing HTTP requests to be relayed over a WebSocket connection and vice versa. When an incoming
@@ -11,6 +13,7 @@ By using the WebSocket Relay, you can seamlessly incorporate WebSocket communica
 without the need to modify the existing architecture.
 
 ## Drawbacks
+
 This is a fairly simple implementation of a WebSocket relay, and it is not intended for use in production
 environments. It is not designed to handle a large number of concurrent connections, and it does not
 support SSL (although it can be used in conjunction with a reverse proxy to provide SSL termination).
@@ -20,12 +23,14 @@ As we use websockets for the background communication, we can't forward websocke
 ## Environment Variables
 
 ### Server
+
 | Name                       | Type    | Default Value | Description                                                    |
 |----------------------------|---------|---------------|----------------------------------------------------------------|
 | `SERVER_TOKEN`             | string  | random        | The token to use for client authentication.                    |
 | `PORT`                     | number  | `3000`        | The port to bind to.                                           |
 
 ### Client
+
 | Name                       | Type    | Default Value | Description                                                    |
 |----------------------------|---------|---------------|----------------------------------------------------------------|
 | `SERVER_URL`               | string  | `null`        | The URL of the WebSocket server to connect to.                 |

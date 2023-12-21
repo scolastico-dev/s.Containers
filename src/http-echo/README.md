@@ -1,7 +1,9 @@
 # `s.containers/http-echo`
+
 ### [Back to index](../../README.md)
 
 ## Why?
+
 HTTP Echo is a straightforward HTTP server that promptly returns the
 request it receives, making it highly beneficial for debugging and
 testing purposes. This is particularly advantageous in scenarios where
@@ -10,6 +12,7 @@ authentication, as the service accurately responds with all the
 headers and the body it has received.
 
 ## Example
+
 ```yaml
 version: "3"
 services:

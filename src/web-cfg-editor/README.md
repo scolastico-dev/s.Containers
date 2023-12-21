@@ -1,10 +1,13 @@
 # `s.containers/web-cfg-editor`
+
 ### [Back to index](../../README.md)
 
 ## Why?
+
 Easily edit config files in a web interface without much extra effort. Slim design by default.
 
 ## Environment Variables
+
 | Name           | Type   | Default Value | Description                                                                                                                    |
 |----------------|--------|---------------|--------------------------------------------------------------------------------------------------------------------------------|
 | `USER_` + name | string | `null`        | To protect the interface an simple login mask can be displayed if this setting is set. Value needs to be in the ARGON2 format. |
@@ -14,11 +17,13 @@ Easily edit config files in a web interface without much extra effort. Slim desi
 *Tip: You can use the demo of the [argon2-browser](https://antelle.net/argon2-browser/) package to generate securely (on the client side) a hash for the `USER_` environment variable.*
 
 ## Ports
+
 | Port | Description       |
 |------|-------------------|
 | 3000 | The web interface |
 
 ## Example
+
 ```yaml
 version: "3"
 services:

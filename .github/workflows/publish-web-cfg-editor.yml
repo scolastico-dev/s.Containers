@@ -4,6 +4,7 @@ on:
   push:
     branches: [ "main" ]
     paths: [ "src/web-cfg-editor/**", ".github/workflows/publish-web-cfg-editor.yml" ]
+    paths-ignore: [ "src/web-cfg-editor/README.md" ]
 
 jobs:
   build:
@@ -31,12 +32,14 @@ jobs:
           registry: ghcr.io
           username: ${{github.actor}}
           password: ${{secrets.GITHUB_TOKEN}}
-      - uses: mr-smithers-excellent/docker-build-push@v5
+      - uses: mr-smithers-excellent/docker-build-push@v6
         with:
           image: s.containers/web-cfg-editor
           registry: ghcr.io
           directory: ./src/web-cfg-editor/
           dockerfile: ./src/web-cfg-editor/Dockerfile
           addLatest: true
+          multiPlatform: true
+          platform: linux/amd64,linux/arm64,linux/arm/v7
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}

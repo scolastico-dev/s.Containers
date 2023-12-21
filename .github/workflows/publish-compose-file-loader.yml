@@ -4,6 +4,7 @@ on:
   push:
     branches: [ "main" ]
     paths: [ "src/compose-file-loader/**", ".github/workflows/publish-compose-file-loader.yml" ]
+    paths-ignore: [ "src/compose-file-loader/README.md" ]
 
 jobs:
   build:

@@ -1,12 +1,15 @@
 # `s.containers/owa`
+
 ### [Back to index](../../README.md)
 
 ## Why?
+
 Open Web Analytics is a free and open source web analytics software written in PHP and distributed
 under the GNU General Public License version 2. It is designed to be a low resource footprint web
 analytics solution that provides detailed statistics about website visitors.
 
 ## Example
+
 ```yml
 version: "3"
 services:

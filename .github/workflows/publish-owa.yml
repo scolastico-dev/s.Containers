@@ -6,6 +6,7 @@ on:
   push:
     branches: [ "main" ]
     paths: [ "src/owa/**", ".github/workflows/publish-owa.yml" ]
+    paths-ignore: [ "src/owa/README.md" ]
 
 jobs:
   build:
@@ -48,7 +49,7 @@ jobs:
           echo "TAGS=$tags" >> $GITHUB_ENV
       - name: Build and push Docker image
         if: github.event_name != 'schedule' || env.CURRENT_VERSION != env.LATEST_VERSION
-        uses: mr-smithers-excellent/docker-build-push@v5
+        uses: mr-smithers-excellent/docker-build-push@v6
         with:
           image: s.containers/owa
           registry: ghcr.io

@@ -1,13 +1,16 @@
 # `s.containers/compose-file-loader`
+
 ### [Back to index](../../README.md)
 
 ## Why?
+
 At times, I find myself desiring a feature akin to Kubernetes' ConfigMaps.
 This particular container proves to be ideal for providing concise
 configuration files to your containers, eliminating the necessity for
 composing deployment instructions for said files.
 
 ## Environment Variables
+
 | Name                                | Type   | Default Value | Description                                                       |
 |-------------------------------------|--------|---------------|-------------------------------------------------------------------|
 | `FILE_<name>_PATH`                  | string | `null`        | The path of the file.                                             |
@@ -29,6 +32,7 @@ composing deployment instructions for said files.
 `FILE_<name>_PATH` and either `FILE_<name>_CONTENT` or `FILE_<name>_URL` are required.
 
 ### Possible Modes
+
 | Mode      | Description                                                            | Needs `CONTENT` or `URL`                              |
 |-----------|------------------------------------------------------------------------|-------------------------------------------------------|
 | `create`  | Creates the file if it does not exist.                                 | Yes                                                   |
@@ -47,6 +51,7 @@ composing deployment instructions for said files.
 `mkdir`, `perm`, `permr` and `delete` do not accept `FILE_<name>_CONTENT` or `FILE_<name>_URL`.
 
 ## Example
+
 ```yml
 version: "3"
 services:
