@@ -60,7 +60,7 @@ wss.on('connection', (ws, req) => {
 app.use(BodyParser.raw({ type: '*/*' }));
 
 app.all('*', async (req, res) => {
-  const ip = ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
   const base = `Handle: ${req.method} ${req.path} from ${req.ip} `
   if (!currentClient) {
     console.log(`${base}=> no client connected -> 503`)
