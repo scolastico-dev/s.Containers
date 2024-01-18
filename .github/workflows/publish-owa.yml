@@ -2,7 +2,7 @@ name: Publish OWA
 
 on:
   schedule:
-    - cron: "0 0 * * 0"
+    - cron: "3 15 1 */2 *"
   push:
     branches: [ "main" ]
     paths: [ "src/owa/**", ".github/workflows/publish-owa.yml" ]
