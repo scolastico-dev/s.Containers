@@ -30,8 +30,8 @@ process.on('SIGINT', () => {
   process.exit();
 })
 
-wss.on('connection', (ws) => {
-  console.log('Client connected');
+wss.on('connection', (ws, req) => {
+  console.log(`Client connected from ${req.socket.remoteAddress}`);
   currentClient = ws;
 
   ws.on('close', () => {
@@ -60,9 +60,14 @@ wss.on('connection', (ws) => {
 app.use(BodyParser.raw({ type: '*/*' }));
 
 app.all('*', async (req, res) => {
-  console.log(`Handle: ${req.method} ${req.path}`);
-  if (!currentClient) return res.status(500).send('Server error: No client connected');
+  const ip = ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  const base = `Handle: ${req.method} ${req.path} from ${req.ip} `
+  if (!currentClient) {
+    console.log(`${base}=> no client connected -> 503`)
+    return res.status(503).send('Server error: No client connected');
+  }
   const id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  console.log(`${base}as request with id ${id}`);
   const request = {
     id, method: req.method, path: req.path,
     headers: req.headers, body: req.body.toString(),

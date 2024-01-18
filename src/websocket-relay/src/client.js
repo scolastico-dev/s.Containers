@@ -6,6 +6,7 @@ const clientToken = process.env.CLIENT_TOKEN;
 const serverUrl = process.env.SERVER_URL;
 const localUrl = process.env.LOCAL_URL;
 const altHost = process.env.ALTERNATIVE_HOST;
+const allowCookieHost = process.env.ALLOW_ALTERNATIVE_COOKIE_HOST === 'true';
 const printRequestError = process.env.PRINT_REQUEST_ERROR === 'true';
 const timeout = parseInt(process.env.TIMEOUT || '10000');
 const verbose = process.env.VERBOSE === 'true';
@@ -36,6 +37,16 @@ ws.on('message', async (message) => {
   const request = JSON.parse(message);
   console.log(`Received request: ${request.id} ${request.ip} ${request.method} ${request.path}`);
 
+  let xRelayHost = null;
+  const cookieHeader = request.headers.cookie;
+
+  if (allowCookieHost && cookieHeader) for (const cookie of cookieHeader.split('; ')) {
+    if (cookie.startsWith('x-relay-host=')) {
+      xRelayHost = cookie.split('=')[1];
+      break;
+    }
+  };
+
   try {
     if (debug) console.log(`Making request to: ${localUrl}${request.path}`);
     if (verbose) console.log(`Request: ${JSON.stringify(request, null, 2)}`);
@@ -44,7 +55,7 @@ ws.on('message', async (message) => {
       url: `${localUrl}${request.path}`,
       headers: {
         ...request.headers,
-        host: altHost || new url.URL(localUrl).host,
+        host: xRelayHost || altHost || new url.URL(localUrl).host,
       },
       data: request.body,
       params: request.query,
