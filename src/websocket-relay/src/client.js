@@ -5,6 +5,7 @@ const url = require('url');
 const clientToken = process.env.CLIENT_TOKEN;
 const serverUrl = process.env.SERVER_URL;
 const localUrl = process.env.LOCAL_URL;
+const altHost = process.env.ALTERNATIVE_HOST;
 const printRequestError = process.env.PRINT_REQUEST_ERROR === 'true';
 const timeout = parseInt(process.env.TIMEOUT || '10000');
 const verbose = process.env.VERBOSE === 'true';
@@ -43,7 +44,7 @@ ws.on('message', async (message) => {
       url: `${localUrl}${request.path}`,
       headers: {
         ...request.headers,
-        host: new url.URL(localUrl).host,
+        host: altHost || new url.URL(localUrl).host,
       },
       data: request.body,
       params: request.query,
