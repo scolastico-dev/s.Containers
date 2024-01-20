@@ -29,6 +29,6 @@ jobs:
           dockerfile: ./src/email-lexoffice-import/Dockerfile
           addLatest: true
           multiPlatform: true
-          platform: linux/amd64,linux/arm64,linux/arm/v7
+          platform: linux/amd64,linux/arm64
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }} 
