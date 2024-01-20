@@ -71,3 +71,7 @@ for forwarding local pages to a publicly accessible server.
 ### [`s.containers/http-single-file`](./src/http-single-file/README.md)
 
 A simple container to serve a single file via http. This can be useful if you want to serve a single file or modify a single file, for example a css file.
+
+### [`s.containers/email-lexoffice-import`](./src/email-lexoffice-import/README.md)
+
+Automatically import invoices from your email account into lexoffice.
