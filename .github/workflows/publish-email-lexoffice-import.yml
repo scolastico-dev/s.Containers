@@ -1,0 +1,34 @@
+name: Publish Email Lexoffice Import
+
+on:
+  push:
+    branches: [ "main" ]
+    paths: [ "src/email-lexoffice-import/**", ".github/workflows/publish-email-lexoffice-import.yml" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+      - uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          image: s.containers/email-lexoffice-import
+          registry: ghcr.io
+          directory: ./src/email-lexoffice-import/
+          dockerfile: ./src/email-lexoffice-import/Dockerfile
+          addLatest: true
+          multiPlatform: true
+          platform: linux/amd64,linux/arm64,linux/arm/v7
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }} 
