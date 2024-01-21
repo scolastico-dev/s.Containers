@@ -93,6 +93,7 @@ const redirectUnparsable = async (mail, id) => {
       }
     ]
   })
+  return true;
 }
 
 // job function
@@ -134,7 +135,10 @@ const jobFunction = async () => {
     const pdf = parsed.attachments.find(a => a.contentType === 'application/pdf')
     if (!pdf) {
       console.log(`No PDF found in mail ${uid}, skipping...`)
-      redirectUnparsable(mail, uid)
+      if (redirectUnparsable(mail, uid)) {
+        console.log(`Marking mail ${uid} as seen...`)
+        await new Promise(resolve => imap.addFlags(uid, '\\Seen', resolve))
+      }
       continue;
     }
     const sender = parsed.from.value[0].address
@@ -174,7 +178,10 @@ const jobFunction = async () => {
     }
     if (!found) {
       console.log(`No input found for mail ${uid}, skipping...`)
-      redirectUnparsable(mail, uid)
+      if (redirectUnparsable(mail, uid)) {
+        console.log(`Marking mail ${uid} as seen...`)
+        await new Promise(resolve => imap.addFlags(uid, '\\Seen', resolve))
+      }
     }
   }
   console.log('Disconnecting from IMAP server...')
