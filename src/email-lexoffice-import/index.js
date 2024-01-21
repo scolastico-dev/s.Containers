@@ -1,5 +1,6 @@
 import Imap from 'imap'
 import Axios from 'axios'
+import NodeMailer from 'nodemailer'
 import { FormData, File } from 'formdata-node'
 import { scheduleJob } from 'node-schedule'
 import { simpleParser } from 'mailparser'
@@ -33,6 +34,15 @@ const cfg = {
       checkServerIdentity: () => undefined,
     },
   },
+  smtp: {
+    host: env.SMTP_HOST,
+    port: Number(env.SMTP_PORT || 587),
+    secure: true,
+    auth: {
+      user: env.SMTP_USER,
+      pass: env.SMTP_PASSWORD,
+    },
+  },
   input: Object
     .keys(env)
     .filter(key => key.startsWith('INPUT_') && key.endsWith('_MAIL'))
@@ -44,6 +54,7 @@ const cfg = {
     })),
   lexofficeKey: env.LEXOFFICE_KEY,
   scheduler: env.SCHEDULER || '0 */3 * * *',
+  redirectUnparsable: env.REDIRECT_UNPARSABLE,
 }
 
 console.log('Read config:')
@@ -62,6 +73,26 @@ for (const i of cfg.input) {
 const handleErr = async err => {
   console.error(err)
   process.exit(1)
+}
+
+// redirect unparsable mails
+const redirectUnparsable = async (mail, id) => {
+  if (!cfg.redirectUnparsable) return;
+  if (!cfg.smtp.host) throw new Error('Cannot redirect unparsable mails: SMTP host not configured')
+  console.log(`Redirecting mail ${id} to "${cfg.redirectUnparsable}"...`)
+  const transporter = NodeMailer.createTransport(cfg.smtp)
+  await transporter.sendMail({
+    from: cfg.smtp.user,
+    to: cfg.redirectUnparsable,
+    subject: `Invoices - Unparsable mail: ${id}`,
+    text: 'Hello, this is your invoices bot. I was unable to parse the email in the attachments. Please check it manually.',
+    attachments: [
+      {
+        filename: 'mail.eml',
+        content: mail,
+      }
+    ]
+  })
 }
 
 // job function
@@ -103,12 +134,17 @@ const jobFunction = async () => {
     const pdf = parsed.attachments.find(a => a.contentType === 'application/pdf')
     if (!pdf) {
       console.log(`No PDF found in mail ${uid}, skipping...`)
+      redirectUnparsable(mail, uid)
       continue;
     }
     const sender = parsed.from.value[0].address
     console.log(`Processing mail ${uid} from "${sender}"...`)
+    let found = false;
     for (const i of cfg.input) {
-      if (sender !== i.mail) continue;
+      const emailCheck = String(i.mail).split('*')
+      if (emailCheck.length === 2 && !(sender.startsWith(emailCheck[0]) && sender.endsWith(emailCheck[1]))) continue;
+      else if (sender !== i.mail) continue;
+      found = true;
       console.log(`Processing mail ${uid} for input "${i.key}"...`)
       switch (i.mode) {
         case 'just-upload':
@@ -135,6 +171,10 @@ const jobFunction = async () => {
       }
       console.log(`Marking mail ${uid} as seen...`)
       await new Promise(resolve => imap.addFlags(uid, '\\Seen', resolve))
+    }
+    if (!found) {
+      console.log(`No input found for mail ${uid}, skipping...`)
+      redirectUnparsable(mail, uid)
     }
   }
   console.log('Disconnecting from IMAP server...')

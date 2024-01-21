@@ -8,17 +8,23 @@ This is an simple tool which logs into your email account and imports all invoic
 
 ## Environment Variables
 
-| Name                                | Type   | Default Value | Description                                                       |
-|-------------------------------------|--------|---------------|-------------------------------------------------------------------|
-| `INPUT_<name>_MAIL`                 | string | `null`        | An sender email address to filter for.                            |
-| `INPUT_<name>_MODE`                 | string | `null`        | The mode to use, see below.                                       |
-| `IMAP_HOST`                         | number | `null`        | The IMAP host.                                                    |
-| `IMAP_USER`                         | string | `null`        | The IMAP user.                                                    |
-| `IMAP_PASSWORD`                     | bool   | `null`        | The IMAP password.                                                |
-| `IMAP_TLS`                          | bool   | `true`        | Whether to use TLS.                                               |
-| `IMAP_PORT`                         | number | `993`         | The IMAP port.                                                    |
-| `LEXOFFICE_KEY`                     | string | `null`        | The lexoffice API key.                                            |
-| `SCHEDULER`                         | number | `0 */3 * * *` | The scheduler to use, cron syntax.                                |
+| Name                                | Type   | Default Value | Description                                                                  | Required |
+|-------------------------------------|--------|---------------|------------------------------------------------------------------------------|----------|
+| `INPUT_<name>_MAIL`                 | string | `null`        | An sender email address to filter for. A single '*' to match all is allowed. | yes      |
+| `INPUT_<name>_MODE`                 | string | `null`        | The mode to use, see below.                                                  | no       |
+| `IMAP_HOST`                         | number | `null`        | The IMAP host.                                                               | yes      |
+| `IMAP_USER`                         | string | `null`        | The IMAP user.                                                               | yes      |
+| `IMAP_PASSWORD`                     | bool   | `null`        | The IMAP password.                                                           | yes      |
+| `IMAP_TLS`                          | bool   | `true`        | Whether to use TLS.                                                          | yes      |
+| `IMAP_PORT`                         | number | `993`         | The IMAP port.                                                               | yes      |
+| `SMTP_HOST`                         | number | `null`        | The SMTP host.                                                               | no       |
+| `SMTP_USER`                         | string | `null`        | The SMTP user.                                                               | no       |
+| `SMTP_PASSWORD`                     | bool   | `null`        | The SMTP password.                                                           | no       |
+| `SMTP_TLS`                          | bool   | `true`        | Whether to use TLS.                                                          | no       |
+| `SMTP_PORT`                         | number | `587`         | The SMTP port.                                                               | no       |
+| `LEXOFFICE_KEY`                     | string | `null`        | The lexoffice API key.                                                       | yes      |
+| `SCHEDULER`                         | number | `0 */3 * * *` | The scheduler to use, cron syntax or 'now' for just one execution.           | no       |
+| `REDIRECT_UNPARSABLE`               | string | `null`        | The email address to redirect unparsable emails to. Requires SMTP.           | no       |
 
 ### Possible Modes
 

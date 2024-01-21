@@ -5,6 +5,7 @@
 		"formdata-node": "^6.0.3",
 		"imap": "^0.8.19",
 		"mailparser": "^3.6.6",
-		"node-schedule": "^2.1.1"
+		"node-schedule": "^2.1.1",
+		"nodemailer": "^6.9.8"
 	}
 }

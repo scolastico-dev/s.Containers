@@ -20,6 +20,9 @@ dependencies:
   node-schedule:
     specifier: ^2.1.1
     version: 2.1.1
+  nodemailer:
+    specifier: ^6.9.8
+    version: 6.9.8
 
 packages:
 
