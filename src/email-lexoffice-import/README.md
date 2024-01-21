@@ -41,8 +41,9 @@ services:
     image: ghcr.io/scolastico-dev/s.containers/email-lexoffice-import:latest
     restart: unless-stopped
     environment:
-      INPUT_FOO_MAIL: foo@bar.com
-      INPUT_BAR_MAIL: bar@foo.com
+      # INPUT_ALL_MAIL: '*' # Match all
+      INPUT_FOO_MAIL: *@foo.com
+      INPUT_BAR_MAIL: foo@bar.com
       IMAP_HOST: imap.gmail.com
       IMAP_USER: invoices@gmail.com
       IMAP_PASSWORD: mypassword
