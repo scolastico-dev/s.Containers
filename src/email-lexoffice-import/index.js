@@ -96,7 +96,7 @@ const redirectUnparsable = async (mail, id) => {
     attachments: [
       {
         filename: 'mail.eml',
-        content: mail,
+        content: String(mail),
       }
     ]
   })
