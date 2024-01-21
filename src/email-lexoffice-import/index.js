@@ -89,7 +89,7 @@ const redirectUnparsable = async (mail, id) => {
   console.log(`Redirecting mail ${id} to "${cfg.redirectUnparsable}"...`)
   const transporter = NodeMailer.createTransport(cfg.smtp)
   await transporter.sendMail({
-    from: `"Invoices Auto Import" <${cfg.smtp.user}>`,
+    from: env.SMTP_SENDER || `"Invoice Import Bot"<${cfg.smtp.user}>`,
     to: cfg.redirectUnparsable,
     subject: `Invoices - Unparsable mail: ${id}`,
     text: 'Hello, this is your invoices bot. I was unable to parse the email in the attachments. Please check it manually.',

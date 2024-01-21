@@ -21,6 +21,7 @@ This is an simple tool which logs into your email account and imports all invoic
 | `SMTP_HOST`                         | string | `null`        | The SMTP host.                                                               | no       |
 | `SMTP_USER`                         | string | `null`        | The SMTP user.                                                               | no       |
 | `SMTP_PASSWORD`                     | string | `null`        | The SMTP password.                                                           | no       |
+| `SMTP_SENDER`                       | string | `null`        | The SMTP sender. SMTP_USER is used if not set.                               | no       |
 | `SMTP_TLS`                          | bool   | `true`        | Whether to use TLS.                                                          | no       |
 | `SMTP_TRUST_TLS`                    | bool   | `true`        | Whether to trust untrusted TLS certificates.                                 | no       |
 | `SMTP_PORT`                         | number | `587`         | The SMTP port.                                                               | no       |
