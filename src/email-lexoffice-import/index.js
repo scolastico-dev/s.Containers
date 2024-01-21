@@ -30,17 +30,21 @@ const cfg = {
     user: env.IMAP_USER,
     password: env.IMAP_PASSWORD,
     tls: env.IMAP_TLS !== 'false',
-    tlsOptions: {
-      checkServerIdentity: () => undefined,
-    },
+    ...(env.IMAP_TRUST_TLS === 'true' ? {
+      tlsOptions: {
+        checkServerIdentity: () => undefined,
+      },
+    } : {})
   },
   smtp: {
     host: env.SMTP_HOST,
     port: Number(env.SMTP_PORT || 587),
     secure: env.SMTP_TLS !== 'false',
-    tls: {
-      rejectUnauthorized: false,
-    },
+    ...(env.SMTP_TRUST_TLS === 'true' ? {
+      tls: {
+        rejectUnauthorized: false,
+      },
+    } : {}),
     auth: {
       user: env.SMTP_USER,
       pass: env.SMTP_PASSWORD,
@@ -92,10 +96,13 @@ const redirectUnparsable = async (mail, id) => {
     attachments: [
       {
         filename: 'mail.eml',
-        content: mail,
+        content: Blob([mail], { type: 'message/rfc822' }),
       }
     ]
   })
+  await new Promise(r => setTimeout(r, 1000))
+  transporter.close()
+  await new Promise(r => setTimeout(r, 1000))
   return true;
 }
 
