@@ -100,9 +100,7 @@ const redirectUnparsable = async (mail, id) => {
       }
     ]
   })
-  await new Promise(r => setTimeout(r, 1000))
   transporter.close()
-  await new Promise(r => setTimeout(r, 1000))
   return true;
 }
 
@@ -145,7 +143,7 @@ const jobFunction = async () => {
     const pdf = parsed.attachments.find(a => a.contentType === 'application/pdf')
     if (!pdf) {
       console.log(`No PDF found in mail ${uid}, skipping...`)
-      if (redirectUnparsable(mail, uid)) {
+      if (await redirectUnparsable(mail, uid)) {
         console.log(`Marking mail ${uid} as seen...`)
         await new Promise(resolve => imap.addFlags(uid, '\\Seen', resolve))
       }
@@ -188,7 +186,7 @@ const jobFunction = async () => {
     }
     if (!found) {
       console.log(`No input found for mail ${uid}, skipping...`)
-      if (redirectUnparsable(mail, uid)) {
+      if (await redirectUnparsable(mail, uid)) {
         console.log(`Marking mail ${uid} as seen...`)
         await new Promise(resolve => imap.addFlags(uid, '\\Seen', resolve))
       }
