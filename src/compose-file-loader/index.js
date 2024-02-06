@@ -152,6 +152,14 @@ function processFiles() {
         if (!fs.existsSync(file.path)) throw new Error(`File ${file.path} does not exist`);
       } else if (file.mode === 'missing') {
         if (fs.existsSync(file.path)) throw new Error(`File ${file.path} exists`);
+      } else if (file.mode === 'npm') {
+        const tarball = child.execSync(`npm pack ${file.content || file.url}`, {encoding: 'utf-8'}).trim();
+        const targetDirectory = file.path
+        if (!fs.existsSync(targetDirectory)) {
+          fs.mkdirSync(targetDirectory, { recursive: true });
+        }
+        execSync(`tar -xzf ${tarballName} -C ${targetDirectory}`);
+        fs.unlinkSync(tarballName);
       } else throw new Error(`Unknown mode ${file.mode} for ${file.prefix}`);
     } catch (error) {
       console.error(`Error processing ${file.prefix}: ${error.message}`);

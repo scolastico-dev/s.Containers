@@ -25,7 +25,7 @@ The cron container is for easy creation of cron jobs and intended for the usage 
 docker compose stack. **It is not intended for the usage outside a docker compose stack.
 For that use native cron!**
 
-### [`s.Containers/web-cfg-editor`](./src/web-cfg-editor/README.md)
+### [`s.containers/web-cfg-editor`](./src/web-cfg-editor/README.md)
 
 Easily edit config files in a web interface which can be secured with authentication.
 The editor does not support the editing of binary files.
