@@ -25,7 +25,7 @@ Docker compose:
 version: "3"
 services:
   app:
-    image: your-image-name
+    image: ghcr.io/scolastico-dev/s.containers/matrix-webhook:latest
     ports:
       - "3000:3000"
     environment:
