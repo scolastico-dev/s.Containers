@@ -1,0 +1,15 @@
+# This file is only for debugging purposes. It is not recommended to use it in production.
+
+version: "3"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - SHARED_SECRET=secret
+      - SERVER_URL=https://xxx.xxx
+      - USERNAME=@xxx:xxx.xxx
+      - PASSWORD=xxx

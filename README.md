@@ -75,3 +75,7 @@ A simple container to serve a single file via http. This can be useful if you wa
 ### [`s.containers/email-lexoffice-import`](./src/email-lexoffice-import/README.md)
 
 Automatically import invoices from your email account into lexoffice.
+
+### [`s.containers/matrix-webhook`](./src/matrix-webhook/README.md)
+
+Send messages to matrix channels via a simple http webhook.
