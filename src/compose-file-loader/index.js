@@ -158,8 +158,8 @@ function processFiles() {
         if (!fs.existsSync(targetDirectory)) {
           fs.mkdirSync(targetDirectory, { recursive: true });
         }
-        child.execSync(`tar -xzf ${tarballName} -C ${targetDirectory}`);
-        fs.unlinkSync(tarballName);
+        child.execSync(`tar -xzf ${tarball} -C ${targetDirectory}`);
+        fs.unlinkSync(tarball);
       } else throw new Error(`Unknown mode ${file.mode} for ${file.prefix}`);
     } catch (error) {
       console.error(`Error processing ${file.prefix}: ${error.message}`);
