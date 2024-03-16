@@ -2,6 +2,12 @@
 
 ### [Back to index](../../README.md)
 
+## DEPRECATION NOTICE
+
+This image is deprecated, because the upstream project isn't maintained anymore. We recommend to try our successor [!3 (not-th.re)](https://not-th.re/).
+
+[https://github.com/not-three/main](https://github.com/not-three/main)
+
 ## Why?
 
 Sometimes you need to share a snippet of code with someone,
