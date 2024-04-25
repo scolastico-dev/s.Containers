@@ -40,7 +40,15 @@ config.ics = (() => {
 // The little magic, microsoft is too lazy to implement...
 async function doIcsFix(url, tz) {
   const ics = await fetch(url).then(res => res.text())
-  return ics.replace(/^TZID:.*$/gm, `TZID:${tz}`)
+  return ics.replace(/^TZID:.*$/gm, `TZID:UTC`).split('\n').map(line => {
+    // Translate DTSTART and DTEND from the specified timezone to UTC
+    if (!line.startsWith('DTSTART') && !line.startsWith('DTEND')) return line
+    const date = line.split(':')[1]
+    const dt = new Date(date)
+    const dtUTC = new Date(dt.toLocaleString('en-US', { timeZone: tz }))
+    return `${line.split(':')[0]}:${dtUTC.toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '')}`
+    return line
+  }).join('\n')
 }
 
 app.get('*', (req, res) => {

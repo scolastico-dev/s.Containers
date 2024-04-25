@@ -30,9 +30,7 @@ Key problem here is, that they are exporting ICS files, which are not RFC compli
 
 ```yml
 # ...
-BEGIN:VTIMEZONE
 TZID:UTC                 # Server indicates its using UTC
-BEGIN:STANDARD
 # ...
 BEGIN:VEVENT
 # ...
@@ -87,7 +85,7 @@ services:
     environment:
       ICS_0_URL: "https://example.com/calendar1.ics"
       ICS_0_TZID: "Europe/Berlin"
-      ICS_0_PATH: "/your-new-filename-which-will-be-served.ics"
+      ICS_0_PATH: "your-new-filename-which-will-be-served.ics"
       ICS_1_URL: "https://example.com/calendar2.ics"
       ICS_1_TZID: "Europe/Berlin"
       # ...
