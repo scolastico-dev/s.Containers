@@ -30,13 +30,14 @@ Key problem here is, that they are exporting ICS files, which are not RFC compli
 
 ```yml
 # ...
-TZID:UTC                 # Server indicates its using UTC
+TZID:UTC                          # Server indicates its using UTC
+# ...
+TZID:Central Europe Standard Time # Suddenly it indicates the correct timezone
 # ...
 BEGIN:VEVENT
 # ...
-DTSTAMP:20240425T132325Z # Server using a local timezone
-# ...                      and not using the UTC-OFFSET value
-# ...                      as it should to indicate the timezone
+DTSTAMP:20240101T130000Z          # Server using UTC, tho it said it uses CEST
+# ...
 END:VEVENT
 # ...
 ```
@@ -58,18 +59,17 @@ To fix this, this tool will work like an ICS proxy, which will fix the timezone 
 |-----------------------------|---------|---------------|---------------------------------------------------------|
 | `ICS_ON_DEMAND`             | boolean | `false`       | Whether to enable the on demand mode.                   |
 | `ICS_{counter}_URL`         | string  | `null`        | The URL of the ICS file to serve.                       |
-| `ICS_{counter}_TZID`        | string  | `null`        | The timezone of the ICS file.                           |
 | `ICS_{counter}_PATH`        | string? | `null`        | The path to serve the ICS file.                         |
 
 ## On Demand Mode
 
-If `ICS_ON_DEMAND` is set to `true`, you can make a GET request to `/` with the query parameter `url` and `tzid`.
+If `ICS_ON_DEMAND` is set to `true`, you can make a GET request to `/` with the query parameter `url`.
 
 ```http
-/?url=https%3A%2F%2Fexample.com%2Fcalendar.ics&tzid=Europe%2FBerlin
+/?url=https%3A%2F%2Fexample.com%2Fcalendar.ics
 ```
 
-This will return the ICS file from `https://example.com/calendar.ics` with the timezone `Europe/Berlin`.
+This will return the ICS file from `https://example.com/calendar.ics`.
 
 **Don't forget to URL encode the query parameters.**
 
@@ -84,10 +84,8 @@ services:
       - "3000:3000"
     environment:
       ICS_0_URL: "https://example.com/calendar1.ics"
-      ICS_0_TZID: "Europe/Berlin"
       ICS_0_PATH: "your-new-filename-which-will-be-served.ics"
       ICS_1_URL: "https://example.com/calendar2.ics"
-      ICS_1_TZID: "Europe/Berlin"
       # ...
 ```
 

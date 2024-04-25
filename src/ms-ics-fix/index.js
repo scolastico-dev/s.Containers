@@ -13,7 +13,6 @@ let counter = 0
 while (process.env[`ICS_${counter}_URL`]) {
   config.ics.push({
     url: process.env[`ICS_${counter}_URL`],
-    tz: process.env[`ICS_${counter}_TZID`],
     path: process.env[`ICS_${counter}_PATH`],
   })
   counter++
@@ -24,7 +23,7 @@ config.ics = (() => {
   const n = []
   const s = new Set()
   for (const ics of config.ics) {
-    if (!ics.url || !ics.tz) continue // Skip invalid ICS
+    if (!ics.url) continue // Skip invalid ICS
     if (s.has(ics.path)) ics.path = null // Reset path if duplicated
     let c = -1
     if (!ics.path) do { // Generate path if not provided
@@ -38,17 +37,9 @@ config.ics = (() => {
 })();
 
 // The little magic, microsoft is too lazy to implement...
-async function doIcsFix(url, tz) {
+async function doIcsFix(url) {
   const ics = await fetch(url).then(res => res.text())
-  return ics.replace(/^TZID:.*$/gm, `TZID:UTC`).split('\n').map(line => {
-    // Translate DTSTART and DTEND from the specified timezone to UTC
-    if (!line.startsWith('DTSTART') && !line.startsWith('DTEND')) return line
-    const date = line.split(':')[1]
-    const dt = new Date(date)
-    const dtUTC = new Date(dt.toLocaleString('en-US', { timeZone: tz }))
-    return `${line.split(':')[0]}:${dtUTC.toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '')}`
-    return line
-  }).join('\n')
+  return ics.replace(/^TZID:.*$/gm, `TZID:UTC`)
 }
 
 app.get('*', (req, res) => {
