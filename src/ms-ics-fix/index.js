@@ -60,7 +60,7 @@ async function doIcsFix(url) {
     const events = []
     for (const key in obj) {
       const event = obj[key]
-      if (!event.uid || !event.start || !event.end) continue
+      if (!event.uid) continue
       const getTime = (t) => {
         try {
           const d = new Date(t)
@@ -95,7 +95,7 @@ async function doIcsFix(url) {
       }`,
       events.join('\n'),
       `END:VCALENDAR`
-    ].join('\n')
+    ].join('\n').replaceAll('\n', '\r\n')
   })
 }
 
