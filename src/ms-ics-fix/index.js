@@ -60,21 +60,26 @@ async function doIcsFix(url) {
     const events = []
     for (const key in obj) {
       const event = obj[key]
+      if (!event.uid || !event.start || !event.end) continue
       const getTime = (t) => {
         try {
           const d = new Date(t)
-          return d.toISOString()
+          return d
+            .toISOString()
+            .replace('-', '')
+            .replace(':', '')
+            .substring(0, 15) + 'Z'
         } catch (ignored) {}
-        return new Date(0).toISOString()
+        return '19700101T000000Z'
       }
       events.push([
         `BEGIN:VEVENT`,
         `UID:${event.uid}`,
         `DTSTART:${getTime(event.start)}`,
         `DTEND:${getTime(event.end)}`,
-        `STATUS:${event.status}`,
-        `LOCATION:${event.location}`,
-        `SUMMARY:${event.summary}`,
+        `STATUS:${event.status.replace('\n', ' ')}`,
+        `LOCATION:${event.location.replace('\n', ' ')}`,
+        `SUMMARY:${event.summary.replace('\n', ' ')}`,
         `END:VEVENT`
       ].join('\n'))
     }
