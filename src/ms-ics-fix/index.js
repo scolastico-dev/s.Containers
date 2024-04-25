@@ -65,10 +65,11 @@ async function doIcsFix(url) {
           const d = new Date(t)
           return d.toISOString()
         } catch (ignored) {}
-        return ''
+        return new Date(0).toISOString()
       }
       events.push([
         `BEGIN:VEVENT`,
+        `UID:${event.uid}`,
         `DTSTART:${getTime(event.start)}`,
         `DTEND:${getTime(event.end)}`,
         `STATUS:${event.status}`,
