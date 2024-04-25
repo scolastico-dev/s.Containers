@@ -77,6 +77,7 @@ async function doIcsFix(url) {
         `UID:${event.uid}`,
         `DTSTART:${getTime(event.start)}`,
         `DTEND:${getTime(event.end)}`,
+        `DTSTAMP:${getTime(event.start)}`,
         `STATUS:${(event.status || '').toString().replaceAll('\n', ' ')}`,
         `LOCATION:${(event.location || '').toString().replaceAll('\n', ' ')}`,
         `SUMMARY:${(event.summary || '').toString().replaceAll('\n', ' ')}`,
