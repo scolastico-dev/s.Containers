@@ -88,11 +88,11 @@ async function doIcsFix(url) {
       `BEGIN:VCALENDAR`,
       `VERSION:2.0`,
       `PRODID:-//hacksw/handcal//NONSGML v1.0//EN`,
-      `X-WR-CALNAME:${
+      `X-WR-CALNAME:${(
         (
           raw.split('\n').find(l => l.startsWith('X-WR-CALNAME:')
         ) || ':Missing Calendar Name!').split(':')[1]
-      }`,
+      ).replaceAll('\n', ' ')}`,
       events.join('\n'),
       `END:VCALENDAR`
     ].join('\n').replaceAll('\n', '\r\n')
