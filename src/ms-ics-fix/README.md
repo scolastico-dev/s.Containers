@@ -82,7 +82,8 @@ services:
 ```
 
 This will result in to paths being published:
-`GET` `/your-new-filename-which-will-be-served.ics` -> `https://example.com/calendar1.ics`
-`GET` `/0.ics` -> `https://example.com/calendar2.ics`
+
+- `GET` `/your-new-filename-which-will-be-served.ics` -> `https://example.com/calendar1.ics`
+- `GET` `/0.ics` -> `https://example.com/calendar2.ics`
 
 If no path is specified, the tool will try to use `{counter}.ics`, starting with `0` and incrementing by `1` for each new ICS file. If another file blocks the counter, the tool will skip the counter and try the next one.
