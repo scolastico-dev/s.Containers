@@ -64,11 +64,13 @@ async function doIcsFix(url) {
       const getTime = (x, t) => {
         try {
           const d = new Date(t)
-          return x + ':' + d
-            .toISOString()
-            .replaceAll('-', '')
-            .replaceAll(':', '')
-            .substring(0, 15) + 'Z'
+          return [
+              x + ':' + (d
+                .toISOString()
+                .replaceAll('-', '')
+                .replaceAll(':', '')
+                .substring(0, 15)) + 'Z'
+            ]
         } catch (ignored) {}
         return []
       }
