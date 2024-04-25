@@ -66,8 +66,8 @@ async function doIcsFix(url) {
           const d = new Date(t)
           return d
             .toISOString()
-            .replace('-', '')
-            .replace(':', '')
+            .replaceAll('-', '')
+            .replaceAll(':', '')
             .substring(0, 15) + 'Z'
         } catch (ignored) {}
         return '19700101T000000Z'
@@ -77,9 +77,9 @@ async function doIcsFix(url) {
         `UID:${event.uid}`,
         `DTSTART:${getTime(event.start)}`,
         `DTEND:${getTime(event.end)}`,
-        `STATUS:${(event.status || '').toString().replace('\n', ' ')}`,
-        `LOCATION:${(event.location || '').toString().replace('\n', ' ')}`,
-        `SUMMARY:${(event.summary || '').toString().replace('\n', ' ')}`,
+        `STATUS:${(event.status || '').toString().replaceAll('\n', ' ')}`,
+        `LOCATION:${(event.location || '').toString().replaceAll('\n', ' ')}`,
+        `SUMMARY:${(event.summary || '').toString().replaceAll('\n', ' ')}`,
         `END:VEVENT`
       ].join('\n'))
     }
