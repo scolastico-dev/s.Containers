@@ -4,42 +4,34 @@
 
 ## Why?
 
-The same company which owns vscode and github, also has a lot of other bullshit products.
-One of them is Microsoft 365/Outlook. They have a calendar export feature, which is
-broken for years now.
+In the vast sea of tools from the company that brought us VSCode and GitHub, there lurks Microsoft 365/Outlook—a product seemingly riddled with peculiarities. Among its quirks is the notoriously broken calendar export feature, an issue that has persisted for years, frustrating users and developers alike.
 
-> ### 4.2.19 Time Zone Identifier
->
-> // [...]<br><br>
-> **Description**: The parameter MUST be specified on the "DTSTART",
-> "DTEND", "DUE", "EXDATE" and "RDATE" properties when either a DATE-
-> TIME or TIME value type is specified and when the value is not either
-> a UTC or a "floating" time. Refer to the DATE-TIME or TIME value type
-> definition for a description of UTC and "floating time" formats. This
-> property parameter specifies a text value which uniquely identifies
-> the "VTIMEZONE" calendar component to be used when evaluating the
-> time portion of the property. The value of the TZID property
-> parameter will be equal to the value of the TZID property for the
-> matching time zone definition. An individual "VTIMEZONE" calendar
-> component MUST be specified for each unique "TZID" parameter value
-> specified in the iCalendar object.<br><br>
-> // [...]<br>
-> [RFC 2445](https://www.ietf.org/rfc/rfc2445.txt)
+### Understanding the Problem
 
-Key problem here is, that they are exporting ICS files, which are not RFC compliant.
+Microsoft Outlook exports calendar events in ICS format, which, quite ironically, often fail to adhere to the very standards intended to ensure compatibility and functionality across calendar applications. Specifically, the exports often mishandle timezones in a way that violates [RFC 5545](https://www.ietf.org/rfc/rfc5545
 
 ```yml
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Microsoft Corporation//Outlook 16.0 MIMEDIR//EN
+METHOD:PUBLISH
+# Definition of multiple VTIMEZONE components in one file can lead to conflicts
+BEGIN:VTIMEZONE
+TZID:Romance Standard Time              # Non-standard and ambiguous TZID
 # ...
-TZID:UTC                          # Server indicates its using UTC
+END:VTIMEZONE
+# Another timezone definition which can confuse interpretation
+BEGIN:VTIMEZONE
+TZID:UTC
 # ...
-TZID:Central Europe Standard Time # Suddenly it indicates the correct timezone
-# ...
+END:VTIMEZONE
 BEGIN:VEVENT
-# ...
-DTSTAMP:20240101T130000Z          # Server using UTC, tho it said it uses CEST
+# Event uses a different timezone, not properly linked to any defined VTIMEZONE
+DTSTART;TZID=Romance Standard Time:20240425T113000  # Uses TZID without proper global reference,
+DTEND;TZID=Romance Standard Time:20240425T120000    # likely to fail in non-Microsoft apps
 # ...
 END:VEVENT
-# ...
+END:VCALENDAR
 ```
 
 And this is not a one time issue, see:
@@ -71,7 +63,7 @@ If `ICS_ON_DEMAND` is set to `true`, you can make a GET request to `/` with the 
 
 This will return the ICS file from `https://example.com/calendar.ics`.
 
-**Don't forget to URL encode the query parameters.**
+**Don't forget to URL encode the query parameter.**
 
 ## Example
 

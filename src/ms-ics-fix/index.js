@@ -1,4 +1,5 @@
 const express = require('express')
+const ical = require('node-ical');
 const app = express()
 const port = 3000
 
@@ -36,10 +37,59 @@ config.ics = (() => {
   return n
 })();
 
+
+// Cache function
+const _cache = {}
+async function cache(url, fun) {
+  if (_cache[url]) {
+    const { time, data } = _cache[url]
+    if (Date.now() - time < 60000) return data
+  }
+  _cache[url] = {
+    time: Date.now(),
+    data: await fun()
+  }
+  return _cache[url].data
+}
+
 // The little magic, microsoft is too lazy to implement...
 async function doIcsFix(url) {
-  const ics = await fetch(url).then(res => res.text())
-  return ics.replace(/^TZID:.*$/gm, `TZID:UTC`)
+  return await cache(url, async () => {
+    const raw = await fetch(url).then(res => res.text())
+    const obj = await ical.async.parseICS(raw)
+    const events = []
+    for (const key in obj) {
+      const event = obj[key]
+      const getTime = (t) => {
+        try {
+          const d = new Date(t)
+          return d.toISOString()
+        } catch (ignored) {}
+        return ''
+      }
+      events.push([
+        `BEGIN:VEVENT`,
+        `DTSTART:${getTime(event.start)}`,
+        `DTEND:${getTime(event.end)}`,
+        `STATUS:${event.status}`,
+        `LOCATION:${event.location}`,
+        `SUMMARY:${event.summary}`,
+        `END:VEVENT`
+      ].join('\n'))
+    }
+    return [
+      `BEGIN:VCALENDAR`,
+      `VERSION:2.0`,
+      `PRODID:-//hacksw/handcal//NONSGML v1.0//EN`,
+      `X-WR-CALNAME:${
+        (
+          raw.split('\n').find(l => l.startsWith('X-WR-CALNAME:')
+        ) || ':Missing Calendar Name!').split(':')[1]
+      }`,
+      events.join('\n'),
+      `END:VCALENDAR`
+    ].join('\n')
+  })
 }
 
 app.get('*', (req, res) => {
@@ -52,12 +102,12 @@ app.get('*', (req, res) => {
   }
 
   if (config.onDemand && path === '') {
-    const { url, tz } = req.query
-    if (!url || !tz) {
+    const { url } = req.query
+    if (!url) {
       res.status(400).send('Bad Request')
       return
     }
-    doIcsFix(url, tz).then(sendICS)
+    doIcsFix(url).then(sendICS)
     return
   }
 
@@ -67,7 +117,7 @@ app.get('*', (req, res) => {
     return
   }
 
-  doIcsFix(ics.url, ics.tz).then(sendICS)
+  doIcsFix(ics.url).then(sendICS)
 })
 
 app.listen(port, () => {
