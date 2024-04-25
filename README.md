@@ -79,3 +79,7 @@ Automatically import invoices from your email account into lexoffice.
 ### [`s.containers/matrix-webhook`](./src/matrix-webhook/README.md)
 
 Send messages to matrix channels via a simple http webhook.
+
+### [`s.containers/ms-ics-fix`](./src/ms-ics-fix/README.md)
+
+Fix wrong timezone data in ICS exports from Microsoft 365 / Outlook.
