@@ -8,7 +8,7 @@ In the vast sea of tools from the company that brought us VSCode and GitHub, the
 
 ### Understanding the Problem
 
-Microsoft Outlook exports calendar events in ICS format, which, quite ironically, often fail to adhere to the very standards intended to ensure compatibility and functionality across calendar applications. Specifically, the exports often mishandle timezones in a way that violates [RFC 5545](https://www.ietf.org/rfc/rfc5545
+Microsoft Outlook exports calendar events in ICS format, which, quite ironically, often fail to adhere to the very standards intended to ensure compatibility and functionality across calendar applications. Specifically, the exports often mishandle timezones in a way that violates [RFC 5545](https://www.ietf.org/rfc/rfc5545)
 
 ```yml
 BEGIN:VCALENDAR
