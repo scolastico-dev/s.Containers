@@ -23,6 +23,7 @@ The container does intentionally not support cleaning up old backups, as this sh
 | `CFG_{counter}_WEBHOOK_FAILURE` | string | `null`        | no       | The webhook to ping after the backup failed.                              |
 | `CFG_{counter}_CONTAINER`       | string | `null`        | no       | The container names to stop before the backup and start after the backup. |
 | `CFG_{counter}_PREFIX`          | string | `null`        | no       | The prefix for the backup file.                                           |
+| `CFG_{counter}_ENCRYPTION_KEY`  | string | `null`        | no       | The RSA public key to encrypt the backup file.                            |
 
 ## Example
 
@@ -45,4 +46,9 @@ services:
       CFG_0_WEBHOOK_SUCCESS: "https://uptime.example.com/your-token"
       CFG_0_CONTAINER: "your-container-name1,your-container-name2"
       CFG_0_PREFIX: "my-backup-dir/"
+      CFG_0_ENCRYPTION_KEY: |
+        -----BEGIN RSA PUBLIC KEY-----
+        MEgCQQCo9+BpMRYQ/dL3DS2CyJxRF+j6ctbT3/Qp84+KeFhnii7NT7fELilKUSnx
+        ...
+        -----END RSA PUBLIC KEY-----
 ```

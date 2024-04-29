@@ -1,6 +1,6 @@
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const { spawnSync } = require('child_process');
-const { createReadStream, unlinkSync, existsSync } = require('fs');
+const { createReadStream, unlinkSync, existsSync, writeFileSync, renameSync } = require('fs');
 const cron = require('node-cron');
 
 const cfg = [];
@@ -19,6 +19,7 @@ while (process.env[`CFG_${counter}_FROM`]) {
         webhookFail: process.env[`CFG_${counter}_WEBHOOK_FAILURE`],
         container: process.env[`CFG_${counter}_CONTAINER`],
         prefix: process.env[`CFG_${counter}_PREFIX`],
+        encryptionKey: process.env[`CFG_${counter}_ENCRYPTION_KEY`],
     });
     counter++;
 }
@@ -62,6 +63,26 @@ for (const c of cfg) cron.schedule(c.cron, async () => {
         ], { stdio: 'inherit' });
     
         if (status !== 0) throw new Error('Tar failed');
+
+        if (c.encryptionKey) {
+            writeFileSync(tmp + '.key', c.encryptionKey);
+            // encrypt the file using the public key
+            const res = spawnSync('openssl', [
+                'rsautl',
+                '-encrypt',
+                '-pubin',
+                '-inkey', tmp + '.key',
+                '-in', tmp,
+                '-out', tmp + '.enc',
+            ])
+            unlinkSync(tmp + '.key');
+            if (res.status !== 0) {
+                if (existsSync(tmp + '.enc')) unlinkSync(tmp + '.enc');
+                throw new Error('Encryption failed');
+            }
+            unlinkSync(tmp);
+            renameSync(tmp + '.enc', tmp);
+        }
 
         const client = new S3Client({
             region: c.region,
