@@ -83,3 +83,7 @@ Send messages to matrix channels via a simple http webhook.
 ### [`s.containers/ms-ics-fix`](./src/ms-ics-fix/README.md)
 
 Fix wrong timezone data in ICS exports from Microsoft 365 / Outlook.
+
+### [`s.containers/s3-backup`](./src/s3-backup/README.md)
+
+A easy to use backup container, which can backup folders, or docker volumes to s3 compatible storage.
