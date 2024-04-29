@@ -6,7 +6,8 @@ const port = 3000
 // Base config object
 const config = {
   onDemand: process.env.ICS_ON_DEMAND === 'true',
-  ics: []
+  ics: [],
+  replace: [],
 }
 
 // Parse ICS configurations from environment variables
@@ -15,6 +16,15 @@ while (process.env[`ICS_${counter}_URL`]) {
   config.ics.push({
     url: process.env[`ICS_${counter}_URL`],
     path: process.env[`ICS_${counter}_PATH`],
+  })
+  counter++
+}
+
+counter = 0
+while (process.env[`REPLACE_${counter}_FROM`]) {
+  config.replace.push({
+    from: process.env[`REPLACE_${counter}_FROM`],
+    to: process.env[`REPLACE_${counter}_TO`],
   })
   counter++
 }
@@ -55,12 +65,23 @@ async function cache(url, fun) {
 // The little magic, microsoft is too lazy to implement...
 async function doIcsFix(url) {
   return await cache(url, async () => {
-    const raw = await fetch(url).then(res => res.text())
+    const raw = await (async () => {
+      let t = await fetch(url).then(res => res.text())
+      for (const r of config.replace) {
+        t = t.replaceAll(r.from, r.to)
+      }
+      return t
+    })()
     const obj = await ical.async.parseICS(raw)
     const events = []
     for (const key in obj) {
       const event = obj[key]
-      if (!event.uid) continue
+      if (event.type !== 'VEVENT') continue
+      if (!event.uid) {
+        console.warn('Event without UID:', event)
+        continue
+      }
+      console.log(event.summary)
       const getTime = (x, t) => {
         try {
           const d = new Date(t)
@@ -74,15 +95,26 @@ async function doIcsFix(url) {
         } catch (ignored) {}
         return []
       }
+      const getString = (x, t) => {
+        if (!t || t === '') return []
+        return [`${x}:${t.toString().replaceAll('\r\n', ' ').replaceAll('\n', ' ')}`]
+      }
       events.push([
         `BEGIN:VEVENT`,
         `UID:${event.uid}`,
         ...getTime('DTSTART', event.start),
         ...getTime('DTEND', event.end),
         ...getTime('DTSTAMP', event.start),
-        `STATUS:${(event.status || '').toString().replaceAll('\n', ' ')}`,
-        `LOCATION:${(event.location || '').toString().replaceAll('\n', ' ')}`,
-        `SUMMARY:${(event.summary || '').toString().replaceAll('\n', ' ')}`,
+        ...getString('STATUS', event.status),
+        ...getString('SUMMARY', event.summary),
+        ...getString('LOCATION', event.location),
+        ...getString('DESCRIPTION', event.description),
+        ...getString('URL', event.url),
+        ...getString('PRIORITY', event.priority),
+        ...getString('CLASS', event.class),
+        ...getString('SEQUENCE', event.sequence),
+        ...getString('TRANSP', event.transparency),
+        ...getString('RRULE', event.rrule),
         `END:VEVENT`
       ].join('\n'))
     }
@@ -94,10 +126,16 @@ async function doIcsFix(url) {
         (
           raw.split('\n').find(l => l.startsWith('X-WR-CALNAME:')
         ) || ':Missing Calendar Name!').split(':')[1]
-      ).replaceAll('\n', ' ')}`,
-      events.join('\n'),
+      ).replaceAll('\r\n', ' ').replaceAll('\n', ' ')}`,
+      ...events.filter(e => e),
       `END:VCALENDAR`
-    ].join('\n').replaceAll('\n', '\r\n')
+    ]
+      .join('\n')
+      .split('\n')
+      .map(x => x.length > 75 ? x.match(/.{1,75}/g).join('\n ') : x)
+      .join('\n')
+      .replaceAll('\r\n', '\n')
+      .replaceAll('\n', '\r\n')
   })
 }
 
@@ -106,7 +144,13 @@ app.get('*', (req, res) => {
   const path = req.path.substring(1)
 
   const sendICS = (string) => {
-    res.set('Content-Type', 'text/calendar')
+    // if req params contains as-text, send as text
+    if (req.query['as-text']) {
+      res.set('Content-Type', 'text/plain')
+    } else {
+      res.set('Content-Disposition', 'attachment; filename="calendar.ics"')
+      res.set('Content-Type', 'text/calendar')
+    }
     res.send(string)
   }
 

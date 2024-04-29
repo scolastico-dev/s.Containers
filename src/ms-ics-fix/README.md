@@ -15,20 +15,17 @@ BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Microsoft Corporation//Outlook 16.0 MIMEDIR//EN
 METHOD:PUBLISH
-# Definition of multiple VTIMEZONE components in one file can lead to conflicts
 BEGIN:VTIMEZONE
-TZID:Romance Standard Time              # Non-standard and ambiguous TZID
-# ...
+TZID:Romance Standard Time
 END:VTIMEZONE
-# Another timezone definition which can confuse interpretation
 BEGIN:VTIMEZONE
 TZID:UTC
 # ...
 END:VTIMEZONE
 BEGIN:VEVENT
 # Event uses a different timezone, not properly linked to any defined VTIMEZONE
-DTSTART;TZID=Romance Standard Time:20240425T113000  # Uses TZID without proper global reference,
-DTEND;TZID=Romance Standard Time:20240425T120000    # likely to fail in non-Microsoft apps
+DTSTART;TZID=Central Europe Standard Time:20240425T113000 # Uses TZID without proper global reference,
+DTEND;TZID=Central Europe Standard Time:20240425T120000   # likely to fail in non-Microsoft apps
 # ...
 END:VEVENT
 END:VCALENDAR
@@ -43,7 +40,7 @@ And this is not a one time issue, see:
 - [answers.microsoft.com/[...]/published-calendar-events-show-incorrect-time-when](https://answers.microsoft.com/en-us/outlook_com/forum/all/published-calendar-events-show-incorrect-time-when/c8e60444-1d02-45e1-a356-486f5a9370fc)
 - [answers.microsoft.com/[...]/incorrect-timezone-when-subscribed-to-calendar](https://answers.microsoft.com/en-us/outlook_com/forum/all/incorrect-timezone-when-subscribed-to-calendar/c20444c1-df78-471d-9524-702f448c7c63)
 
-To fix this, this tool will work like an ICS proxy, which will fix the timezone issue.
+To fix this, this tool will work like an ICS proxy, which will re- parse the ICS file.
 
 ## Environment Variables
 
@@ -52,6 +49,8 @@ To fix this, this tool will work like an ICS proxy, which will fix the timezone 
 | `ICS_ON_DEMAND`             | boolean | `false`       | Whether to enable the on demand mode.                   |
 | `ICS_{counter}_URL`         | string  | `null`        | The URL of the ICS file to serve.                       |
 | `ICS_{counter}_PATH`        | string? | `null`        | The path to serve the ICS file.                         |
+| `REPLACE_{counter}_FROM`    | string  | `null`        | The string to replace in the ICS file.                  |
+| `REPLACE_{counter}_TO`      | string  | `null`        | The string to replace the string from with.             |
 
 ## On Demand Mode
 
@@ -78,6 +77,9 @@ services:
       ICS_0_URL: "https://example.com/calendar1.ics"
       ICS_0_PATH: "your-new-filename-which-will-be-served.ics"
       ICS_1_URL: "https://example.com/calendar2.ics"
+      # ...
+      REPLACE_0_FROM: "Romance Standard Time"
+      REPLACE_0_TO: "Europe/Paris"
       # ...
 ```
 

@@ -1,6 +1,12 @@
 {
+	"scripts": {
+		"dev": "ICS_ON_DEMAND=true nodemon node index.js"
+	},
 	"dependencies": {
 		"express": "^4.19.2",
 		"node-ical": "^0.18.0"
+	},
+	"devDependencies": {
+		"nodemon": "^3.1.0"
 	}
 }
