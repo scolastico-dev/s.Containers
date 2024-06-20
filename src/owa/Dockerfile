@@ -1,4 +1,4 @@
-FROM php:8.2-apache
+FROM php:7.4-apache
 MAINTAINER Joschua Becker EDV <support@scolasti.co>
 
 RUN apt-get update && \
