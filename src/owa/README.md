@@ -12,10 +12,14 @@ analytics solution that provides detailed statistics about website visitors.
 
 ```yml
 version: "3"
+
+x-restart: &restart
+    restart: unless-stopped
+
 services:
   app:
     image: ghcr.io/scolastico-dev/s.containers/owa:latest
-    restart: unless-stopped
+    <<: *restart
     depends_on:
       - db
       - cfg
@@ -25,7 +29,7 @@ services:
       - 8080:80
   db:
     image: mariadb:latest
-    restart: unless-stopped
+    <<: *restart
     volumes:
       - db:/var/lib/mysql
     environment:
@@ -39,7 +43,7 @@ services:
     volumes:
       - cfg:/tmp/cfg
     environment:
-      ORDER: delete,config
+      ORDER: DELETE
       FILE_DELETE_PATH: /tmp/cfg/owa-config.php
       FILE_DELETE_MODE: delete
       FILE_CONFIG_PATH: /tmp/cfg/owa-config.php
