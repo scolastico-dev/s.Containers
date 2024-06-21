@@ -31,6 +31,10 @@ RUN sed -i 's/ErrorLog .*/ErrorLog \/proc\/self\/fd\/2/' /etc/apache2/apache2.co
       echo 'display_errors = Off'; \
     } > /usr/local/etc/php/conf.d/docker-php-errors.ini
 
+COPY mail.php /mail.php
+RUN sed -i '/function applyConfigConstants() {/r /mail.php' /var/www/html/modules/base/classes/settings.php
+RUN rm /mail.php
+
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 

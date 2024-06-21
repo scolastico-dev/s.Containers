@@ -60,10 +60,14 @@ services:
         define('OWA_AUTH_KEY', 'yourauthkeygoeshere');
         define('OWA_AUTH_SALT', 'yourauthsaltgoeshere');
         define('OWA_PUBLIC_URL', 'http://domain/path/to/owa/');
-        //define('OWA_ERROR_HANDLER', 'development');
-        //define('OWA_LOG_PHP_ERRORS', true);
-        //define('OWA_CACHE_OBJECTS', true);
-        //define('OWA_CONFIGURATION_ID', '1');
+        define('OWA_MAILER_HOST', 'ssl://your_smtp_host');
+        define('OWA_MAILER_PORT', 465);
+        define('OWA_MAILER_USE_SMTP', true);
+        define('OWA_MAILER_SMTP_AUTH', true);
+        define('OWA_MAILER_USERNAME', 'your_smtp_username');
+        define('OWA_MAILER_PASSWORD', 'your_smtp_password');
+        define('OWA_MAILER_FROM_ADDRESS', 'owa@yourdomain.com');
+        define('OWA_MAILER_FROM_NAME', 'OWA Server');
         ?>
 
 volumes:
