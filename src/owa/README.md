@@ -60,7 +60,7 @@ services:
         define('OWA_AUTH_KEY', 'yourauthkeygoeshere');
         define('OWA_AUTH_SALT', 'yourauthsaltgoeshere');
         define('OWA_PUBLIC_URL', 'http://domain/path/to/owa/');
-        define('OWA_MAILER_HOST', 'ssl://your_smtp_host');
+        define('OWA_MAILER_HOST', 'your_smtp_host');
         define('OWA_MAILER_PORT', 465);
         define('OWA_MAILER_USE_SMTP', true);
         define('OWA_MAILER_SMTP_AUTH', true);
@@ -68,6 +68,13 @@ services:
         define('OWA_MAILER_PASSWORD', 'your_smtp_password');
         define('OWA_MAILER_FROM_ADDRESS', 'owa@yourdomain.com');
         define('OWA_MAILER_FROM_NAME', 'OWA Server');
+        define('OWA_MAILER_OPTIONS', array(
+            'ssl' => [
+                'verify_peer' => true,
+                'verify_depth' => 3,
+                'allow_self_signed' => false,
+            ],
+        ));
         ?>
 
 volumes:
