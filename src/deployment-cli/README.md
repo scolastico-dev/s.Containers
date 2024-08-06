@@ -62,7 +62,7 @@ deploy:
       cd /app &&
       SECRET=$DEPLOY_KEY
       ITERATIONS=100
-      SERVER_URL=https://deploy-almazoo.scolasti.co
+      SERVER_URL=https://deploy.example.com
       SERVER_NAME=vue
       UPLOAD_DIR=$CI_PROJECT_DIR/dist
       node /app/index.js
