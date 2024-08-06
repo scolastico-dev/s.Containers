@@ -12,4 +12,4 @@ RUN npm install -g pnpm && \
 
 ENV NODE_ENV=production
 ENV UPLOAD_DIR=/from
-CMD ["node", "index.js"]
+CMD ["node", "index.mjs"]
