@@ -87,3 +87,7 @@ Fix wrong timezone data in ICS exports from Microsoft 365 / Outlook.
 ### [`s.containers/s3-backup`](./src/s3-backup/README.md)
 
 A easy to use backup container, which can backup folders, or docker volumes to s3 compatible storage.
+
+### [`s.containers/form-api`](./src/form-api/README.md)
+
+Form API is a simple form to email service. It is a simple way to send form data to an email address.

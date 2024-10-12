@@ -142,13 +142,10 @@ export class SubmitController {
           'Captcha response has expired, or already been used. Please try again.',
           HttpStatus.GONE,
         );
-      const strength = Number(process.env[`CFG_${id}_CAPTCHA_STRENGTH`]) || 0;
-      if (strength < 1 || strength > 5) {
-        if (!body.captcha.hash || !body.captcha.timestamp)
-          throw new HttpException(
-            'Malformed or missing captcha response',
-            HttpStatus.UNAUTHORIZED,
-          );
+      const generate =
+        (process.env[`CFG_${id}_CAPTCHA_GENERATE`] || 'false').toLowerCase() ===
+        'true';
+      if (generate) {
         const c = body.captcha as CaptchaResponse;
         if (
           !this.genService.verifyCaptcha(
