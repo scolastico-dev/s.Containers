@@ -138,20 +138,12 @@ async function downloadFile(fileUrl) {
         const tmpFilePath = CFG_OUTPUT + '.tmp';
         console.log('Downloading file to', tmpFilePath);
 
-        const writer = fs.createWriteStream(tmpFilePath);
+        const result = spawnSync('curl', ['-L', '-o', tmpFilePath, fileUrl, '--progress-bar'], { stdio: 'inherit' });
 
-        const response = await axios({
-            method: 'get',
-            url: fileUrl,
-            responseType: 'stream',
-        });
-
-        response.data.pipe(writer);
-
-        await new Promise((resolve, reject) => {
-            writer.on('finish', resolve);
-            writer.on('error', reject);
-        });
+        if (result.error) {
+            console.error('Error downloading file:', result.error);
+            throw result.error;
+        }
 
         // Move the file to the output location
         await fsPromises.rename(tmpFilePath, CFG_OUTPUT);

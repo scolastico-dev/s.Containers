@@ -32,7 +32,7 @@ x-restart: &restart
 
 services:
   serve:
-    image: ghcr.io/kiwix/kiwix-serve
+    image: ghcr.io/kiwix/kiwix-serve:latest
     <<: *restart
     container_name: kiwix-serve
     command: wiki.zim
@@ -42,14 +42,14 @@ services:
       - '8080:80'
 
   sync:
-    image: ghcr.io/scolastico-dev/s.containers/s3-backup:latest
+    image: ghcr.io/scolastico-dev/s.containers/kiwix-sync:latest
     <<: *restart
     volumes:
       - data:/out
       - /var/run/docker.sock:/var/run/docker.sock # Required for container restart
     environment:
       CFG_URL: "https://download.kiwix.org/zim/wikipedia/"
-      CFG_FILE: "wikipedia_en_all_maxi_[0-9]{4}-[0-9]{2}\.zim" # ~ 100 GB
+      CFG_FILE: "wikipedia_en_all_maxi_[0-9]{4}-[0-9]{2}\\.zim" # ~ 100 GB
       CFG_CONTAINER: "kiwix-serve"
       CFG_TIME_FILE: "/out/.last_download"
 

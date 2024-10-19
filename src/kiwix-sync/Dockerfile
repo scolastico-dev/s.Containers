@@ -1,7 +1,7 @@
 FROM node:20-alpine
 LABEL maintainer="Joschua Becker EDV <support@scolasti.co>"
 
-RUN apk add --no-cache docker-cli
+RUN apk add --no-cache docker-cli curl
 
 WORKDIR  /app
 RUN npm install -g pnpm
