@@ -70,7 +70,8 @@ for forwarding local pages to a publicly accessible server.
 
 ### [`s.containers/http-single-file`](./src/http-single-file/README.md)
 
-A simple container to serve a single file via http. This can be useful if you want to serve a single file or modify a single file, for example a css file.
+A simple container to serve a single file via http. This can be useful if you want to
+serve a single file or modify a single file, for example a css file.
 
 ### [`s.containers/email-lexoffice-import`](./src/email-lexoffice-import/README.md)
 
@@ -86,8 +87,15 @@ Fix wrong timezone data in ICS exports from Microsoft 365 / Outlook.
 
 ### [`s.containers/s3-backup`](./src/s3-backup/README.md)
 
-A easy to use backup container, which can backup folders, or docker volumes to s3 compatible storage.
+A easy to use backup container, which can backup folders, or docker
+volumes to s3 compatible storage.
 
 ### [`s.containers/form-api`](./src/form-api/README.md)
 
-Form API is a simple form to email service. It is a simple way to send form data to an email address.
+Form API is a simple form to email service. It is a simple way to send
+form data to an email address.
+
+### [`s.containers/kiwix-sync`](./src/kiwix-sync/README.md)
+
+This container is a simple script which periodically downloads the latest
+version of a file found at a given file server, with enabled index listing.
