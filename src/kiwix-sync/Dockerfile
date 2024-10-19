@@ -17,3 +17,4 @@ ENV CFG_ORDER=desc
 ENV CFG_EXPIRES=8760
 ENV CFG_OUTPUT=/out/wiki.zim
 CMD ["node", "index.js"]
+STOPSIGNAL SIGKILL

@@ -1,0 +1,46 @@
+version: "3"
+
+x-restart: &restart
+  restart: unless-stopped
+
+services:
+  serve:
+    image: ghcr.io/kiwix/kiwix-serve:latest
+    <<: *restart
+    container_name: kiwix-serve
+    command: wiki-en.zim wiki-de.zim
+    volumes:
+      - data:/data
+    ports:
+      - '8080:8080'
+
+  sync-en:
+    image: ghcr.io/scolastico-dev/s.containers/kiwix-sync:latest
+    <<: *restart
+    volumes:
+      - data:/out
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      CFG_URL: "https://download.kiwix.org/zim/wikipedia/"
+      CFG_FILE: "wikipedia_en_all_maxi_[0-9]{4}-[0-9]{2}\\.zim"
+      CFG_OUTPUT: "/out/wiki-en.zim"
+      CFG_CONTAINER: "kiwix-serve"
+      CFG_TIME_FILE: "/out/.last_download_en"
+      CFG_NAME_FILE: "/out/.last_name_en"
+
+  sync-de:
+    image: ghcr.io/scolastico-dev/s.containers/kiwix-sync:latest
+    <<: *restart
+    volumes:
+      - data:/out
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      CFG_URL: "https://download.kiwix.org/zim/wikipedia/"
+      CFG_FILE: "wikipedia_de_all_maxi_[0-9]{4}-[0-9]{2}\\.zim"
+      CFG_OUTPUT: "/out/wiki-de.zim"
+      CFG_CONTAINER: "kiwix-serve"
+      CFG_TIME_FILE: "/out/.last_download_de"
+      CFG_NAME_FILE: "/out/.last_name_de"
+
+volumes:
+  data:
