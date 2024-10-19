@@ -12,6 +12,7 @@ const CFG_ORDER = process.env.CFG_ORDER || 'desc';
 const CFG_EXPIRES = parseInt(process.env.CFG_EXPIRES, 10) || (12 * 30 * 24);
 const CFG_OUTPUT = process.env.CFG_OUTPUT || '/out/wiki.zim';
 const CFG_TIME_FILE = process.env.CFG_TIME_FILE;
+const CFG_NAME_FILE = process.env.CFG_NAME_FILE;
 const CFG_CONTAINER = process.env.CFG_CONTAINER;
 
 if (!CFG_URL || !CFG_FILE) {
@@ -135,6 +136,17 @@ async function selectFileToDownload() {
 // Download the selected file
 async function downloadFile(fileUrl) {
     try {
+      if (CFG_NAME_FILE) {
+        const nameFileExists = await fileExists(CFG_NAME_FILE);
+        if (nameFileExists) {
+          const nameContent = await fsPromises.readFile(CFG_NAME_FILE, 'utf8');
+          if (nameContent === fileUrl) {
+            console.log('File already downloaded.');
+            return;
+          }
+        }
+      }
+
         const tmpFilePath = CFG_OUTPUT + '.tmp';
         console.log('Downloading file to', tmpFilePath);
 
@@ -148,6 +160,11 @@ async function downloadFile(fileUrl) {
         // Move the file to the output location
         await fsPromises.rename(tmpFilePath, CFG_OUTPUT);
         console.log('File downloaded and moved to output location.');
+
+        if (CFG_NAME_FILE) {
+          await fsPromises.writeFile(CFG_NAME_FILE, fileUrl, 'utf8');
+          console.log('Name file updated.');
+        }
     } catch (error) {
         console.error('Error in downloadFile:', error);
         throw error;

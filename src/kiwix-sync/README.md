@@ -20,7 +20,10 @@ file as long as it uses the apache index listing.
 | `CFG_EXPIRES`                   | number | `8760`          | no       | Time in hours after which the file needs to be re-downloaded.                   |
 | `CFG_OUTPUT`                    | string | `/out/wiki.zim` | no       | The output file path where the downloaded file will be saved.                   |
 | `CFG_TIME_FILE`                 | string | `null`          | no       | Path to a file that stores the last download timestamp. Used for expiry checks. |
+| `CFG_NAME_FILE`                 | string | `null`          | no       | Path to a file that stores the name of the downloaded file.                     |
 | `CFG_CONTAINER`                 | string | `null`          | no       | The Docker container name to restart after downloading the file.                |
+
+The `CFG_NAME_FILE` is useful to prevent downloading the same file multiple times.
 
 ## Example
 
@@ -39,7 +42,7 @@ services:
     volumes:
       - data:/data
     ports:
-      - '8080:80'
+      - '8080:8080'
 
   sync:
     image: ghcr.io/scolastico-dev/s.containers/kiwix-sync:latest
@@ -52,6 +55,7 @@ services:
       CFG_FILE: "wikipedia_en_all_maxi_[0-9]{4}-[0-9]{2}\\.zim" # ~ 100 GB
       CFG_CONTAINER: "kiwix-serve"
       CFG_TIME_FILE: "/out/.last_download"
+      CFG_NAME_FILE: "/out/.last_name"
 
 volumes:
   data:
