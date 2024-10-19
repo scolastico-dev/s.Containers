@@ -60,3 +60,5 @@ services:
 volumes:
   data:
 ```
+
+See the [docker-compose.de-en.yml](./docker-compose.de-en.yml) for an example with multiple files and languages.
