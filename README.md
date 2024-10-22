@@ -99,3 +99,8 @@ form data to an email address.
 
 This container is a simple script which periodically downloads the latest
 version of a file found at a given file server, with enabled index listing.
+
+### [`s.containers/dyn-redirect`](./src/dyn-redirect/README.md)
+
+A simple API which does HTTP 301 or 302 redirects based on settings provided
+either by environment variables or a post request from external sources.

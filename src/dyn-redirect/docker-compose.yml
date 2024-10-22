@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: 'no'
+    volumes:
+      - ./data:/data
+    ports:
+      - '3000:3000'
+    environment:
+      CFG_0_PATH: ""
+      CFG_0_URL: "https://example.com"
+      CFG_0_SECRET: "secret"
+
+      CFG_1_PATH: "test"
+      CFG_1_URL: "https://example.com"
+
+      CFG_2_PATH: "go\\/.*"
+      CFG_2_URL: "https://example.com"
+      CFG_2_STATUS: 301
