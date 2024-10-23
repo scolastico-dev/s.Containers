@@ -127,6 +127,9 @@ async function main() {
         // File doesn't exist or error reading it; use env URL
       }
 
+      // If content-type is JSON, return JSON response instead of redirect
+      if (req.headers.accept === 'application/json') return res.json({ redirectUrl });
+
       return res.redirect(status, redirectUrl);
     });
 
