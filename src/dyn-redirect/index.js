@@ -185,6 +185,11 @@ async function main() {
   });
 }
 
+console.log([
+  'This container has a android app to control it!',
+  'Get it from: https://play.google.com/store/apps/details?id=me.scolastico.dyn.redirect'
+].join('\n'));
+
 // Execute the main function
 main().catch(err => {
   console.error('Failed to start the server:', err);

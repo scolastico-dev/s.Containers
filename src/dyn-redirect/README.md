@@ -7,6 +7,16 @@
 A simple API which does HTTP 301 or 302 redirects based on settings provided
 either by environment variables or a post request from external sources.
 
+## App
+
+This container has a matching android app which can be found [here](https://play.google.com/store/apps/details?id=me.scolastico.dyn.redirect).
+
+[![Get it on Google Play](../../.github/google-play.png)](https://play.google.com/store/apps/details?id=me.scolastico.dyn.redirect)
+
+The app is open source and can either be downloaded for free from
+[GitHub](https://github.com/scolastico-dev/dyn-redirect-app) or with automatic updates,
+and a little support for the developer from google play for a small fee of 0,50€.
+
 ## Environment Variables
 
 | Name                            | Type   | Default Value   | Required | Description                                                                     |
