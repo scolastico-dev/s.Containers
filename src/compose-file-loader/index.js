@@ -38,6 +38,8 @@ function processEnv() {
       regex: process.env[`${prefix}_REGEX`] || null,
       failOnError: process.env[`${prefix}_FAIL_ON_ERROR`] === 'true',
       fixDirPerms: process.env[`${prefix}_FIX_DIR_PERMS`] || 'false',
+      sleepBefore: parseInt(process.env[`${prefix}_SLEEP_BEFORE`] || '0'),
+      sleepAfter: parseInt(process.env[`${prefix}_SLEEP_AFTER`] || '0'),
     });
   }
   const sort = (process.env.ORDER || process.env.SORT || '')
@@ -57,7 +59,14 @@ function processEnv() {
   return ret;
 }
 
-function processFiles() {
+async function sleep(ms, reason) {
+  if (!ms) return;
+  if (typeof ms !== 'number') ms = parseInt(ms, 10);
+  console.log(`Sleeping for ${ms} ms ${reason ? `(${reason})` : ''}`);
+  await new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function processFiles() {
   for (const file of processEnv()) {
     file.mode = file.mode.toLowerCase();
     if (file.url && !file.unsecure && !file.url.startsWith('https')) {
@@ -66,8 +75,14 @@ function processFiles() {
       continue;
     }
 
+    console.log(`Processing ${file.mode} for ${file.prefix}`);
+    if (file.sleepBefore) {
+      console.log(`Sleeping for ${file.sleepBefore} ms before ${file.prefix}`);
+      await sleep(file.sleepBefore, 'before');
+    }
+
     try {
-      if (file.mode === 'create' && !fs.existsSync(file.path)) {
+      const doCreate = () => {
         if (file.url) {
           downloadFile(file.url, file.path, () => {
             applyOverrides(file.path, file.overridesUser, file.overridesGroup, file.overridesPermissions);
@@ -76,7 +91,8 @@ function processFiles() {
           fs.writeFileSync(file.path, file.base64 ? Buffer.from(file.content, 'base64') : file.content);
           applyOverrides(file.path, file.overridesUser, file.overridesGroup, file.overridesPermissions);
         }
-      } else if (file.mode === 'update' && fs.existsSync(file.path)) {
+      }
+      const doUpdate = () => {
         let fileContent = fs.readFileSync(file.path, 'utf8');
         if (file.regex) {
           const regexObj = new RegExp(file.regex, 'g');
@@ -86,6 +102,18 @@ function processFiles() {
         }
         fs.writeFileSync(file.path, fileContent);
         applyOverrides(file.path, file.overridesUser, file.overridesGroup, file.overridesPermissions);
+      }
+
+      if (file.mode === 'create' && !fs.existsSync(file.path)) {
+        doCreate();
+      } else if (file.mode === 'update' && fs.existsSync(file.path)) {
+        doUpdate();
+      } else if (file.mode === 'upsert') {
+        if (fs.existsSync(file.path)) {
+          doUpdate();
+        } else {
+          doCreate();
+        }
       } else if (file.mode === 'delete') {
         if (fs.existsSync(file.path)) {
           fs.unlinkSync(file.path);
@@ -161,6 +189,11 @@ function processFiles() {
         child.execSync(`tar -xzf ${tarball} -C ${targetDirectory}`);
         fs.unlinkSync(tarball);
       } else throw new Error(`Unknown mode ${file.mode} for ${file.prefix}`);
+
+      if (file.sleepAfter) {
+        console.log(`Sleeping for ${file.sleepAfter} ms after ${file.prefix}`);
+        await sleep(file.sleepAfter, 'after');
+      }
     } catch (error) {
       console.error(`Error processing ${file.prefix}: ${error.message}`);
       if (file.failOnError) process.exit(1);
@@ -168,15 +201,8 @@ function processFiles() {
   }
 }
 
-async function sleep(ms, reason) {
-  if (!ms) return;
-  if (typeof ms !== 'number') ms = parseInt(ms, 10);
-  console.log(`Sleeping for ${ms} ms ${reason ? `(${reason})` : ''}`);
-  await new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 (async () => {
   await sleep(process.env.SLEEP, 'before');
-  processFiles();
+  await processFiles();
   await sleep(process.env.SLEEP_AFTER, 'after');
 })();

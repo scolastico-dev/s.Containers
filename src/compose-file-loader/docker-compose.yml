@@ -1,0 +1,23 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./data:/mnt
+    environment:
+      ORDER: DELETEFIRST,KEYS
+      FILE_CONFIG_MODE: upsert
+      FILE_CONFIG_PATH: /mnt/config.json
+      FILE_CONFIG_OVERRIDES_USER: 1000
+      FILE_CONFIG_OVERRIDES_GROUP: 1000
+      FILE_CONFIG_OVERRIDES_PERMISSIONS: 777
+      FILE_CONFIG_CONTENT: |
+        {
+        "foo": "bar"
+        }
+      FILE_DELETEFIRST_PATH: /mnt/keys.txt
+      FILE_DELETEFIRST_MODE: delete
+      FILE_KEYS_PATH: /mnt/keys.txt
+      FILE_KEYS_URL: https://raw.githubusercontent.com/scolastico-dev/s.containers/master/src/compose-file-loader/README.md
+      FILE_KEYS_MODE: create

@@ -1,5 +1,5 @@
-FROM node:18-alpine
-MAINTAINER Joschua Becker EDV <support@scolasti.co>
+FROM node:20-alpine
+LABEL maintainer="Joschua Becker EDV <support@scolasti.co>"
 
 WORKDIR  /app
 COPY . /app

@@ -25,6 +25,8 @@ composing deployment instructions for said files.
 | `FILE_<name>_REGEX`                 | string | `null`        | The regex to replace.                                             |
 | `FILE_<name>_FAIL_ON_ERROR`         | bool   | `false`       | Fail on error.                                                    |
 | `FILE_<name>_FIX_DIR_PERMS`         | bool   | `false`       | Different chmod for directories. Intended to give directories +x. |
+| `FILE_<name>_SLEEP_BEFORE`          | number | `0`           | Sleep time in milliseconds, before processing the file.           |
+| `FILE_<name>_SLEEP_AFTER`           | number | `0`           | Sleep time in milliseconds, after processing the file.            |
 | `ORDER`                             | string | `null`        | Comma separated list of file names.                               |
 | `SLEEP`                             | number | `0`           | Sleep time in milliseconds.                                       |
 | `SLEEP_AFTER`                       | number | `10000`       | Sleep time in milliseconds after all files are processed.         |
@@ -37,6 +39,7 @@ composing deployment instructions for said files.
 |-----------|------------------------------------------------------------------------|-------------------------------------------------------|
 | `create`  | Creates the file if it does not exist.                                 | Yes                                                   |
 | `update`  | Updates the file if it exists.                                         | Yes                                                   |
+| `upsert`  | Updates the file if it exists, otherwise creates it.                   | Yes                                                   |
 | `delete`  | Deletes the file if it exists.                                         | No                                                    |
 | `replace` | Replaces the file if it exists.                                        | Yes                                                   |
 | `append`  | Appends the file if it exists.                                         | Yes                                                   |
@@ -60,11 +63,12 @@ services:
     image: ghcr.io/scolastico-dev/s.containers/compose-file-loader:latest
     restart: 'no'
     volumes:
-      - myVolume:/tmp/myVolume
+      - myVolume:/mnt/myVolume
     environment:
       ORDER: DELETEFIRST,KEYS
       SLEEP: 5000
-      FILE_CONFIG_PATH: /tmp/myVolume/config.json
+      FILE_CONFIG_MODE: upsert
+      FILE_CONFIG_PATH: /mnt/myVolume/config.json
       FILE_CONFIG_OVERRIDES_USER: 1000
       FILE_CONFIG_OVERRIDES_GROUP: 1000
       FILE_CONFIG_OVERRIDES_PERMISSIONS: 777
@@ -72,9 +76,9 @@ services:
         {
         "foo": "bar"
         }
-      FILE_DELETEFIRST_PATH: /tmp/myVolume/keys.txt
+      FILE_DELETEFIRST_PATH: /mnt/myVolume/keys.txt
       FILE_DELETEFIRST_MODE: delete
-      FILE_KEYS_PATH: /tmp/myVolume/keys.txt
+      FILE_KEYS_PATH: /mnt/myVolume/keys.txt
       FILE_KEYS_URL: https://raw.githubusercontent.com/scolastico-dev/s.containers/master/src/compose-file-loader/README.md
       FILE_KEYS_MODE: create
 ```
