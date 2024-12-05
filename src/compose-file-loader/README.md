@@ -30,6 +30,7 @@ composing deployment instructions for said files.
 | `ORDER`                             | string | `null`        | Comma separated list of file names.                               |
 | `SLEEP`                             | number | `0`           | Sleep time in milliseconds.                                       |
 | `SLEEP_AFTER`                       | number | `10000`       | Sleep time in milliseconds after all files are processed.         |
+| `SILENT`                            | bool   | `false`       | Do not output anything.                                           |
 
 `FILE_<name>_PATH` and either `FILE_<name>_CONTENT` or `FILE_<name>_URL` are required.
 

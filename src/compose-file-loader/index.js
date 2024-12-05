@@ -201,6 +201,8 @@ async function processFiles() {
   }
 }
 
+if (process.env.SILENT === 'true') console.log = () => {};
+
 (async () => {
   await sleep(process.env.SLEEP, 'before');
   await processFiles();
