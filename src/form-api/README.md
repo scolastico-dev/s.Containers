@@ -40,7 +40,6 @@ Visit the `/` endpoint to see a swagger documentation of the API, if the `DISABL
 ## Example
 
 ```yaml
-version: "3"
 services:
   app:
     image: ghcr.io/scolastico-dev/s.containers/form-api:latest

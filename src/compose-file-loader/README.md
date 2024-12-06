@@ -58,28 +58,36 @@ composing deployment instructions for said files.
 ## Example
 
 ```yml
-version: "3"
 services:
-  app:
+  web:
+    image: httpd:2
+    depends_on:
+      cfg:
+        condition: service_completed_successfully
+    volumes:
+      - data:/var/www/html
+
+  cfg:
     image: ghcr.io/scolastico-dev/s.containers/compose-file-loader:latest
     restart: 'no'
     volumes:
-      - myVolume:/mnt/myVolume
+      - data:/mnt/data
     environment:
-      ORDER: DELETEFIRST,KEYS
-      SLEEP: 5000
+      ORDER: CONFIG,KEYS
+      SLEEP_AFTER: 0
       FILE_CONFIG_MODE: upsert
-      FILE_CONFIG_PATH: /mnt/myVolume/config.json
-      FILE_CONFIG_OVERRIDES_USER: 1000
-      FILE_CONFIG_OVERRIDES_GROUP: 1000
-      FILE_CONFIG_OVERRIDES_PERMISSIONS: 777
+      FILE_CONFIG_PATH: /mnt/data/config.json
+      FILE_CONFIG_OVERRIDES_USER: 1001
+      FILE_CONFIG_OVERRIDES_GROUP: 1001
+      FILE_CONFIG_OVERRIDES_PERMISSIONS: 600
       FILE_CONFIG_CONTENT: |
         {
         "foo": "bar"
         }
-      FILE_DELETEFIRST_PATH: /mnt/myVolume/keys.txt
-      FILE_DELETEFIRST_MODE: delete
-      FILE_KEYS_PATH: /mnt/myVolume/keys.txt
-      FILE_KEYS_URL: https://raw.githubusercontent.com/scolastico-dev/s.containers/master/src/compose-file-loader/README.md
       FILE_KEYS_MODE: create
+      FILE_KEYS_PATH: /mnt/data/keys.txt
+      FILE_KEYS_URL: https://raw.githubusercontent.com/scolastico-dev/s.containers/master/src/compose-file-loader/README.md
+
+volumes:
+  data:
 ```

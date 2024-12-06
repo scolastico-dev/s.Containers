@@ -28,8 +28,6 @@ The `CFG_NAME_FILE` is useful to prevent downloading the same file multiple time
 ## Example
 
 ```yaml
-version: "3"
-
 x-restart: &restart
   restart: unless-stopped
 

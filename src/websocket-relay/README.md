@@ -47,7 +47,6 @@ As we use websockets for the background communication, we can't forward websocke
 Deploy this on your server:
 
 ```yaml
-version: "3"
 services:
   app:
     image: ghcr.io/scolastico-dev/s.containers/websocket-relay:latest

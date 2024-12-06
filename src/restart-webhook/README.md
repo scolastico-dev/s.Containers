@@ -42,7 +42,6 @@ The API provides an endpoint that accepts GET requests at `/<token>`, where
 ## Example
 
 ```yaml
-version: "3"
 services:
   app:
     image: ghcr.io/scolastico-dev/s.containers/restart-webhook:latest

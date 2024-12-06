@@ -28,7 +28,6 @@ The container does intentionally not support cleaning up old backups, as this sh
 ## Example
 
 ```yaml
-version: "3"
 services:
   app:
     image: ghcr.io/scolastico-dev/s.containers/s3-backup:latest

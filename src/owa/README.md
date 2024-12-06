@@ -11,8 +11,6 @@ analytics solution that provides detailed statistics about website visitors.
 ## Example
 
 ```yml
-version: "3"
-
 x-restart: &restart
     restart: unless-stopped
 
@@ -21,8 +19,10 @@ services:
     image: ghcr.io/scolastico-dev/s.containers/owa:latest
     <<: *restart
     depends_on:
-      - db
-      - cfg
+      db:
+        condition: service_started
+      cfg:
+        condition: service_completed_successfully
     volumes:
       - cfg:/var/www/html/cfg/
     ports:
@@ -41,12 +41,12 @@ services:
     image: ghcr.io/scolastico-dev/s.containers/compose-file-loader:latest
     restart: 'no'
     volumes:
-      - cfg:/tmp/cfg
+      - cfg:/mnt/cfg
     environment:
-      ORDER: DELETE
-      FILE_DELETE_PATH: /tmp/cfg/owa-config.php
-      FILE_DELETE_MODE: delete
-      FILE_CONFIG_PATH: /tmp/cfg/owa-config.php
+      SILENT: true
+      SLEEP_AFTER: 0
+      FILE_CONFIG_MODE: upsert
+      FILE_CONFIG_PATH: /mnt/cfg/owa-config.php
       FILE_CONFIG_CONTENT: |
         <?php
         define('OWA_DB_TYPE', 'mysql');

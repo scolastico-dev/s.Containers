@@ -18,7 +18,6 @@ Also the output of the cronjobs is logged to the console.
 ## Example
 
 ```yaml
-version: "3"
 services:
   cron:
     image: ghcr.io/scolastico-dev/s.containers/cron:latest

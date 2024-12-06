@@ -14,7 +14,6 @@ headers and the body it has received.
 ## Example
 
 ```yaml
-version: "3"
 services:
   app:
     image: ghcr.io/scolastico-dev/s.containers/http-echo:latest

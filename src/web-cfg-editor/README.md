@@ -25,7 +25,6 @@ Easily edit config files in a web interface without much extra effort. Slim desi
 ## Example
 
 ```yaml
-version: "3"
 services:
   editor:
     image: ghcr.io/scolastico-dev/s.containers/web-cfg-editor:latest

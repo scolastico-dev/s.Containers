@@ -67,7 +67,6 @@ This will return the ICS file from `https://example.com/calendar.ics`.
 ## Example
 
 ```yaml
-version: "3"
 services:
   app:
     image: ghcr.io/scolastico-dev/s.containers/ms-ics-fix:latest

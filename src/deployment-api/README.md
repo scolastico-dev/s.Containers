@@ -26,7 +26,6 @@ Sure there are other ways like sftp or rsync but a simple post request with a zi
 ## Example
 
 ```yaml
-version: "3"
 services:
   app:
     image: ghcr.io/scolastico-dev/s.containers/deployment-api:latest

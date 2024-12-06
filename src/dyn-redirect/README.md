@@ -30,8 +30,6 @@ and a little support for the developer from google play for a small fee of 0,50â
 ## Example
 
 ```yaml
-version: "3"
-
 services:
   app:
     image: ghcr.io/scolastico-dev/s.containers/dyn-redirect:latest

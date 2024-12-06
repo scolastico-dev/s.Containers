@@ -40,7 +40,6 @@ If `MERGE_DYNAMIC_URL` is set to `http://example.com` and the server receives a 
 ## Example
 
 ```yaml
-version: "3"
 services:
   app:
     image: ghcr.io/scolastico-dev/s.containers/http-single-file:latest
@@ -55,7 +54,7 @@ services:
 or for traefik:
 
 ```yaml
-version: "3"
+services:
   app:
     image: my-example-container
     labels:

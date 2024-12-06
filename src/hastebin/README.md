@@ -2,7 +2,7 @@
 
 ### [Back to index](../../README.md)
 
-## DEPRECATION NOTICE
+## ⚠️ Deprecation Warning
 
 This image is deprecated, because the upstream project isn't maintained anymore. We recommend to try our successor [!3 (not-th.re)](https://not-th.re/).
 
@@ -50,7 +50,6 @@ See the [hastebin](https://github.com/toptal/haste-server) repo for more informa
 ## Example
 
 ```yaml
-version: "3"
 services:
   app:
     image: ghcr.io/scolastico-dev/s.containers/hastebin:latest

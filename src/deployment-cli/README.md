@@ -21,7 +21,6 @@ See the [`s.containers/deployment-api`](../deployment-api/README.md) for more in
 ## Example
 
 ```yaml
-version: "3"
 services:
   app:
     image: ghcr.io/scolastico-dev/s.containers/deployment-cli:latest
@@ -29,8 +28,7 @@ services:
     volumes:
       - ./from/:/from
     environment:
-      SECRET: 0000-0000-0000-0000-0000-0000-0000
-      ITERATIONS: 100
+      SECRET: my-secret
       SERVER_URL: https://deploy.example.com
       SERVER_NAME: web
 ```
@@ -38,7 +36,7 @@ services:
 or use this one-liner:
 
 ```bash
-docker run -it --rm -v $(pwd)/from/:/from -e SECRET=0000-0000-0000-0000-0000-0000-0000 -e ITERATIONS=100 -e SERVER_URL=https://deploy.example.com -e SERVER_NAME=web ghcr.io/scolastico-dev/s.containers/deployment-cli:latest
+docker run -it --rm -v $(pwd)/from/:/from -e SECRET=my-secret -e SERVER_URL=https://deploy.example.com -e SERVER_NAME=web ghcr.io/scolastico-dev/s.containers/deployment-cli:latest
 ```
 
 or use this gitlab ci example:
@@ -61,7 +59,6 @@ deploy:
     - >-
       cd /app &&
       SECRET=$DEPLOY_KEY
-      ITERATIONS=100
       SERVER_URL=https://deploy.example.com
       SERVER_NAME=vue
       UPLOAD_DIR=$CI_PROJECT_DIR/dist

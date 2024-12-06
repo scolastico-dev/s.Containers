@@ -22,7 +22,6 @@ To configure the `matrix-webhook-server`, the following environment variables ar
 Docker compose:
 
 ```yaml
-version: "3"
 services:
   app:
     image: ghcr.io/scolastico-dev/s.containers/matrix-webhook:latest
