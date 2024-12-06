@@ -3,7 +3,11 @@ name: Publish HTTP Single File
 on:
   push:
     branches: [ "main" ]
-    paths: [ "src/http-single-file/**", ".github/workflows/publish-http-single-file.yml" ]
+    paths: [
+      "src/http-single-file/**",
+      "!src/http-single-file/README.md",
+      ".github/workflows/publish-http-single-file.yml",
+    ]
 
 jobs:
   build:

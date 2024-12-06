@@ -3,7 +3,11 @@ name: Publish Dyn Redirect
 on:
   push:
     branches: [ "main" ]
-    paths: [ "src/dyn-redirect/**", ".github/workflows/publish-dyn-redirect.yml" ]
+    paths: [
+      "src/dyn-redirect/**",
+      "!src/dyn-redirect/README.md",
+      ".github/workflows/publish-dyn-redirect.yml",
+    ]
 
 jobs:
   build:

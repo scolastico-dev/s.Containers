@@ -3,7 +3,11 @@ name: Publish S3 Backup
 on:
   push:
     branches: [ "main" ]
-    paths: [ "src/s3-backup/**", ".github/workflows/publish-s3-backup.yml" ]
+    paths: [
+      "src/s3-backup/**",
+      "!src/s3-backup/README.md",
+      ".github/workflows/publish-s3-backup.yml",
+    ]
 
 jobs:
   build:

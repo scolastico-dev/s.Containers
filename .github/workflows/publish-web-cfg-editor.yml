@@ -3,7 +3,11 @@ name: Publish Web Config Editor
 on:
   push:
     branches: [ "main" ]
-    paths: [ "src/web-cfg-editor/**", ".github/workflows/publish-web-cfg-editor.yml" ]
+    paths: [
+      "src/web-cfg-editor/**",
+      "!src/web-cfg-editor/README.md",
+      ".github/workflows/publish-web-cfg-editor.yml",
+    ]
 
 jobs:
   build:

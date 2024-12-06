@@ -3,7 +3,11 @@ name: Publish Matrix Webhook
 on:
   push:
     branches: [ "main" ]
-    paths: [ "src/matrix-webhook/**", ".github/workflows/publish-matrix-webhook.yml" ]
+    paths: [
+      "src/matrix-webhook/**",
+      "!src/matrix-webhook/README.md",
+      ".github/workflows/publish-matrix-webhook.yml",
+    ]
 
 jobs:
   build:

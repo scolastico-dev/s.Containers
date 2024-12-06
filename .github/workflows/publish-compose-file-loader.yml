@@ -3,7 +3,11 @@ name: Publish Compose File Loader
 on:
   push:
     branches: [ "main" ]
-    paths: [ "src/compose-file-loader/**", ".github/workflows/publish-compose-file-loader.yml" ]
+    paths: [
+      "src/compose-file-loader/**",
+      "!src/compose-file-loader/README.md",
+      ".github/workflows/publish-compose-file-loader.yml",
+    ]
 
 jobs:
   build:

@@ -3,7 +3,11 @@ name: Publish Email Lexoffice Import
 on:
   push:
     branches: [ "main" ]
-    paths: [ "src/email-lexoffice-import/**", ".github/workflows/publish-email-lexoffice-import.yml" ]
+    paths: [
+      "src/email-lexoffice-import/**",
+      "!src/email-lexoffice-import/README.md",
+      ".github/workflows/publish-email-lexoffice-import.yml",
+    ]
 
 jobs:
   build:

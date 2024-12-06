@@ -3,7 +3,11 @@ name: Publish Restart Webhook
 on:
   push:
     branches: [ "main" ]
-    paths: [ "src/restart-webhook/**", ".github/workflows/publish-restart-webhook.yml" ]
+    paths: [
+      "src/restart-webhook/**",
+      "!src/restart-webhook/README.md",
+      ".github/workflows/publish-restart-webhook.yml",
+    ]
 
 jobs:
   build:

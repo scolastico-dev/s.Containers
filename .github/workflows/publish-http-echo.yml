@@ -3,7 +3,11 @@ name: Publish HTTP Echo
 on:
   push:
     branches: [ "main" ]
-    paths: [ "src/http-echo/**", ".github/workflows/publish-http-echo.yml" ]
+    paths: [
+      "src/http-echo/**",
+      "!src/http-echo/README.md",
+      ".github/workflows/publish-http-echo.yml",
+    ]
 
 jobs:
   build:

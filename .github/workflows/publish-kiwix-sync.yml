@@ -3,7 +3,11 @@ name: Publish Kiwix Sync
 on:
   push:
     branches: [ "main" ]
-    paths: [ "src/kiwix-sync/**", ".github/workflows/publish-kiwix-sync.yml" ]
+    paths: [
+      "src/kiwix-sync/**",
+      "!src/kiwix-sync/README.md",
+      ".github/workflows/publish-kiwix-sync.yml",
+    ]
 
 jobs:
   build:

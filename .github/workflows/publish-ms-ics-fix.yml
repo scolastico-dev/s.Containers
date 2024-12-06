@@ -3,7 +3,11 @@ name: Publish MS ICS Fix
 on:
   push:
     branches: [ "main" ]
-    paths: [ "src/ms-ics-fix/**", ".github/workflows/publish-ms-ics-fix.yml" ]
+    paths: [
+      "src/ms-ics-fix/**",
+      "!src/ms-ics-fix/README.md",
+      ".github/workflows/publish-ms-ics-fix.yml",
+    ]
 
 jobs:
   build:

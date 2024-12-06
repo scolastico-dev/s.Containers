@@ -3,7 +3,11 @@ name: Publish Websocket Relay
 on:
   push:
     branches: [ "main" ]
-    paths: [ "src/websocket-relay/**", ".github/workflows/publish-websocket-relay.yml" ]
+    paths: [
+      "src/websocket-relay/**",
+      "!src/websocket-relay/README.md",
+      ".github/workflows/publish-websocket-relay.yml",
+    ]
 
 jobs:
   build:

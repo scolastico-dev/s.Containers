@@ -3,7 +3,11 @@ name: Publish Cron
 on:
   push:
     branches: [ "main" ]
-    paths: [ "src/cron/**", ".github/workflows/publish-cron.yml" ]
+    paths: [
+      "src/cron/**",
+      "!src/cron/README.md",
+      ".github/workflows/publish-cron.yml",
+    ]
 
 jobs:
   build:

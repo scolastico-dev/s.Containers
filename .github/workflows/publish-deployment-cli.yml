@@ -3,7 +3,11 @@ name: Publish Deployment CLI
 on:
   push:
     branches: [ "main" ]
-    paths: [ "src/deployment-cli/**", ".github/workflows/publish-deployment-cli.yml" ]
+    paths: [
+      "src/deployment-cli/**",
+      "!src/deployment-cli/README.md",
+      ".github/workflows/publish-deployment-cli.yml",
+    ]
 
 jobs:
   build:

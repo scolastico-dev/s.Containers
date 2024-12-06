@@ -3,7 +3,11 @@ name: Publish Form API
 on:
   push:
     branches: [ "main" ]
-    paths: [ "src/form-api/**", ".github/workflows/publish-form-api.yml" ]
+    paths: [
+      "src/form-api/**",
+      "!src/form-api/README.md",
+      ".github/workflows/publish-form-api.yml",
+    ]
 
 jobs:
   build:
