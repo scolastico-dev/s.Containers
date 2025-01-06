@@ -32,6 +32,7 @@ services:
     restart: unless-stopped
     volumes:
       - db:/app/db
+      - cfg:/app/src/config
     ports:
       - 3000:3000
     environment:
@@ -48,4 +49,5 @@ services:
 
 volumes:
   db:
+  cfg:
 ```
