@@ -104,3 +104,7 @@ version of a file found at a given file server, with enabled index listing.
 
 A simple API which does HTTP 301 or 302 redirects based on settings provided
 either by environment variables or a post request from external sources.
+
+### [`s.containers/timeoff-management`](./src/timeoff-management/README.md)
+
+A wrapper for the [timeoff.management](https://github.com/timeoff-management/timeoff-management-application) application.
