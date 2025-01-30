@@ -14,6 +14,14 @@ RUN pnpm build
 FROM node:20-bookworm AS production
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    fontconfig \
+    fonts-liberation \
+    ttf-wqy-zenhei \
+    ttf-wqy-microhei \
+    ttf-wqy-microhei-lite \
+    ttf-wqy-microhei-lite
+
 RUN npm install -g pnpm
 
 COPY --from=build /app/dist .

@@ -32,7 +32,7 @@ jobs:
           directory: ./src/compose-merger
           dockerfile: ./src/compose-merger/Dockerfile
           multiPlatform: true
-          platform: linux/amd64,linux/arm64,linux/arm/v7
+          platform: linux/amd64,linux/arm64
           addLatest: true
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
