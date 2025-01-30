@@ -1,0 +1,38 @@
+name: Publish Compose Merger
+
+on:
+  push:
+    branches: [ "main" ]
+    paths: [
+      "src/compose-merger/**",
+      "!src/compose-merger/README.md",
+      ".github/workflows/publish-compose-merger.yml",
+    ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+      - uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          image: s.containers/compose-merger
+          registry: ghcr.io
+          directory: ./src/compose-merger
+          dockerfile: ./src/compose-merger/Dockerfile
+          multiPlatform: true
+          platform: linux/amd64,linux/arm64,linux/arm/v7
+          addLatest: true
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}

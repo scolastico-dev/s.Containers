@@ -108,3 +108,7 @@ either by environment variables or a post request from external sources.
 ### [`s.containers/timeoff-management`](./src/timeoff-management/README.md)
 
 A wrapper for the [timeoff.management](https://github.com/timeoff-management/timeoff-management-application) application.
+
+### [`s.containers/compose-merger`](./src/compose-merger/README.md)
+
+Merge multiple docker-compose files into one.
