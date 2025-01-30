@@ -91,7 +91,7 @@ function processFile(input) {
   return res;
 }
 
-const res = stringify(processFile(options.input || 'compose.yml'));
+const res = stringify(processFile(options.input || '/data/compose.yml'));
 if (!options.output) {
   console.log(res);
 } else {

@@ -8,6 +8,5 @@ COPY package.json pnpm-lock.yaml /app/
 RUN pnpm i --frozen-lockfile
 COPY index.mjs /app/
 
-WORKDIR /data
 ENV NODE_ENV=production
-ENTRYPOINT [ "node", "/app/index.mjs" ]
+ENTRYPOINT [ "node", "index.mjs" ]
