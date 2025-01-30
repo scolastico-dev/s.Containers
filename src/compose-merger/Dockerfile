@@ -5,7 +5,7 @@ WORKDIR  /app
 
 RUN npm install -g pnpm
 COPY package.json pnpm-lock.yaml /app/
-RUN pnpm i --frozen-lockfile
+RUN pnpm i
 COPY index.mjs /app/
 
 ENV NODE_ENV=production
