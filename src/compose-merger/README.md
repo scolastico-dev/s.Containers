@@ -25,11 +25,11 @@ docker run --rm -v "$(pwd):/data:ro" ghcr.io/scolastico-dev/s.containers/compose
 Read from `comose.yml` and write to `compose.merged.yml`:
 
 ```bash
-docker run --rm -v "$(pwd):/data" ghcr.io/scolastico-dev/s.containers/compose-merger -o /data/compose.merged.yml
+docker run --rm -v "$(pwd):/data" ghcr.io/scolastico-dev/s.containers/compose-merger -o compose.merged.yml
 ```
 
 Read from `docker-compose.yml` and write to `docker-compose-merged.yml`:
 
 ```bash
-docker run --rm -v "$(pwd):/data" ghcr.io/scolastico-dev/s.containers/compose-merger -i /data/docker-compose.yml -o /data/docker-compose-merged.yml
+docker run --rm -v "$(pwd):/data" ghcr.io/scolastico-dev/s.containers/compose-merger -i docker-compose.yml -o docker-compose-merged.yml
 ```
