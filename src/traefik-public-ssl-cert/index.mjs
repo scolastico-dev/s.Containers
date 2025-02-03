@@ -21,7 +21,7 @@ function getKey() {
   if (cache) return cache
   if (!existsSync(OPTIONS.STORE_PATH)) throw new Error('Key not found')
   const data = JSON.parse(readFileSync(OPTIONS.STORE_PATH, 'utf8'))
-  const fullCert = data.Certificates.find(cert => cert.domain.main === OPTIONS.DOMAIN)
+  const fullCert = data.dns.Certificates.find(cert => cert.domain.main === OPTIONS.DOMAIN)
   if (!fullCert) throw new Error('Key not found')
   const { key, certificate } = fullCert
   cache = {
