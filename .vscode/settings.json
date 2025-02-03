@@ -5,6 +5,7 @@
   "files.exclude": {
   },
   "cSpell.words": [
+    "traefik"
   ],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",

@@ -112,3 +112,7 @@ A wrapper for the [timeoff.management](https://github.com/timeoff-management/tim
 ### [`s.containers/compose-merger`](./src/compose-merger/README.md)
 
 Merge multiple docker-compose files into one.
+
+### [`s.containers/traefik-public-ssl-cert`](./src/traefik-public-ssl-cert/README.md)
+
+Expose a certificate from a traefik container to an HTTP API.
