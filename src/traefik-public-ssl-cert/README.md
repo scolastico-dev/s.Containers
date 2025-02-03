@@ -72,13 +72,14 @@ services:
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - data:/data
+      - crt:/data:ro
+      - cfg:/data/dynamic:ro
     command:
       - --providers.docker
       - --providers.docker.exposedbydefault=false
+      - --providers.file.directory=/data/dynamic
       - --entrypoints.http.address=:80
       - --entrypoints.https.address=:443
-      - --configFile=/data/traefik.yml
     depends_on:
       cfg:
         condition: service_completed_successfully
@@ -86,7 +87,8 @@ services:
     image: ghcr.io/scolastico-dev/s.containers/compose-file-loader:latest
     restart: 'no'
     volumes:
-      - data:/data
+      - crt:/data
+      - cfg:/data/dynamic
     environment:
       FILE_KEY_MODE: upsert
       FILE_KEY_PATH: /data/key.pem
@@ -95,10 +97,19 @@ services:
       FILE_CERT_PATH: /data/cert.pem
       FILE_CERT_URL: https://local.example.com/cert.pem
       FILE_CFG_MODE: upsert
-      FILE_CFG_PATH: /data/traefik.yml
+      FILE_CFG_PATH: /data/dynamic/tls.yml
       FILE_CFG_CONTENT: |
         tls:
+          stores:
+            default:
+              defaultCertificate:
+                certFile: /data/cert.pem
+                keyFile: /data/key.pem
           certificates:
             - certFile: /data/cert.pem
               keyFile: /data/key.pem
+
+volumes:
+  crt:
+  cfg:
 ```
