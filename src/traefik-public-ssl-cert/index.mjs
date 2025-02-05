@@ -6,12 +6,23 @@ import axios from 'axios'
 const OPTIONS = {
   STORE_PATH: process.env.STORE_PATH || '/data/acme.json',
   DOMAIN: process.env.DOMAIN,
+  KEY: process.env.KEY,
+  CHAIN: process.env.CHAIN,
+  CHAIN_URL: process.env.CHAIN_URL,
 }
 
 if (!OPTIONS.DOMAIN) throw new Error('ENV: DOMAIN is required')
 
 let cache = null
 let chainCache = null
+
+function checkKey(req) {
+  if (!OPTIONS.KEY) return true
+  if (req.query.key === OPTIONS.KEY) return true
+  if (req.headers['Authorization'] === `Bearer ${OPTIONS.KEY}`) return true
+  if (req.headers['Authorization'] === OPTIONS.KEY) return true
+  return false
+}
 
 function b64Decode(data) {
   return Buffer.from(data, 'base64').toString('utf8')
@@ -34,6 +45,21 @@ function getKey() {
 
 async function getChain(certPem) {
   if (chainCache) return chainCache
+
+  if (OPTIONS.CHAIN) {
+    chainCache = certPem + '\n' + OPTIONS.CHAIN
+    setTimeout(() => chainCache = null, 1000 * 60 * 60) // Cache for 1 hour
+    return chainCache
+  } else if (OPTIONS.CHAIN_URL) {
+    try {
+      const { data } = await axios.get(OPTIONS.CHAIN_URL, { responseType: 'text' })
+      chainCache = certPem + '\n' + data
+      setTimeout(() => chainCache = null, 1000 * 60 * 60) // Cache for 1 hour
+      return chainCache
+    } catch (err) {
+      throw new Error('Failed to fetch CA certificate: ' + err.message)
+    }
+  }
 
   const cert = forge.pki.certificateFromPem(certPem)
   const aiaExtension = cert.extensions.find(ext => ext.name === 'authorityInfoAccess')
@@ -58,6 +84,7 @@ const app = express()
 
 app.get('/key.pem', (req, res) => {
   try {
+    if (!checkKey(req)) return res.status(401).send('Unauthorized')
     const key = getKey()
     res.send(key.key)
   } catch (err) {
@@ -68,6 +95,7 @@ app.get('/key.pem', (req, res) => {
 
 app.get('/cert.pem', (req, res) => {
   try {
+    if (!checkKey(req)) return res.status(401).send('Unauthorized')
     const key = getKey()
     res.send(key.certificate)
   } catch (err) {
@@ -78,6 +106,7 @@ app.get('/cert.pem', (req, res) => {
 
 app.get('/chain.pem', async (req, res) => {
   try {
+    if (!checkKey(req)) return res.status(401).send('Unauthorized')
     const key = getKey()
     const fullChain = await getChain(key.certificate)
     res.send(fullChain)

@@ -14,12 +14,17 @@ I only see two reasons why you should use this container:
 
 ## Environment Variables
 
-| Name          | Type   | Default Value       | Description                                                                 |
-| ------------- | ------ | ------------------- | --------------------------------------------------------------------------- |
-| `STORE_PATH`  | string | `/data/acme.json`   | The path to the acme storage file.                                          |
-| `DOMAIN`      | string | `null`              | The domain to expose the certificate.                                       |
+| Name          | Type   | Default Value       | Description                                                                      |
+| ------------- | ------ | ------------------- | -------------------------------------------------------------------------------- |
+| `STORE_PATH`  | string | `/data/acme.json`   | The path to the acme storage file.                                               |
+| `DOMAIN`      | string | `null`              | The domain to expose the certificate.                                            |
+| `KEY`         | string | `null`              | A optional key, which has to be included in the request to get the cert.         |
+| `CHAIN`       | string | `null`              | A optional chain, which will be included in the `chain.pem` instead of the AIAs. |
+| `CHAIN_URL`   | string | `null`              | A optional chain, which will be included in the `chain.pem` instead of the AIAs. |
 
 The `DOMAIN` variable is required is the equivalent of the `dns.Certificates[].domain.main` in the acme storage file.
+
+If the `KEY`variable is set, the request has either to include the key in the query parameter `key` or in the header `Authorization`.
 
 ## Example
 
