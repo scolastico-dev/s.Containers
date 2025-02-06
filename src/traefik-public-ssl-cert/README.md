@@ -21,6 +21,7 @@ I only see two reasons why you should use this container:
 | `KEY`         | string | `null`              | A optional key, which has to be included in the request to get the cert.         |
 | `CHAIN`       | string | `null`              | A optional chain, which will be included in the `chain.pem` instead of the AIAs. |
 | `CHAIN_URL`   | string | `null`              | A optional chain, which will be included in the `chain.pem` instead of the AIAs. |
+| `ROOT_KEY`    | string | `dns`               | The root key for the acme storage file.                                          |
 
 The `DOMAIN` variable is required is the equivalent of the `dns.Certificates[].domain.main` in the acme storage file.
 
@@ -37,7 +38,7 @@ services:
     image: ghcr.io/scolastico-dev/s.containers/traefik-public-ssl-cert:latest
     restart: unless-stopped
     environment:
-      DOMAIN: "*.local.example.com"
+      DOMAIN: "local.example.com"
     volumes:
       - certs:/data:ro
     labels:

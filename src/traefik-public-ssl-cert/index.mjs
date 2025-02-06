@@ -9,6 +9,7 @@ const OPTIONS = {
   KEY: process.env.KEY,
   CHAIN: process.env.CHAIN,
   CHAIN_URL: process.env.CHAIN_URL,
+  ROOT_KEY: process.env.ROOT_KEY || 'dns',
 }
 
 if (!OPTIONS.DOMAIN) throw new Error('ENV: DOMAIN is required')
@@ -32,7 +33,7 @@ function getKey() {
   if (cache) return cache
   if (!existsSync(OPTIONS.STORE_PATH)) throw new Error('Key not found')
   const data = JSON.parse(readFileSync(OPTIONS.STORE_PATH, 'utf8'))
-  const fullCert = data.dns.Certificates.find(cert => cert.domain.main === OPTIONS.DOMAIN)
+  const fullCert = data[OPTIONS.ROOT_KEY].Certificates.find(cert => cert.domain.main === OPTIONS.DOMAIN)
   if (!fullCert) throw new Error('Key not found')
   const { key, certificate } = fullCert
   cache = {
