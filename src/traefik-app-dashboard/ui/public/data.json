@@ -1,0 +1,35 @@
+[
+  {
+    "name": "example-service",
+    "url": "https://example.com",
+    "description": "This is an example service"
+  },
+  {
+    "name": "google",
+    "url": "https://google.com"
+  },
+  {
+    "name": "twitter",
+    "url": "https://x.com"
+  },
+  {
+    "name": "instagram",
+    "url": "https://instagram.com"
+  },
+  {
+    "name": "youtube",
+    "url": "https://youtube.com"
+  },
+  {
+    "name": "wikipedia",
+    "url": "https://wikipedia.org"
+  },
+  {
+    "name": "duckduckgo",
+    "url": "https://duckduckgo.com"
+  },
+  {
+    "name": "github",
+    "url": "https://github.com"
+  }
+]

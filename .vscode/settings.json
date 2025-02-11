@@ -5,6 +5,7 @@
   "files.exclude": {
   },
   "cSpell.words": [
+    "axios",
     "traefik"
   ],
   "editor.codeActionsOnSave": {

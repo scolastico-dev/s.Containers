@@ -116,3 +116,7 @@ Merge multiple docker-compose files into one.
 ### [`s.containers/traefik-public-ssl-cert`](./src/traefik-public-ssl-cert/README.md)
 
 Expose a certificate from a traefik container to an HTTP API.
+
+### [`s.containers/traefik-app-dashboard`](./src/traefik-app-dashboard/README.md)
+
+This container uses the traefik API to fetch all available services and generates a dashboard for them.
