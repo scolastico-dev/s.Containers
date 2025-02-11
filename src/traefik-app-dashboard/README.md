@@ -10,13 +10,40 @@ Never have to worry about documenting all your services again.
 
 ## Environment Variables
 
-| Name           | Type   | Default Value         | Description                                                                      |
-| -------------- | ------ | --------------------- | -------------------------------------------------------------------------------- |
-| `IGNORE_REGEX` | string | `null`                | A regex to ignore services.                                                      |
-| `TRAEFIK_API`  | string | `http://traefik:8080` | The URL to the traefik API.                                                      |
+| Name                                  | Type   | Default Value         | Description                            |
+| ------------------------------------- | ------ | --------------------- | -------------------------------------- |
+| `TRAEFIK_API`                         | string | `http://traefik:8080` | The URL to the traefik API.            |
+| `IGNORE_REGEX`                        | string | `null`                | A regex to ignore services.            |
+| `OVERRIDE_<SERVICE_NAME>_NAME`        | string | `null`                | Override the name of a service.        |
+| `OVERRIDE_<SERVICE_NAME>_URL`         | string | `null`                | Override the URL of a service.         |
+| `OVERRIDE_<SERVICE_NAME>_IMG`         | string | `null`                | Override the image of a service.       |
+| `OVERRIDE_<SERVICE_NAME>_DESCRIPTION` | string | `null`                | Override the description of a service. |
 
 ## Example
 
 ```yml
+x-restart: &restart
+  restart: unless-stopped
 
+services:
+  app:
+    image: ghcr.io/scolastico-dev/s.containers/traefik-app-dashboard:latest
+    <<: *restart
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.app-dashboard.rule=Host(`dashboard.local.scolastico.me`)
+      - traefik.http.services.app-dashboard.loadbalancer.server.port=3000
+
+  traefik:
+    image: traefik:latest
+    <<: *restart
+    ports:
+      - 80:80
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command:
+      - --providers.docker
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.http.address=:80
+      - --api.insecure=true
 ```

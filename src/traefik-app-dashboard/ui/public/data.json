@@ -1,35 +1,43 @@
 [
   {
     "name": "example-service",
+    "id": "example-service",
     "url": "https://example.com",
     "description": "This is an example service"
   },
   {
     "name": "google",
+    "id": "google",
     "url": "https://google.com"
   },
   {
     "name": "twitter",
+    "id": "twitter",
     "url": "https://x.com"
   },
   {
     "name": "instagram",
+    "id": "instagram",
     "url": "https://instagram.com"
   },
   {
     "name": "youtube",
+    "id": "youtube",
     "url": "https://youtube.com"
   },
   {
     "name": "wikipedia",
+    "id": "wikipedia",
     "url": "https://wikipedia.org"
   },
   {
     "name": "duckduckgo",
+    "id": "duckduckgo",
     "url": "https://duckduckgo.com"
   },
   {
     "name": "github",
+    "id": "github",
     "url": "https://github.com"
   }
 ]
