@@ -7,7 +7,7 @@ RUN npm install -g pnpm
 
 FROM pnpm as build
 
-COPY ui /app
+COPY ui /app/
 WORKDIR  /app
 RUN pnpm install
 RUN pnpm build
