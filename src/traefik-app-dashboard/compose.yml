@@ -1,0 +1,27 @@
+x-restart: &restart
+  restart: unless-stopped
+
+services:
+  app:
+    # image: ghcr.io/scolastico-dev/s.containers/traefik-app-dashboard:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    <<: *restart
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.app-dashboard.rule=Host(`dashboard.local.scolastico.me`)
+      - traefik.http.services.app-dashboard.loadbalancer.server.port=3000
+
+  traefik:
+    image: traefik:latest
+    <<: *restart
+    ports:
+      - 80:80
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command:
+      - --providers.docker
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.http.address=:80
+      - --api.insecure=true
