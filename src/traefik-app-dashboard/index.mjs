@@ -14,7 +14,7 @@ async function getData() {
   const { data } = await axios.get(`${OPTIONS.TRAEFIK_API}/api/http/routers`)
   const arr = [];
   for (const router of data) {
-    if (OPTIONS.IGNORE_REGEX && new RegExp(OPTIONS.IGNORE_REGEX).test(router.rule)) continue
+    if (OPTIONS.IGNORE_REGEX && new RegExp(OPTIONS.IGNORE_REGEX).test(router.service)) continue
     const OVERRIDE_KEY = `OVERRIDE_${router.service.toUpperCase()}`
     const OVERRIDES = {
       NAME: process.env[`${OVERRIDE_KEY}_NAME`],
