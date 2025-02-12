@@ -21,6 +21,16 @@ As the webhook feature of Portainer does not allow updating the content of a sta
 
 ## Example
 
+After you have deployed a stack in portainer, and open it you should see an URL like this, which contains the stack id and the endpoint id:
+
+```log
+https://portainer.example.com/#!/<endpoint_id>/docker/stacks/<stack_name>?id=<stack_id>&type=2&regular=true&orphaned=false&orphanedRunning=false
+```
+
+To get the `PORTAINER_KEY` see the [Portainer API documentation](https://docs.portainer.io/api/access).
+
+You can then push/update the stack with the following command:
+
 ```bash
 docker run --rm \
   -e PORTAINER_URL="https://portainer.example.com" \
