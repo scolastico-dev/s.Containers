@@ -8,10 +8,15 @@ services:
       context: .
       dockerfile: Dockerfile
     <<: *restart
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./index.mjs:/app/index.mjs:ro
     labels:
       - traefik.enable=true
       - traefik.http.routers.app-dashboard.rule=Host(`dashboard.local.scolastico.me`)
       - traefik.http.services.app-dashboard.loadbalancer.server.port=3000
+      - traefik-app-dashboard.service=app-dashboard
+      - traefik-app-dashboard.description=The dashboard for all services.
 
   traefik:
     image: traefik:latest

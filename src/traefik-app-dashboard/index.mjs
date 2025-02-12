@@ -1,4 +1,6 @@
 import { createHash } from 'crypto'
+import { existsSync } from 'fs'
+import Docker from 'dockerode'
 import express from 'express'
 import axios from 'axios'
 
@@ -6,13 +8,40 @@ import axios from 'axios'
 const OPTIONS = {
   TRAEFIK_API: process.env.TRAEFIK_API || 'http://traefik:8080',
   IGNORE_REGEX: process.env.IGNORE_REGEX,
+  CACHE_TTL: process.env.CACHE_TTL || 60,
 }
 
+const PREFIX = 'traefik-app-dashboard.'
+
 const app = express()
+let cache = null
+
+async function getDataFromLabels() {
+  if (!existsSync('/var/run/docker.sock')) return {}
+  const docker = new Docker({ socketPath: '/var/run/docker.sock' })
+  const containers = await docker.listContainers()
+  const res = {};
+  for (const container of containers) {
+    const c = await docker.getContainer(container.Id).inspect()
+    const { Labels } = c.Config
+    if (!Labels) continue
+    const service = Labels[PREFIX + 'service'];
+    if (!service) continue
+    res[service] = {
+      name: Labels[PREFIX + 'name'] || service,
+      url: Labels[PREFIX + 'url'],
+      img: Labels[PREFIX + 'img'],
+      description: Labels[PREFIX + 'description'],
+    }
+  }
+  return res
+}
 
 async function getData() {
+  if (cache) return cache
   const { data } = await axios.get(`${OPTIONS.TRAEFIK_API}/api/http/routers`)
-  const arr = [];
+  const labels = await getDataFromLabels()
+  const arr = []
   for (const router of data) {
     if (OPTIONS.IGNORE_REGEX && new RegExp(OPTIONS.IGNORE_REGEX).test(router.service)) continue
     const OVERRIDE_KEY = `OVERRIDE_${router.service.toUpperCase()}`
@@ -26,14 +55,17 @@ async function getData() {
       console.warn(`Router ${router.service} has no Host rule, skipping`)
       continue
     }
+    const label = labels[router.service] || {}
     arr.push({
-      name: OVERRIDES.NAME || router.service,
-      url: OVERRIDES.URL || router.rule.match(/Host\(`([^`]+)`\)/)[1],
+      name: OVERRIDES.NAME || label.name || router.service,
+      url: OVERRIDES.URL || label.url || router.rule.match(/Host\(`([^`]+)`\)/)[1],
       id: createHash('md5').update(router.service).digest('hex'),
-      img: OVERRIDES.IMG,
-      description: OVERRIDES.DESCRIPTION,
+      img: OVERRIDES.IMG || label.img,
+      description: OVERRIDES.DESCRIPTION || label.description,
     })
   }
+  cache = arr
+  setTimeout(() => (cache = null), OPTIONS.CACHE_TTL * 1000)
   return arr
 }
 

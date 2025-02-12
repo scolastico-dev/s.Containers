@@ -14,6 +14,7 @@ Never have to worry about documenting all your services again.
 | ------------------------------------- | ------ | --------------------- | -------------------------------------- |
 | `TRAEFIK_API`                         | string | `http://traefik:8080` | The URL to the traefik API.            |
 | `IGNORE_REGEX`                        | string | `null`                | A regex to ignore services.            |
+| `CACHE_TTL`                           | int    | `60`                  | The time to cache the services in sec. |
 | `OVERRIDE_<SERVICE_NAME>_NAME`        | string | `null`                | Override the name of a service.        |
 | `OVERRIDE_<SERVICE_NAME>_URL`         | string | `null`                | Override the URL of a service.         |
 | `OVERRIDE_<SERVICE_NAME>_IMG`         | string | `null`                | Override the image of a service.       |
@@ -29,10 +30,14 @@ services:
   app:
     image: ghcr.io/scolastico-dev/s.containers/traefik-app-dashboard:latest
     <<: *restart
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     labels:
       - traefik.enable=true
       - traefik.http.routers.app-dashboard.rule=Host(`dashboard.local.scolastico.me`)
       - traefik.http.services.app-dashboard.loadbalancer.server.port=3000
+      - traefik-app-dashboard.service=app-dashboard
+      - traefik-app-dashboard.description=The dashboard for all services.
 
   traefik:
     image: traefik:latest
