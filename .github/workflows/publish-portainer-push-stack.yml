@@ -1,0 +1,38 @@
+name: Publish Portainer Push Stack
+
+on:
+  push:
+    branches: [ "main" ]
+    paths: [
+      "src/portainer-push-stack/**",
+      "!src/portainer-push-stack/README.md",
+      ".github/workflows/publish-portainer-push-stack.yml",
+    ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+      - uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          image: s.containers/portainer-push-stack
+          registry: ghcr.io
+          directory: ./src/portainer-push-stack
+          dockerfile: ./src/portainer-push-stack/Dockerfile
+          multiPlatform: true
+          platform: linux/amd64,linux/arm64
+          addLatest: true
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}

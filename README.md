@@ -120,3 +120,7 @@ Expose a certificate from a traefik container to an HTTP API.
 ### [`s.containers/traefik-app-dashboard`](./src/traefik-app-dashboard/README.md)
 
 This container uses the traefik API to fetch all available services and generates a dashboard for them.
+
+### [`s.containers/portainer-push-stack`](./src/portainer-push-stack/README.md)
+
+As the webhook feature of Portainer does not allow updating the content of a stack, this container pushes the stack to the Portainer API.
