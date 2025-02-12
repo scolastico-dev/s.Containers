@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 import dotenv from 'dotenv';
 import axios from 'axios';
 
@@ -19,7 +19,7 @@ if (!OPTIONS.PORTAINER_URL || !OPTIONS.PORTAINER_KEY || !OPTIONS.STACK_ID || !OP
 }
 
 (async () => {
-  const env = OPTIONS.IGNORE_DOT_ENV ? {} : dotenv.parse(readFileSync('.env'))
+  const env = OPTIONS.IGNORE_DOT_ENV ? {} : existsSync('.env') ? dotenv.parse(readFileSync('.env')) : {}
   const stack = readFileSync(OPTIONS.STACK_FILE, 'utf8')
   await axios.put(`${OPTIONS.PORTAINER_URL}/stacks/${OPTIONS.STACK_ID}`, {
     stackFileContent: stack,
@@ -28,7 +28,7 @@ if (!OPTIONS.PORTAINER_URL || !OPTIONS.PORTAINER_KEY || !OPTIONS.STACK_ID || !OP
     pullImage: OPTIONS.RE_PULL_IMAGES,
   }, {
     headers: {
-      Authorization: `Bearer ${OPTIONS.PORTAINER_KEY}`,
+      'X-API-Key': `${OPTIONS.PORTAINER_KEY}`,
     },
     params: {
       endpointId: OPTIONS.ENDPOINT_ID,
