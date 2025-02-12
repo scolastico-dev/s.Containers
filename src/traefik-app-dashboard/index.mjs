@@ -51,11 +51,11 @@ async function getData() {
       IMG: process.env[`${OVERRIDE_KEY}_IMG`],
       DESCRIPTION: process.env[`${OVERRIDE_KEY}_DESCRIPTION`],
     }
-    if (!OVERRIDES.URL && !router.rule.includes('Host(')) {
+    const label = labels[router.service] || {}
+    if (!OVERRIDES.URL && !label.url && !router.rule.includes('Host(')) {
       console.warn(`Router ${router.service} has no Host rule, skipping`)
       continue
     }
-    const label = labels[router.service] || {}
     arr.push({
       name: OVERRIDES.NAME || label.name || router.service,
       url: OVERRIDES.URL || label.url || router.rule.match(/Host\(`([^`]+)`\)/)[1],
