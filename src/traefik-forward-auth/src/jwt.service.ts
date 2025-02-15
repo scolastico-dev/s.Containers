@@ -6,18 +6,18 @@ import { createHmac, randomUUID } from 'crypto';
 export class JwtService {
   constructor(private readonly config: ConfigService) {}
 
-  private btoa(input: string): string {
+  btoa(input: string): string {
     return Buffer.from(input).toString('base64url');
   }
 
-  private atob(input: string): string {
+  atob(input: string): string {
     return Buffer.from(
       input.replace(/-/g, '+').replace(/_/g, '/'),
       'base64',
     ).toString();
   }
 
-  private sha256sum(data: string): string {
+  sha256sum(data: string): string {
     return createHmac('sha256', this.config.JWT_SECRET)
       .update(data)
       .digest('base64url');

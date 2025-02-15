@@ -1,7 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from './config.service';
-import { createHash } from 'crypto';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 type OAuthConfig = {
   tokenUrl: string;
@@ -11,7 +10,8 @@ type OAuthConfig = {
 
 @Injectable()
 export class OidcService {
-  private cache;
+  private readonly logger = new Logger(OidcService.name);
+  private cache: OAuthConfig | null = null;
   constructor(private readonly config: ConfigService) {}
 
   async getConfig(): Promise<OAuthConfig> {
@@ -33,34 +33,43 @@ export class OidcService {
     return this.cache;
   }
 
-  sha256sum(data: string): string {
-    return createHash('sha256')
-      .update(this.config.JWT_SECRET + data)
-      .digest('hex');
-  }
-
-  async getAuthUrl(callbackUrl: string): Promise<string> {
+  async getAuthUrl(callbackUrl: string, state: string): Promise<string> {
     const cfg = await this.getConfig();
     const authUrl = new URL(cfg.authUrl);
-    authUrl.searchParams.append('client_id', this.config.CLIENT_ID);
+    authUrl.searchParams.append('state', state);
     authUrl.searchParams.append('redirect_uri', callbackUrl);
+    authUrl.searchParams.append('client_id', this.config.CLIENT_ID);
     authUrl.searchParams.append('scope', this.config.OAUTH2_SCOPE);
     authUrl.searchParams.append('response_type', 'code');
     return authUrl.toString();
   }
 
-  async getToken(code: string): Promise<string> {
+  async getToken(redirectUrl: string, code: string): Promise<string> {
     const cfg = await this.getConfig();
-    const token = new URLSearchParams({
-      client_id: this.config.CLIENT_ID,
-      client_secret: this.config.CLIENT_SECRET,
-      redirect_uri: this.config.REDIRECT_URL,
-      grant_type: 'authorization_code',
-      code,
-    });
+    const params = new URLSearchParams();
+    params.append('client_id', this.config.CLIENT_ID);
+    params.append('client_secret', this.config.CLIENT_SECRET);
+    params.append('grant_type', 'authorization_code');
+    params.append('code', code);
+    params.append('redirect_uri', redirectUrl);
+    params.append('scope', this.config.OAUTH2_SCOPE);
     return await axios
-      .post(cfg.tokenUrl, token)
-      .then((res) => res.data.access_token);
+      .post(cfg.tokenUrl, params.toString(), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: `Basic ${Buffer.from(
+            `${this.config.CLIENT_ID}:${this.config.CLIENT_SECRET}`,
+          ).toString('base64')}`,
+        },
+      })
+      .then((res) => res.data.access_token)
+      .catch((err) => {
+        if (err instanceof AxiosError) {
+          this.logger.error('Code:', err.response?.status);
+          this.logger.error('Data:', err.response?.data);
+        }
+        throw err;
+      });
   }
 
   async getUserInfo(token: string): Promise<any> {
@@ -71,6 +80,13 @@ export class OidcService {
           Authorization: `Bearer ${token}`,
         },
       })
-      .then((res) => res.data);
+      .then((res) => res.data)
+      .catch((err) => {
+        if (err instanceof AxiosError) {
+          this.logger.error('Code:', err.response?.status);
+          this.logger.error('Data:', err.response?.data);
+        }
+        throw err;
+      });
   }
 }
