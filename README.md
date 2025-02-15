@@ -124,3 +124,7 @@ This container uses the traefik API to fetch all available services and generate
 ### [`s.containers/portainer-push-stack`](./src/portainer-push-stack/README.md)
 
 As the webhook feature of Portainer does not allow updating the content of a stack, this container pushes the stack to the Portainer API.
+
+### [`s.containers/traefik-forward-auth`](./src/traefik-forward-auth/README.md)
+
+Secure your services easily against an external OIDC or OAuth2 provider.
