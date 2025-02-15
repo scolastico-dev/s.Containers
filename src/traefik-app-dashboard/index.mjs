@@ -58,7 +58,7 @@ async function getData() {
     }
     arr.push({
       name: OVERRIDES.NAME || label.name || router.service,
-      url: OVERRIDES.URL || label.url || router.rule.match(/Host\(`([^`]+)`\)/)[1],
+      url: OVERRIDES.URL || label.url || ('http://' + router.rule.match(/Host\(`([^`]+)`\)/)[1]),
       id: createHash('md5').update(router.service).digest('hex'),
       img: OVERRIDES.IMG || label.img,
       description: OVERRIDES.DESCRIPTION || label.description,
