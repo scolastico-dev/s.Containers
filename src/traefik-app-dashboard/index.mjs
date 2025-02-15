@@ -32,6 +32,7 @@ async function getDataFromLabels() {
       url: Labels[PREFIX + 'url'],
       img: Labels[PREFIX + 'img'],
       description: Labels[PREFIX + 'description'],
+      hidden: Labels[PREFIX + 'hidden'] === 'true',
     }
   }
   return res
@@ -50,8 +51,10 @@ async function getData() {
       URL: process.env[`${OVERRIDE_KEY}_URL`],
       IMG: process.env[`${OVERRIDE_KEY}_IMG`],
       DESCRIPTION: process.env[`${OVERRIDE_KEY}_DESCRIPTION`],
+      HIDDEN: process.env[`${OVERRIDE_KEY}_HIDDEN`] === 'true',
     }
     const label = labels[router.service] || {}
+    if (OVERRIDES.HIDDEN || label.hidden) continue
     if (!OVERRIDES.URL && !label.url && !router.rule.includes('Host(')) {
       console.warn(`Router ${router.service} has no Host rule, skipping`)
       continue

@@ -19,6 +19,13 @@ Never have to worry about documenting all your services again.
 | `OVERRIDE_<SERVICE_NAME>_URL`         | string | `null`                | Override the URL of a service.         |
 | `OVERRIDE_<SERVICE_NAME>_IMG`         | string | `null`                | Override the image of a service.       |
 | `OVERRIDE_<SERVICE_NAME>_DESCRIPTION` | string | `null`                | Override the description of a service. |
+| `OVERRIDE_<SERVICE_NAME>_HIDDEN`      | bool   | `false`               | Hide a service explicitly.             |
+
+All `OVERRIDE_<SERVICE_NAME>_` variables are also available via docker
+labels if the `/var/run/docker.sock` is mounted. The format is then:
+
+- `traefik-app-dashboard.service=<SERVICE_NAME>`
+- `traefik-app-dashboard.<OVERRIDE_KEY>=<OVERRIDE_VALUE>`
 
 ## Example
 
