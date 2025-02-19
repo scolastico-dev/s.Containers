@@ -45,7 +45,7 @@ async function getData() {
   const arr = []
   for (const router of data) {
     if (OPTIONS.IGNORE_REGEX && new RegExp(OPTIONS.IGNORE_REGEX).test(router.service)) continue
-    const OVERRIDE_KEY = `OVERRIDE_${router.service.toUpperCase()}`
+    const OVERRIDE_KEY = `OVERRIDE_${router.service.toUpperCase().replace(/[^A-Z0-9_]/g, '_')}`
     const OVERRIDES = {
       NAME: process.env[`${OVERRIDE_KEY}_NAME`],
       URL: process.env[`${OVERRIDE_KEY}_URL`],
