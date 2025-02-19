@@ -136,3 +136,7 @@ Start terminal applications in your browser with ease.
 ### [`s.containers/web-term-otel-tui`](./src/web-term-otel-tui/README.md)
 
 A wrapper for the [ymtdzz/otel-tui](https://github.com/ymtdzzz/otel-tui) to run it in a web terminal.
+
+### [`s.containers/github-commit-hash-expose`](./src/github-commit-hash-expose/README.md)
+
+Expose the latest commit hash of a GitHub repository's default branch via a simple API, with optional hashing and caching.
