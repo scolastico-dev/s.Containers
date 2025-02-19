@@ -128,3 +128,11 @@ As the webhook feature of Portainer does not allow updating the content of a sta
 ### [`s.containers/traefik-forward-auth`](./src/traefik-forward-auth/README.md)
 
 Secure your services easily against an external OIDC or OAuth2 provider.
+
+### [`s.containers/web-term-wrapper`](./src/web-term-wrapper/README.md)
+
+Start terminal applications in your browser with ease.
+
+### [`s.containers/web-term-otel-tui`](./src/web-term-otel-tui/README.md)
+
+A wrapper for the [ymtdzz/otel-tui](https://github.com/ymtdzzz/otel-tui) to run it in a web terminal.
