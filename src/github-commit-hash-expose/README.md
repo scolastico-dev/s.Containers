@@ -13,9 +13,12 @@ Expose the latest commit hash of a GitHub repository's default branch via a simp
 | `CFG_<ORG>_PAT`          | string | `null`        | The GitHub Personal Access Token (PAT) for the given organization.      |
 | `CFG_<ORG>_TTL`          | int    | `3600`        | The cache duration in seconds.                                          |
 | `CFG_<ORG>_SALT`         | string | `null`        | Optional salt for hashing the commit hash.                              |
+| `CFG_<ORG>_FAKE_HASHES`  | bool   | `false`       | If an request fails, fake hashes will be returned instead of an error.  |
 | `PORT`                   | int    | `3000`        | The port the service runs on.                                           |
 
 The `<ORG>` placeholder should be replaced with the respective GitHub organization name in uppercase.
+
+The `CFG_<ORG>_FAKE_HASHES` variable can be used to prevent people from guessing and testing if repositories exist.
 
 ## API
 
