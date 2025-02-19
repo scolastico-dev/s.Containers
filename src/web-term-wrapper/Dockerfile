@@ -12,6 +12,8 @@ RUN pnpm build
 FROM node:20-alpine AS production
 LABEL maintainer="Joschua Becker EDV <support@scolasti.co>"
 
+RUN apk add --no-cache python3 make g++
+
 COPY package.json package-lock.json /app/
 WORKDIR /app
 RUN npm install
