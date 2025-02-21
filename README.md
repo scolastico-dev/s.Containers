@@ -140,3 +140,7 @@ A wrapper for the [ymtdzz/otel-tui](https://github.com/ymtdzzz/otel-tui) to run 
 ### [`s.containers/github-commit-hash-expose`](./src/github-commit-hash-expose/README.md)
 
 Expose the latest commit hash of a GitHub repository's default branch via a simple API, with optional hashing and caching.
+
+### [`s.containers/docker-health-otel-metrics-exporter`](./src/docker-health-otel-metrics-exporter/README.md)
+
+Export health metrics of docker containers to an OpenTelemetry collector.
