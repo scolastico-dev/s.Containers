@@ -57,7 +57,8 @@ async function fetchContainerHealth() {
         attributes: {
           container_id: containerInfo.Id,
           container_name: containerInfo.Names[0].replace(/^\//, ''),
-          health_state: healthState,
+          health_state_str: healthState || 'unknown',
+          health_state_num: stateValue,
         },
       });
     }
