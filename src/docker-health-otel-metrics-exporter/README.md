@@ -28,7 +28,7 @@ Export the health of your Docker containers as OpenTelemetry metrics in a range 
 ```yml
 services:
   app:
-    image: s.containers/docker-health-otel-metrics-exporter:latest
+    image: ghcr.io/scolastico-dev/s.containers/docker-health-otel-metrics-exporter:latest
     restart: unless-stopped
     network_mode: host
     volumes:
