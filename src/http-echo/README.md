@@ -17,6 +17,8 @@ headers and the body it has received.
 services:
   app:
     image: ghcr.io/scolastico-dev/s.containers/http-echo:latest
+    environment:
+      LOG_REQUEST: "true" # optional
     ports:
       - "3000:3000"
 ```
