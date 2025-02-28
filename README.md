@@ -144,3 +144,7 @@ Expose the latest commit hash of a GitHub repository's default branch via a simp
 ### [`s.containers/docker-health-otel-metrics-exporter`](./src/docker-health-otel-metrics-exporter/README.md)
 
 Export health metrics of docker containers to an OpenTelemetry collector.
+
+### [`s.containers/signoz-auth-proxy`](./src/signoz-auth-proxy/README.md)
+
+This proxy does removes the login feature of SigNoz, and allow you to open the SigNoz UI without the need to enter your credentials.
