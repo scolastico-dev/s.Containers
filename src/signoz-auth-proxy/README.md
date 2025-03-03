@@ -21,7 +21,7 @@ _See the statement of the SigNoz developers [here](https://github.com/SigNoz/sig
 | Name                       | Type    | Default Value | Description                                                    |
 |----------------------------|---------|---------------|----------------------------------------------------------------|
 | `SIGNOZ_URL`               | string  | -             | The URL of the Signoz instance.                                 |
-| `SIGNOZ_USERNAME`          | string  | -             | The username for the Signoz instance.                           |
+| `SIGNOZ_USER`              | string  | -             | The username for the Signoz instance.                           |
 | `SIGNOZ_PASSWORD`          | string  | -             | The password for the Signoz instance.                           |
 
 ## Example
@@ -34,6 +34,38 @@ services:
       - "3000:3000"
     environment:
       SIGNOZ_URL: "http://signoz:3000"
-      SIGNOZ_USERNAME: "admin"
+      SIGNOZ_USER: "admin"
       SIGNOZ_PASSWORD: "admin"
+```
+
+or add this `docker-compose.override.yml` to your `signoz/deploy/docker` directory:
+
+```yaml
+services:
+  otel-collector:
+    ports: []
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.signoz-ingest.tls.certresolver=default"
+      - "traefik.http.routers.signoz-ingest.rule=Host(`signoz.example.com`) && Header(`signoz-access-token`,`my-secret-token`)"
+      - "traefik.http.services.signoz-ingest.loadbalancer.server.port=4317"
+      - "traefik.http.services.signoz-ingest.loadbalancer.server.scheme=h2c"
+  frontend:
+    ports: []
+  oauth-proxy:
+    image: ghcr.io/scolastico-dev/s.containers/signoz-auth-proxy:latest
+    restart: unless-stopped
+    networks:
+      - signoz-net
+    environment:
+      SIGNOZ_URL: http://frontend:3301
+      SIGNOZ_USER: admin
+      SIGNOZ_PASSWORD: admin
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.signoz.tls.certresolver=default"
+      - "traefik.http.routers.signoz.rule=Host(`signoz.example.com`)"
+      - "traefik.http.routers.signoz.middlewares=forward-auth" # Change this to your middleware name
+      - "traefik.http.services.signoz.loadbalancer.server.port=3000"
+      - "traefik.http.services.signoz.loadbalancer.server.scheme=http"
 ```
