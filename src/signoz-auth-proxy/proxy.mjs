@@ -64,6 +64,7 @@ app.get('/main.*.js', async (req, res) => {
       window.localStorage.setItem('REFRESH_AUTH_TOKEN', '${token.refreshJwt}');
       window.localStorage.setItem('IS_LOGGED_IN', 'true');
       window.localStorage.setItem('IS_IDENTIFIED_USER', 'true');
+      window.localStorage.setItem('USER_ID', '${JSON.parse(Buffer.from(token.accessJwt.split('.')[1], 'base64').toString()).id}');
       ${await axios.get(url.toString()).then(res => res.data)}
     `)
 })
