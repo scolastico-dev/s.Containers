@@ -188,6 +188,9 @@ async function processFiles() {
         }
         child.execSync(`tar -xzf ${tarball} -C ${targetDirectory}`);
         fs.unlinkSync(tarball);
+      } else if (file.mode === 'cp') {
+        fs.copyFileSync(file.content, file.path);
+        applyOverrides(file.path, file.overridesUser, file.overridesGroup, file.overridesPermissions);
       } else throw new Error(`Unknown mode ${file.mode} for ${file.prefix}`);
 
       if (file.sleepAfter) {

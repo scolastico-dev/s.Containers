@@ -52,6 +52,7 @@ composing deployment instructions for said files.
 | `exists`  | Checks if the file exists. (Throws an error if it does not exist.)     | No                                                    |
 | `missing` | Checks if the file does not exist. (Throws an error if it does exist.) | No                                                    |
 | `npm`     | Downloads the content of an npm package.                               | Yes, but only content will be accepted.               |
+| `cp`      | Copies the content of a file.                                          | Yes, but content will be handled as a path to a file. |
 
 `mkdir`, `perm`, `permr` and `delete` do not accept `FILE_<name>_CONTENT` or `FILE_<name>_URL`.
 
