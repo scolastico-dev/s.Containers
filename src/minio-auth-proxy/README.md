@@ -39,9 +39,9 @@ services:
     ports:
       - "9001:3000"
     environment:
-      SIGNOZ_URL: http://minio:9001
-      SIGNOZ_USER: admin@example.com
-      SIGNOZ_PASSWORD: admin@example.com
+      MINIO_URL: http://minio:9001
+      MINIO_USER: admin@example.com
+      MINIO_PASSWORD: admin@example.com
   minio:
     image: bitnami/minio:2023-debian-11
     <<: *restart
@@ -67,4 +67,7 @@ services:
     command: >
       sh -c "mc alias set minio http://minio:9000 admin@example.com admin@example.com &&
       mc anonymous set public minio/my-public-bucket"
+
+volumes:
+  data:
 ```
