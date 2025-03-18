@@ -148,3 +148,7 @@ Export health metrics of docker containers to an OpenTelemetry collector.
 ### [`s.containers/signoz-auth-proxy`](./src/signoz-auth-proxy/README.md)
 
 This proxy does removes the login feature of SigNoz, and allow you to open the SigNoz UI without the need to enter your credentials.
+
+### [`s.containers/easy-pg-admin`](./src/easy-pg-admin/README.md)
+
+Setup a pgAdmin instance with a pre configured server and disabled authentication.
