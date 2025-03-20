@@ -27,12 +27,15 @@ async function getDataFromLabels() {
     if (!Labels) continue
     for (const key in Labels) {
       if (!key.startsWith(PREFIX + '.')) continue
-      res[key] = {
-        name: Labels[`${PREFIX}.${key}.name`],
-        url: Labels[`${PREFIX}.${key}.url`],
-        img: Labels[`${PREFIX}.${key}.img`],
-        description: Labels[`${PREFIX}.${key}.description`],
-        hidden: Labels[`${PREFIX}.${key}.hidden`] !== undefined ? Labels[`${PREFIX}.${key}.hidden`] === 'true' : undefined,
+      const parts = key.split('.')
+      if (parts.length !== 2) continue
+      const service = parts[1]
+      res[service] = {
+        name: Labels[`${PREFIX}.${service}.name`],
+        url: Labels[`${PREFIX}.${service}.url`],
+        img: Labels[`${PREFIX}.${service}.img`],
+        description: Labels[`${PREFIX}.${service}.description`],
+        hidden: Labels[`${PREFIX}.${service}.hidden`] !== undefined ? Labels[`${PREFIX}.${service}.hidden`] === 'true' : undefined,
       }
     }
     const service = Labels[PREFIX + 'service'];
