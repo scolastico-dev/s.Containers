@@ -152,3 +152,11 @@ This proxy does removes the login feature of SigNoz, and allow you to open the S
 ### [`s.containers/easy-pg-admin`](./src/easy-pg-admin/README.md)
 
 Setup a pgAdmin instance with a pre configured server and disabled authentication.
+
+### [`s.containers/minio-auth-proxy`](./src/minio-auth-proxy/README.md)
+
+Remove the login form of the Minio Management UI and allow access to the UI without the need to enter your credentials.
+
+### [`s.containers/rabbitmq-auth-proxy`](./src/rabbitmq-auth-proxy/README.md)
+
+Remove the login form of the RabbitMQ Management UI and allow access to the UI without the need to enter your credentials.
