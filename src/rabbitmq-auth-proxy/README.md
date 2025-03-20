@@ -28,7 +28,7 @@ x-restart: &restart
 
 services:
   app:
-    image: ghcr.io/scolastico-dev/s.containers/minio-auth-proxy:latest
+    image: ghcr.io/scolastico-dev/s.containers/rabbitmq-auth-proxy:latest
     <<: *restart
     depends_on:
       rabbitmq:
