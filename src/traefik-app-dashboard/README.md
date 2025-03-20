@@ -24,8 +24,7 @@ Never have to worry about documenting all your services again.
 All `OVERRIDE_<SERVICE_NAME>_` variables are also available via docker
 labels if the `/var/run/docker.sock` is mounted. The format is then:
 
-- `traefik-app-dashboard.service=<SERVICE_NAME>`
-- `traefik-app-dashboard.<OVERRIDE_KEY>=<OVERRIDE_VALUE>`
+- `traefik-app-dashboard.<SERVICE_NAME>.<OVERRIDE_KEY>=<OVERRIDE_VALUE>`
 
 ## Example
 
@@ -43,8 +42,7 @@ services:
       - traefik.enable=true
       - traefik.http.routers.app-dashboard.rule=Host(`dashboard.local.scolastico.me`)
       - traefik.http.services.app-dashboard.loadbalancer.server.port=3000
-      - traefik-app-dashboard.service=app-dashboard
-      - traefik-app-dashboard.description=The dashboard for all services.
+      - traefik-app-dashboard.app-dashboard.description=The dashboard for all services.
 
   traefik:
     image: traefik:latest

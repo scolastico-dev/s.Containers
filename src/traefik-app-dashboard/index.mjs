@@ -25,6 +25,16 @@ async function getDataFromLabels() {
     const c = await docker.getContainer(container.Id).inspect()
     const { Labels } = c.Config
     if (!Labels) continue
+    for (const key in Labels) {
+      if (!key.startsWith(PREFIX + '.')) continue
+      res[key] = {
+        name: Labels[`${PREFIX}.${key}.name`],
+        url: Labels[`${PREFIX}.${key}.url`],
+        img: Labels[`${PREFIX}.${key}.img`],
+        description: Labels[`${PREFIX}.${key}.description`],
+        hidden: Labels[`${PREFIX}.${key}.hidden`] !== undefined ? Labels[`${PREFIX}.${key}.hidden`] === 'true' : undefined,
+      }
+    }
     const service = Labels[PREFIX + 'service'];
     if (!service) continue
     res[service] = {
@@ -32,7 +42,7 @@ async function getDataFromLabels() {
       url: Labels[PREFIX + 'url'],
       img: Labels[PREFIX + 'img'],
       description: Labels[PREFIX + 'description'],
-      hidden: Labels[PREFIX + 'hidden'] === 'true',
+      hidden: Labels[PREFIX + 'hidden'] !== undefined ? Labels[PREFIX + 'hidden'] === 'true' : undefined,
     }
   }
   return res
