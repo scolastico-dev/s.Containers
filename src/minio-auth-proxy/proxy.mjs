@@ -1,6 +1,8 @@
-import express from 'express'
 import axios from 'axios'
 import dotenv from 'dotenv'
+import http from 'http'
+import httpProxy from 'http-proxy'
+import { WebSocket, WebSocketServer } from 'ws'
 
 dotenv.config()
 
@@ -27,51 +29,83 @@ const getToken = async (reset = false) => {
     secretKey: CFG.MINIO_PASSWORD,
   })
   tokenCache = res.headers['set-cookie'];
+  setTimeout(() => tokenCache = null, 10 * 60 * 1000)
   return tokenCache
 }
 
-const app = express()
-
-app.use(express.json({ limit: '50mb' }))
-app.use(express.urlencoded({ limit: '50mb', extended: true }))
-app.use(express.text({ limit: '50mb' }))
-app.use(express.raw({ limit: '50mb' }))
-
-app.get('/login', async (req, res) => {
-  res.redirect('/')
+const proxy = httpProxy.createProxyServer({
+  target: CFG.MINIO_URL,
+  ws: true,
+  secure: process.env.NODE_TLS_REJECT_UNAUTHORIZED !== '0',
+  changeOrigin: true,
+  preserveHeaderKeyCase: true,
+})
+const server = http.createServer(async (req, res) => {
+  const token = await getToken();
+  res.setHeader('Set-Cookie', token)
+  if (req.url === '/login') {
+    res.writeHead(302, { Location: '/' })
+    res.end()
+    return
+  }
+  proxy.web(req, res, {
+    headers: {
+      Cookie: token,
+    },
+  })
 })
 
-app.all('*', async (req, res) => {
+const wss = new WebSocketServer({ server })
+wss.on('connection', async (ws, req) => {
   const url = new URL(CFG.MINIO_URL)
-  url.pathname = req.path
-  for (const [key, value] of Object.entries(req.query)) {
-    url.searchParams.append(key, value)
-  }
-  try {
-    const { data, status, headers} = await axios({
-      method: req.method,
-      url: url.toString(),
-      headers: {
-        ...req.headers,
-        Host: undefined,
-        Cookie: await getToken(),
-      },
-      data: req.body,
-      validateStatus: (status) => status !== 401 && status !== 403,
-      responseType: 'arraybuffer',
-    })
-    res.header(headers).status(status).send(data)
-  } catch (error) {
-    if (error.response) {
-      await getToken(true)
-      res.header({'Refresh': '1; url=/'}).send('Auth Proxy: Refreshing token, please wait...')
-    } else {
-      res.status(500).send('Auth Proxy: Internal server error')
-      console.error(error)
-    }
-  }
+  if (url.protocol === 'https:') url.protocol = 'wss:'
+  else url.protocol = 'ws:'
+  url.pathname = req.url
+  const ws2 = new WebSocket(url.toString(), {
+    headers: {
+      Cookie: await getToken(),
+    },
+  })
+  const cache = []
+  ws.on('message', data => {
+    if (ws2.readyState === WebSocket.OPEN) ws2.send(data.toString())
+    else cache.push(data.toString())
+  })
+  ws2.on('open', () => {
+    console.log('open')
+    for (const data of cache) ws2.send(data)
+  })
+  ws2.on('message', data => {
+    ws.send(data.toString())
+  })
+  ws.on('close', () => {
+    ws2.close()
+  })
+  ws2.on('close', () => {
+    ws.close()
+  })
+  ws2.on('error', error => {
+    console.error(error)
+    ws.close()
+  })
+  ws.on('error', error => {
+    console.error(error)
+    ws2.close()
+  })
+  ws2.on('ping', data => {
+    ws.ping(data)
+  })
+  ws2.on('pong', data => {
+    ws.pong(data)
+  })
+  ws.on('ping', data => {
+    ws2.ping(data)
+  })
+  ws.on('pong', data => {
+    ws2.pong(data)
+  })
 })
 
-app.listen(3000, () => {
+server.listen(3000, () => {
   console.log('Auth Proxy: Listening on port 3000')
 })
