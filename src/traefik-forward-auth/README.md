@@ -35,7 +35,7 @@ x-restart: &restart
 
 services:
   auth:
-    image: ghcr.io/scolastico-dev/s.containers/traefik-app-dashboard:latest
+    image: ghcr.io/scolastico-dev/s.containers/traefik-forward-auth:latest
     <<: *restart
     environment:
       CLIENT_ID: YOUR_CLIENT_ID
