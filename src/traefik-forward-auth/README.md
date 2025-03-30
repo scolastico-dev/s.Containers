@@ -45,8 +45,11 @@ services:
       COOKIE_SECURE: false
     labels:
       - traefik.enable=true
-      - traefik.http.routers.auth.rule=Host(`auth.local.scolastico.me`)
-      - traefik.http.routers.auth.middlewares=auth
+      - traefik.http.routers.auth-index.rule=Host(`auth.local.scolastico.me`) && Path(`/`)
+      - traefik.http.routers.auth-index.middlewares=auth
+      - traefik.http.routers.auth-index.service=auth
+      - traefik.http.routers.auth-api.rule=Host(`auth.local.scolastico.me`)
+      - traefik.http.routers.auth-api.service=auth
       - traefik.http.services.auth.loadbalancer.server.port=3000
       - traefik.http.middlewares.auth.forwardauth.address=http://auth:3000/auth
 
