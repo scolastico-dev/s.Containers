@@ -160,3 +160,7 @@ Remove the login form of the Minio Management UI and allow access to the UI with
 ### [`s.containers/rabbitmq-auth-proxy`](./src/rabbitmq-auth-proxy/README.md)
 
 Remove the login form of the RabbitMQ Management UI and allow access to the UI without the need to enter your credentials.
+
+### [`s.containers/smtp-relay`](./src/smtp-relay/README.md)
+
+A simple SMTP relay container which can be used to relay emails to a second SMTP server without or with alternative authentication.
