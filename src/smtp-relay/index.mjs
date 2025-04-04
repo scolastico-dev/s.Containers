@@ -17,6 +17,7 @@ const config = {
     port: parseInt(process.env.SEND_PORT || '587', 10),
     secure: process.env.SEND_SECURE === 'true',
     noVerify: process.env.SEND_NO_VERIFY === 'true',
+    reuseConnection: process.env.SEND_REUSE_CONNECTION === 'true'
   },
   receive: {
     keyPath: process.env.RECEIVE_KEY || null,
@@ -35,11 +36,8 @@ if (!config.send.host || !config.send.from) {
   process.exit(1)
 }
 
-if (!config.send.user && config.send.pass)
-  console.warn("WARN: SEND_PASS provided without SEND_USER. Authentication might fail.")
-
-if (config.send.user && !config.send.pass)
-  console.warn("WARN: SEND_USER provided without SEND_PASS. Authentication might fail.")
+if (!config.send.user && config.send.pass) console.warn("WARN: SEND_PASS provided without SEND_USER. Authentication might fail.")
+if (config.send.user && !config.send.pass) console.warn("WARN: SEND_USER provided without SEND_PASS. Authentication might fail.")
 
 console.log("Loading accounts from environment variables...")
 for (const key in process.env) {
@@ -109,15 +107,15 @@ const transporterOptions = {
   host: config.send.host,
   port: config.send.port,
   secure: config.send.secure,
+  pool: config.send.reuseConnection,
   auth: (config.send.user && config.send.pass) ? {
     user: config.send.user,
     pass: config.send.pass,
   } : undefined,
 }
-
 const transporter = createTransport(transporterOptions)
 
-if (!config.send.noVerify) transporter.verify((error) => {
+if (!config.send.noVerify) transporter.verify(error => {
   if (error) {
     console.error('ERROR connecting to outbound SMTP server:', error)
   } else {
@@ -172,7 +170,7 @@ const serverOptionsBase = {
     stream.on('error', err => {
       console.error(`MAIL ERROR for ${session.id}:`, err)
     })
-  },  
+  },
   onConnect(session, callback) {
     console.log(`CONNECT: Connection from ${session.remoteAddress}`)
     callback()
@@ -204,7 +202,7 @@ function startServer(port, options) {
 
 const servers = [
   startServer(25, { ...serverOptionsBase, disabledCommands: ['STARTTLS'], allowInsecureAuth: true }),
-  startServer(587, { ...serverOptionsBase, secure: false, ...(tlsOptions || {})}),
+  startServer(587, { ...serverOptionsBase, secure: false, ...(tlsOptions || {}) }),
 ]
 
 if (tlsOptions) {
@@ -213,7 +211,7 @@ if (tlsOptions) {
   console.log('Port 465 (SMTPS) is disabled because TLS is not configured.')
 }
 
-const shutdown = (signal) => {
+const shutdown = signal => {
   console.log(`\nReceived ${signal}. Shutting down gracefully...`)
   let closed = 0
   servers.forEach(srv => {
