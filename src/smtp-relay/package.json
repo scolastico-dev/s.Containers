@@ -1,0 +1,7 @@
+{
+	"dependencies": {
+		"dotenv": "^16.4.7",
+		"nodemailer": "^6.10.0",
+		"smtp-server": "^3.13.6"
+	}
+}

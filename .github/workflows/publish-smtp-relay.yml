@@ -1,0 +1,38 @@
+name: Publish SMTP Relay
+
+on:
+  push:
+    branches: [ "main" ]
+    paths: [
+      "src/smtp-relay/**",
+      "!src/smtp-relay/README.md",
+      ".github/workflows/publish-smtp-relay.yml",
+    ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+      - uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          image: s.containers/smtp-relay
+          registry: ghcr.io
+          directory: ./src/smtp-relay
+          dockerfile: ./src/smtp-relay/Dockerfile
+          multiPlatform: true
+          platform: linux/amd64,linux/arm64
+          addLatest: true
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}

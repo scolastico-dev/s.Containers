@@ -1,0 +1,69 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      dotenv:
+        specifier: ^16.4.7
+        version: 16.4.7
+      nodemailer:
+        specifier: ^6.10.0
+        version: 6.10.0
+      smtp-server:
+        specifier: ^3.13.6
+        version: 3.13.6
+
+packages:
+
+  base32.js@0.1.0:
+    resolution: {integrity: sha512-n3TkB02ixgBOhTvANakDb4xaMXnYUVkNoRFJjQflcqMQhyEKxEHdj3E6N8t8sUQ0mjH/3/JxzlXuz3ul/J90pQ==}
+    engines: {node: '>=0.12.0'}
+
+  dotenv@16.4.7:
+    resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
+    engines: {node: '>=12'}
+
+  ipv6-normalize@1.0.1:
+    resolution: {integrity: sha512-Bm6H79i01DjgGTCWjUuCjJ6QDo1HB96PT/xCYuyJUP9WFbVDrLSbG4EZCvOCun2rNswZb0c3e4Jt/ws795esHA==}
+
+  nodemailer@6.10.0:
+    resolution: {integrity: sha512-SQ3wZCExjeSatLE/HBaXS5vqUOQk6GtBdIIKxiFdmm01mOQZX/POJkO3SUX1wDiYcwUOJwT23scFSC9fY2H8IA==}
+    engines: {node: '>=6.0.0'}
+
+  nodemailer@6.9.15:
+    resolution: {integrity: sha512-AHf04ySLC6CIfuRtRiEYtGEXgRfa6INgWGluDhnxTZhHSKvrBu7lc1VVchQ0d8nPc4cFaZoPq8vkyNoZr0TpGQ==}
+    engines: {node: '>=6.0.0'}
+
+  punycode.js@2.3.1:
+    resolution: {integrity: sha512-uxFIHU0YlHYhDQtV4R9J6a52SLx28BCjT+4ieh7IGbgwVJWO+km431c4yRlREUAsAmt/uMjQUyQHNEPf0M39CA==}
+    engines: {node: '>=6'}
+
+  smtp-server@3.13.6:
+    resolution: {integrity: sha512-dqbSPKn3PCq3Gp5hxBM99u7PET7cQSAWrauhtArJbc+zrf5xNEOjm9+Ob3lySySrRoIEvNE0dz+w2H/xWFJNRw==}
+    engines: {node: '>=12.0.0'}
+
+snapshots:
+
+  base32.js@0.1.0: {}
+
+  dotenv@16.4.7: {}
+
+  ipv6-normalize@1.0.1: {}
+
+  nodemailer@6.10.0: {}
+
+  nodemailer@6.9.15: {}
+
+  punycode.js@2.3.1: {}
+
+  smtp-server@3.13.6:
+    dependencies:
+      base32.js: 0.1.0
+      ipv6-normalize: 1.0.1
+      nodemailer: 6.9.15
+      punycode.js: 2.3.1
