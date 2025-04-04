@@ -148,30 +148,31 @@ const serverOptionsBase = {
     callback(null, { user: auth.username })
   },
   onData(stream, session, callback) {
-    console.log(`MAIL: Receiving message from ${session.envelope.mailFrom.address || 'unknown'} for ${session.envelope.rcptTo.map(r => r.address).join(', ')} (User: ${session.user || 'anonymous'})`)
-    const pass = new PassThrough()
-    stream.pipe(pass)
-    const mailOptions = {
-      from: config.send.from,
-      to: session.envelope.rcptTo.map(rcpt => rcpt.address),
-      envelope: {
-        from: config.send.from,
-        to: session.envelope.rcptTo.map(rcpt => rcpt.address),
-      },
-      raw: pass,
-    }
-    transporter.sendMail(mailOptions, (err, info) => {
-      if (err) {
-        console.error(`RELAY ERROR for ${session.id}: Failed to send email via ${config.send.host}`, err)
-        return callback(new Error(`Failed to relay message: ${err.message} (Code: 554)`))
+    let chunks = []
+    stream.on('data', chunk => chunks.push(chunk))
+    stream.on('end', () => {
+      let raw = Buffer.concat(chunks).toString('utf8')
+      raw = raw.replace(/^From: .+$/m, `From: ${config.send.from}`)
+      const mailOptions = {
+        envelope: {
+          from: config.send.from,
+          to: session.envelope.rcptTo.map(rcpt => rcpt.address),
+        },
+        raw,
       }
-      console.log(`RELAY SUCCESS for ${session.id}: Message relayed via ${config.send.host}. ID: ${info.messageId}, Response: ${info.response}`)
-      callback(null, 'Message relayed successfully')
+      transporter.sendMail(mailOptions, (err, info) => {
+        if (err) {
+          console.error(`RELAY ERROR for ${session.id}: Failed to send email`, err)
+          return callback(new Error(`Failed to relay message: ${err.message}`))
+        }
+        console.log(`RELAY SUCCESS for ${session.id}: ${info.response}`)
+        callback(null, 'Message relayed successfully')
+      })
     })
     stream.on('error', err => {
-      console.error(`MAIL ERROR for ${session.id}: Error receiving stream data:`, err)
+      console.error(`MAIL ERROR for ${session.id}:`, err)
     })
-  },
+  },  
   onConnect(session, callback) {
     console.log(`CONNECT: Connection from ${session.remoteAddress}`)
     callback()
@@ -200,8 +201,6 @@ function startServer(port, options) {
   })
   return server
 }
-
-console.log(serverOptionsBase)
 
 const servers = [
   startServer(25, { ...serverOptionsBase, disabledCommands: ['STARTTLS'], allowInsecureAuth: true }),

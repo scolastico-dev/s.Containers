@@ -72,6 +72,6 @@ services:
       - --certificatesresolvers.dns.acme.dnschallenge.provider=cloudflare
     environment:
       CF_DNS_API_TOKEN: <YOUR_CLOUDFLARE_API_TOKEN>
-volume:
+volumes:
   data:
 ```
