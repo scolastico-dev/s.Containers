@@ -25,7 +25,7 @@ RUN npm install -g pnpm
 
 COPY --from=build /app/dist .
 COPY --from=build /app/package.json .
-COPY packages/form-api/pnpm-workspace.yaml .
+COPY --from=build /app/pnpm-workspace.yaml .
 COPY --from=build /app/pnpm-lock.yaml .
 
 RUN pnpm i --production
