@@ -18,6 +18,7 @@ with IP whitelisting and no authentication.
 | Name                        | Type   | Default Value       | Description                                                                      |
 | --------------------------- | ------ | ------------------- | -------------------------------------------------------------------------------- |
 | `SEND_FROM`                 | string | `null`              | The email address to use as the sender.                                          |
+| `SEND_NAME`                 | string | `null`              | The name to use as the sender.                                                   |
 | `SEND_USER`                 | string | `null`              | The username to use for the sender.                                              |
 | `SEND_PASS`                 | string | `null`              | The password to use for the sender.                                              |
 | `SEND_HOST`                 | string | `null`              | The SMTP server to use as the sender.                                            |
@@ -33,6 +34,8 @@ with IP whitelisting and no authentication.
 | `RECEIVE_TRAEFIK_ROOT_KEY`  | string | `null`              | The root key for the traefik key store, if you want to enable tls for the relay. |
 | `ACCOUNT_<ID>_USER`         | string | `null`              | The username to use for the account.                                             |
 | `ACCOUNT_<ID>_PASS`         | string | `null`              | The password to use for the account.                                             |
+| `ACCOUNT_<ID>_FROM`         | string | `null`              | The email address to use as the sender for the account. (Overrides `SEND_FROM`)  |
+| `ACCOUNT_<ID>_NAME`         | string | `null`              | The name to use as the sender for the account. (Overrides `SEND_NAME`)           |
 
 ## Example
 

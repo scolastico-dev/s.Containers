@@ -11,6 +11,7 @@ console.log("Starting SMTP Relay Server...")
 const config = {
   send: {
     from: process.env.SEND_FROM || null,
+    name: process.env.SEND_NAME || null,
     user: process.env.SEND_USER || null,
     pass: process.env.SEND_PASS || null,
     host: process.env.SEND_HOST || null,
@@ -50,8 +51,12 @@ for (const key in process.env) {
     const id = userMatch[1]
     const user = process.env[key]
     const pass = process.env[`ACCOUNT_${id}_PASS`]
-    if (user && pass) {
-      config.accounts.set(user, pass)
+    const from = process.env[`ACCOUNT_${id}_FROM`]
+    const name = process.env[`ACCOUNT_${id}_NAME`]
+    if (config.accounts.has(user)) {
+      console.warn(`WARN: Duplicate account found for ${user}. Skipping...`)
+    } else if (user && pass) {
+      config.accounts.set(user, { pass, from, name })
       console.log(` - Loaded account: ${user} (ID: ${id})`)
     } else {
       console.warn(`WARN: Found ACCOUNT_${id}_USER but missing or empty ACCOUNT_${id}_PASS.`)
@@ -139,11 +144,11 @@ const serverOptionsBase = {
       console.log(`AUTH: Allowing unauthenticated access from ${session.remoteAddress} (no accounts configured)`)
       return callback(null, { user: auth.username || 'anonymous' })
     }
-    const expectedPass = config.accounts.get(auth.username)
-    if (!expectedPass) {
+    if (!config.accounts.has(auth.username)) {
       console.warn(`AUTH: Failed login attempt for user "${auth.username}" from ${session.remoteAddress} - User not found`)
       return callback(new Error('Invalid username or password'))
     }
+    const expectedPass = config.accounts.get(auth.username).pass
     if (auth.password !== expectedPass) {
       console.warn(`AUTH: Failed login attempt for user "${auth.username}" from ${session.remoteAddress} - Incorrect password`)
       return callback(new Error('Invalid username or password'))
@@ -156,10 +161,13 @@ const serverOptionsBase = {
     stream.on('data', chunk => chunks.push(chunk))
     stream.on('end', () => {
       let raw = Buffer.concat(chunks).toString('utf8')
-      raw = raw.replace(/^From: .+$/m, `From: ${config.send.from}`)
+      const user = config.accounts.get(session.user)
+      const name = user.name || config.send.name
+      const from = user.from || config.send.from
+      raw = raw.replace(/^From: .+$/m, `From: ${from}`)
       const mailOptions = {
         envelope: {
-          from: config.send.from,
+          from: name ? `${name} <${from}>` : from,
           to: session.envelope.rcptTo.map(rcpt => rcpt.address),
         },
         raw,
@@ -178,7 +186,7 @@ const serverOptionsBase = {
     })
   },
   onConnect(session, callback) {
-    console.log(`CONNECT: Connection from ${session.remoteAddress}`)
+    console.log(`CONNECT: Connection from ${session.remoteAddress} (Session: ${session.id})`)
     callback()
   },
   onMailFrom(address, session, callback) {
