@@ -24,7 +24,9 @@ with IP whitelisting and no authentication.
 | `SEND_PORT`                 | int    | `578`               | The SMTP server port to use as the sender.                                       |
 | `SEND_SECURE`               | bool   | `false`             | Whether to use TLS for the SMTP server.                                          |
 | `SEND_NO_VERIFY`            | bool   | `false`             | Whether to skip testing the connection to the SMTP server.                       |
-| `SEND_REUSE_CONNECTION`     | bool   | `false`             | Whether to reuse the connection to the SMTP server.                              |
+| `SEND_POOL_ENABLED`         | bool   | `false`             | Whether to enable the connection pool for the SMTP server.                       |
+| `SEND_POOL_MAX_CONNECTIONS` | int    | `5`                 | The maximum number of connections to the SMTP server to keep open.               |
+| `SEND_POOL_MAX_MESSAGES`    | int    | `100`               | The maximum number of messages, after which the connection will be closed.       |
 | `RECEIVE_KEY`               | string | `null`              | The key to use, if you want to enable tls for the relay.                         |
 | `RECEIVE_CERT`              | string | `null`              | The certificate to use, if you want to enable tls for the relay.                 |
 | `RECEIVE_TRAEFIK_KEY_STORE` | string | `null`              | The path to the traefik key store, if you want to enable tls for the relay.      |

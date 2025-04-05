@@ -17,7 +17,11 @@ const config = {
     port: parseInt(process.env.SEND_PORT || '587', 10),
     secure: process.env.SEND_SECURE === 'true',
     noVerify: process.env.SEND_NO_VERIFY === 'true',
-    reuseConnection: process.env.SEND_REUSE_CONNECTION === 'true'
+    pool: {
+      enabled: (process.env.SEND_POOL_ENABLED || process.env.SEND_REUSE_CONNECTION) === 'true',
+      maxConnections: parseInt(process.env.SEND_POOL_MAX_CONNECTIONS || '5', 10),
+      maxMessages: parseInt(process.env.SEND_POOL_MAX_MESSAGES || '100', 10),
+    }
   },
   receive: {
     keyPath: process.env.RECEIVE_KEY || null,
@@ -107,7 +111,9 @@ const transporterOptions = {
   host: config.send.host,
   port: config.send.port,
   secure: config.send.secure,
-  pool: config.send.reuseConnection,
+  pool: config.send.pool.enabled,
+  maxConnections: config.send.pool.maxConnections,
+  maxMessages: config.send.pool.maxMessages,
   auth: (config.send.user && config.send.pass) ? {
     user: config.send.user,
     pass: config.send.pass,
