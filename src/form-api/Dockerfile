@@ -1,6 +1,15 @@
-FROM node:20-bookworm AS build
+FROM node:20-bookworm AS base
 
 RUN npm install -g pnpm
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    fontconfig \
+    fonts-liberation \
+    ttf-wqy-zenhei \
+    ttf-wqy-microhei \
+    libsdl-pango-dev
+
+FROM base AS build
 
 WORKDIR  /app
 COPY package.json .
@@ -12,16 +21,8 @@ RUN pnpm i
 COPY . .
 RUN pnpm build
 
-FROM node:20-bookworm AS production
+FROM base AS production
 WORKDIR /app
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    fontconfig \
-    fonts-liberation \
-    ttf-wqy-zenhei \
-    ttf-wqy-microhei
-
-RUN npm install -g pnpm
 
 COPY --from=build /app/dist .
 COPY --from=build /app/package.json .
