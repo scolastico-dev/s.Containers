@@ -18,9 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     fontconfig \
     fonts-liberation \
     ttf-wqy-zenhei \
-    ttf-wqy-microhei \
-    ttf-wqy-microhei-lite \
-    ttf-wqy-microhei-lite
+    ttf-wqy-microhei
 
 RUN npm install -g pnpm
 
