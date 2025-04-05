@@ -12,6 +12,7 @@ const config = {
   send: {
     from: process.env.SEND_FROM || null,
     name: process.env.SEND_NAME || null,
+    replyTo: process.env.SEND_REPLY_TO || null,
     user: process.env.SEND_USER || null,
     pass: process.env.SEND_PASS || null,
     host: process.env.SEND_HOST || null,
@@ -53,10 +54,11 @@ for (const key in process.env) {
     const pass = process.env[`ACCOUNT_${id}_PASS`]
     const from = process.env[`ACCOUNT_${id}_FROM`]
     const name = process.env[`ACCOUNT_${id}_NAME`]
+    const replyTo = process.env[`ACCOUNT_${id}_REPLY_TO`]
     if (config.accounts.has(user)) {
       console.warn(`WARN: Duplicate account found for ${user}. Skipping...`)
     } else if (user && pass) {
-      config.accounts.set(user, { pass, from, name })
+      config.accounts.set(user, { pass, from, name, replyTo })
       console.log(` - Loaded account: ${user} (ID: ${id})`)
     } else {
       console.warn(`WARN: Found ACCOUNT_${id}_USER but missing or empty ACCOUNT_${id}_PASS.`)
@@ -164,10 +166,13 @@ const serverOptionsBase = {
       const user = config.accounts.get(session.user)
       const name = user.name || config.send.name
       const from = user.from || config.send.from
-      raw = raw.replace(/^From: .+$/m, `From: ${from}`)
+      const fullFrom = name ? `${name} <${from}>` : from
+      raw = raw.replace(/^From: .+$/m, `From: ${fullFrom}`)
+      raw = raw.replace(/^Reply-To: .+$/m, `Reply-To: ${user.replyTo || config.send.replyTo || from}`)
+      if (!raw.match(/^Reply-To: /m)) raw = `Reply-To: ${user.replyTo || config.send.replyTo || from}\n${raw}`
       const mailOptions = {
         envelope: {
-          from: name ? `${name} <${from}>` : from,
+          from: fullFrom,
           to: session.envelope.rcptTo.map(rcpt => rcpt.address),
         },
         raw,

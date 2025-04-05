@@ -15,27 +15,29 @@ with IP whitelisting and no authentication.
 
 ## Environment Variables
 
-| Name                        | Type   | Default Value       | Description                                                                      |
-| --------------------------- | ------ | ------------------- | -------------------------------------------------------------------------------- |
-| `SEND_FROM`                 | string | `null`              | The email address to use as the sender.                                          |
-| `SEND_NAME`                 | string | `null`              | The name to use as the sender.                                                   |
-| `SEND_USER`                 | string | `null`              | The username to use for the sender.                                              |
-| `SEND_PASS`                 | string | `null`              | The password to use for the sender.                                              |
-| `SEND_HOST`                 | string | `null`              | The SMTP server to use as the sender.                                            |
-| `SEND_PORT`                 | int    | `578`               | The SMTP server port to use as the sender.                                       |
-| `SEND_SECURE`               | bool   | `false`             | Whether to use TLS for the SMTP server.                                          |
-| `SEND_NO_VERIFY`            | bool   | `false`             | Whether to skip testing the connection to the SMTP server.                       |
-| `SEND_POOL_ENABLED`         | bool   | `false`             | Whether to enable the connection pool for the SMTP server.                       |
-| `SEND_POOL_MAX_CONNECTIONS` | int    | `5`                 | The maximum number of connections to the SMTP server to keep open.               |
-| `SEND_POOL_MAX_MESSAGES`    | int    | `100`               | The maximum number of messages, after which the connection will be closed.       |
-| `RECEIVE_KEY`               | string | `null`              | The key to use, if you want to enable tls for the relay.                         |
-| `RECEIVE_CERT`              | string | `null`              | The certificate to use, if you want to enable tls for the relay.                 |
-| `RECEIVE_TRAEFIK_KEY_STORE` | string | `null`              | The path to the traefik key store, if you want to enable tls for the relay.      |
-| `RECEIVE_TRAEFIK_ROOT_KEY`  | string | `null`              | The root key for the traefik key store, if you want to enable tls for the relay. |
-| `ACCOUNT_<ID>_USER`         | string | `null`              | The username to use for the account.                                             |
-| `ACCOUNT_<ID>_PASS`         | string | `null`              | The password to use for the account.                                             |
-| `ACCOUNT_<ID>_FROM`         | string | `null`              | The email address to use as the sender for the account. (Overrides `SEND_FROM`)  |
-| `ACCOUNT_<ID>_NAME`         | string | `null`              | The name to use as the sender for the account. (Overrides `SEND_NAME`)           |
+| Name                        | Type   | Default Value       | Description                                                                                   |
+| --------------------------- | ------ | ------------------- | --------------------------------------------------------------------------------------------- |
+| `SEND_FROM`                 | string | `null`              | The email address to use as the sender.                                                       |
+| `SEND_NAME`                 | string | `null`              | The name to use as the sender.                                                                |
+| `SEND_REPLY_TO`             | string | `null`              | The email address to use as the reply-to address.                                             |
+| `SEND_USER`                 | string | `null`              | The username to use for the sender.                                                           |
+| `SEND_PASS`                 | string | `null`              | The password to use for the sender.                                                           |
+| `SEND_HOST`                 | string | `null`              | The SMTP server to use as the sender.                                                         |
+| `SEND_PORT`                 | int    | `578`               | The SMTP server port to use as the sender.                                                    |
+| `SEND_SECURE`               | bool   | `false`             | Whether to use TLS for the SMTP server.                                                       |
+| `SEND_NO_VERIFY`            | bool   | `false`             | Whether to skip testing the connection to the SMTP server.                                    |
+| `SEND_POOL_ENABLED`         | bool   | `false`             | Whether to enable the connection pool for the SMTP server.                                    |
+| `SEND_POOL_MAX_CONNECTIONS` | int    | `5`                 | The maximum number of connections to the SMTP server to keep open.                            |
+| `SEND_POOL_MAX_MESSAGES`    | int    | `100`               | The maximum number of messages, after which the connection will be closed.                    |
+| `RECEIVE_KEY`               | string | `null`              | The key to use, if you want to enable tls for the relay.                                      |
+| `RECEIVE_CERT`              | string | `null`              | The certificate to use, if you want to enable tls for the relay.                              |
+| `RECEIVE_TRAEFIK_KEY_STORE` | string | `null`              | The path to the traefik key store, if you want to enable tls for the relay.                   |
+| `RECEIVE_TRAEFIK_ROOT_KEY`  | string | `null`              | The root key for the traefik key store, if you want to enable tls for the relay.              |
+| `ACCOUNT_<ID>_USER`         | string | `null`              | The username to use for the account.                                                          |
+| `ACCOUNT_<ID>_PASS`         | string | `null`              | The password to use for the account.                                                          |
+| `ACCOUNT_<ID>_FROM`         | string | `null`              | The email address to use as the sender for the account. (Overrides `SEND_FROM`)               |
+| `ACCOUNT_<ID>_NAME`         | string | `null`              | The name to use as the sender for the account. (Overrides `SEND_NAME`)                        |
+| `ACCOUNT_<ID>_REPLY_TO`     | string | `null`              | The email address to use as the reply-to address for the account. (Overrides `SEND_REPLY_TO`) |
 
 ## Example
 
