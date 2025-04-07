@@ -18,7 +18,7 @@ export class PostController {
   ) {}
 
   @Post(':name/:key')
-  @UseInterceptors(FileInterceptor('zip'))
+  @UseInterceptors(FileInterceptor('zip', { limits: { fileSize: 500 * 1024 * 1024 } }))
   async uploadFile(@UploadedFile() file: Express.Multer.File, @Param() params, @Req() req): Promise<any> {
     const cfg = this.config.get<LocationConfig[]>("locations");
     const location = cfg.find((l) => l.name.toLowerCase() === params.name.toLowerCase());
