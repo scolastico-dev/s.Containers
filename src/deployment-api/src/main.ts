@@ -6,7 +6,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     rawBody: true,
   });
-  app.useBodyParser('raw', { limits: "500mb" });
+  app.useBodyParser('raw', { limit: "500mb" });
   await app.listen(3000);
 }
 bootstrap().then();
