@@ -143,19 +143,19 @@ const serverOptionsBase = {
   authMethods: ['PLAIN', 'LOGIN'],
   onAuth(auth, session, callback) {
     if (config.accounts.size === 0) {
-      console.log(`AUTH: Allowing unauthenticated access from ${session.remoteAddress} (no accounts configured)`)
+      console.log(`AUTH: Allowing unauthenticated access from ${session.remoteAddress} (no accounts configured) (session: ${session.id})`)
       return callback(null, { user: auth.username || 'anonymous' })
     }
     if (!config.accounts.has(auth.username)) {
-      console.warn(`AUTH: Failed login attempt for user "${auth.username}" from ${session.remoteAddress} - User not found`)
+      console.warn(`AUTH: Failed login attempt for user "${auth.username}" from ${session.remoteAddress} - User not found (session: ${session.id})`)
       return callback(new Error('Invalid username or password'))
     }
     const expectedPass = config.accounts.get(auth.username).pass
     if (auth.password !== expectedPass) {
-      console.warn(`AUTH: Failed login attempt for user "${auth.username}" from ${session.remoteAddress} - Incorrect password`)
+      console.warn(`AUTH: Failed login attempt for user "${auth.username}" from ${session.remoteAddress} - Incorrect password (session: ${session.id})`)
       return callback(new Error('Invalid username or password'))
     }
-    console.log(`AUTH: Successful login for user "${auth.username}" from ${session.remoteAddress}`)
+    console.log(`AUTH: Successful login for user "${auth.username}" from ${session.remoteAddress} (session: ${session.id})`)
     callback(null, { user: auth.username })
   },
   onData(stream, session, callback) {
