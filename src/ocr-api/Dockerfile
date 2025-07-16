@@ -19,7 +19,9 @@ WORKDIR /app
 
 COPY --from=build /app/dist .
 COPY --from=build /app/node_modules ./node_modules
+COPY noto-sans.ttf /noto-sans.ttf
 
 EXPOSE 3000
 ENV NODE_ENV=production
+ENV FONT_PATH=/noto-sans.ttf
 CMD ["node", "main.js"]
