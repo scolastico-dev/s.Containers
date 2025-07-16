@@ -164,3 +164,7 @@ Remove the login form of the RabbitMQ Management UI and allow access to the UI w
 ### [`s.containers/smtp-relay`](./src/smtp-relay/README.md)
 
 A simple SMTP relay container which can be used to relay emails to a second SMTP server without or with alternative authentication.
+
+### [`s.containers/ocr-api`](./src/ocr-api/README.md)
+
+Send pdf, png or jpg file to an OCR API and get either text or a PDF with the text overlayed on the original file back.
