@@ -23,9 +23,11 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/swagger": "^11.2.0",
     "@pdf-lib/fontkit": "^1.1.1",
+    "@scolastico-dev/env-helper": "^1.0.0",
     "cache-manager-redis-store": "^3.0.1",
     "dotenv": "^17.2.0",
     "pdf-lib": "^1.17.1",
+    "pdf-to-png-converter": "^3.7.0",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "uuid": "^11.1.0"

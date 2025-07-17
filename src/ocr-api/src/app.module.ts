@@ -9,6 +9,8 @@ import { CfgService } from './services/cfg.service';
 import { ConvertController } from './controller/convert.controller';
 import { JobService } from './services/job.service';
 import { S3Service } from './services/s3.service';
+import { MergeController } from './controller/merge.controller';
+import { PdfService } from './services/pdf.service';
 
 @Module({
   imports: [
@@ -23,10 +25,11 @@ import { S3Service } from './services/s3.service';
       isGlobal: true,
     }),
   ],
-  providers: [CfgService, OcrService, JobService, S3Service],
+  providers: [CfgService, PdfService, OcrService, JobService, S3Service],
   controllers: [
     AppController,
     ConvertController,
+    MergeController,
     AsyncController,
     SyncController,
   ],

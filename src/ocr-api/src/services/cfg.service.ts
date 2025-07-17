@@ -1,11 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { $bool, $int, $str } from '@scolastico-dev/env-helper';
 import * as dotenv from 'dotenv';
-import { $bool, $int, $str } from 'src/config.helper';
 
-if (process.env.NO_DOTENV !== 'true') {
-  dotenv.config();
-  process.env.NO_DOTENV = 'true';
-}
+if (!$bool('NO_DOTENV', false)) dotenv.config();
 
 @Injectable()
 export class CfgService {
@@ -23,4 +20,6 @@ export class CfgService {
 
   readonly asyncCacheTtl = $int('ASYNC_CACHE_TTL', 600);
   readonly fontPath = $str('FONT_PATH', './noto-sans.ttf');
+  readonly drawBoundingBox = $bool('DRAW_BOUNDING_BOX', false);
+  readonly pngQuality = $int('PNG_QUALITY', 2);
 }

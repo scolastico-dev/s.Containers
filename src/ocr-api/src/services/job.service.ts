@@ -11,6 +11,7 @@ import { CfgService } from './cfg.service';
 import { OcrService } from './ocr.service';
 import { S3Service } from './s3.service';
 import { v4 as uuidv4 } from 'uuid';
+import { PdfService } from './pdf.service';
 
 export type JobStatus = 'processing' | 'completed' | 'failed';
 export interface JobData {
@@ -27,9 +28,10 @@ export class JobService {
   private readonly logger = new Logger(JobService.name);
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    private cfgService: CfgService,
-    private ocrService: OcrService,
-    private s3Service: S3Service,
+    private cfg: CfgService,
+    private ocr: OcrService,
+    private s3: S3Service,
+    private pdf: PdfService,
   ) {}
 
   async processSync(buffer: Buffer): Promise<JobData & { id: string }> {
@@ -44,19 +46,20 @@ export class JobService {
     try {
       const jobId = uuidv4();
       this.logger.log(`Starting async job ${jobId}`);
-      await this.s3Service.uploadBuffer(buffer, jobId);
+      buffer = await this.pdf.pdfToImageToPdf(buffer);
+      await this.s3.uploadBuffer(buffer, jobId);
       await this.cacheManager.set(
         `job:${jobId}`,
         {
           status: 'processing',
           startTime: new Date().toISOString(),
         } as JobData,
-        this.cfgService.asyncCacheTtl * 1000,
+        this.cfg.asyncCacheTtl * 1000,
       );
 
       this.processAsyncJob(jobId).catch(async (error) => {
         this.logger.error(`Async job ${jobId} failed: ${error.message}`);
-        this.s3Service
+        this.s3
           .delete(jobId)
           .catch(() =>
             this.logger.error(`Failed to delete S3 object ${jobId}`),
@@ -67,7 +70,7 @@ export class JobService {
             status: 'failed',
             error: error.message,
           } as JobData,
-          this.cfgService.asyncCacheTtl * 1000,
+          this.cfg.asyncCacheTtl * 1000,
         );
       });
 
@@ -95,7 +98,7 @@ export class JobService {
   }
 
   private async processAsyncJob(jobId: string): Promise<void> {
-    const blocks = await this.ocrService.detectText(jobId);
+    const blocks = await this.ocr.detectText(jobId);
     await this.cacheManager.set(
       `job:${jobId}`,
       {
@@ -103,11 +106,11 @@ export class JobService {
         blocks: blocks,
         completedTime: new Date().toISOString(),
       } as JobData,
-      this.cfgService.asyncCacheTtl * 1000,
+      this.cfg.asyncCacheTtl * 1000,
     );
     setTimeout(async () => {
-      await this.s3Service.delete(jobId);
-    }, this.cfgService.asyncCacheTtl * 1000);
+      await this.s3.delete(jobId);
+    }, this.cfg.asyncCacheTtl * 1000);
     this.logger.log(`Async job ${jobId} completed successfully`);
   }
 }

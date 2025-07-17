@@ -11,13 +11,15 @@ import { Response } from 'express';
 import { ApiBody, ApiConsumes, ApiCreatedResponse } from '@nestjs/swagger';
 import { JobService } from 'src/services/job.service';
 import { S3Service } from 'src/services/s3.service';
+import { PdfService } from 'src/services/pdf.service';
 
 @Controller('sync')
 export class SyncController {
   constructor(
     private readonly job: JobService,
     private readonly ocr: OcrService,
-    private readonly s3Service: S3Service,
+    private readonly pdf: PdfService,
+    private readonly s3: S3Service,
   ) {}
 
   @Post('file')
@@ -53,8 +55,8 @@ export class SyncController {
     @Res() res: Response,
   ) {
     const content = await this.job.processSync(file.buffer);
-    const buffer = await this.s3Service.getBuffer(content.id);
-    const pdf = await this.ocr.overlayPdf(buffer, content.blocks);
+    const buffer = await this.s3.getBuffer(content.id);
+    const pdf = await this.pdf.overlayPdf(buffer, content.blocks);
     res.set({
       'Content-Type': 'application/pdf',
       'Content-Disposition': 'attachment; filename="ocr.pdf"',
