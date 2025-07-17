@@ -22,4 +22,7 @@ export class CfgService {
   readonly fontPath = $str('FONT_PATH', './noto-sans.ttf');
   readonly drawBoundingBox = $bool('DRAW_BOUNDING_BOX', false);
   readonly pngQuality = $int('PNG_QUALITY', 2);
+
+  readonly basicAuthUsername = $str('BASIC_AUTH_USERNAME', '');
+  readonly basicAuthPassword = $str('BASIC_AUTH_PASSWORD', '');
 }

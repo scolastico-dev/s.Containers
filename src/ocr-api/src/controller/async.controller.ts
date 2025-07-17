@@ -8,12 +8,14 @@ import {
   Res,
   HttpException,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { OcrService } from '../services/ocr.service';
 import { Response } from 'express';
 import {
   ApiAcceptedResponse,
+  ApiBasicAuth,
   ApiBody,
   ApiConsumes,
   ApiCreatedResponse,
@@ -22,6 +24,7 @@ import {
 import { JobService } from 'src/services/job.service';
 import { S3Service } from 'src/services/s3.service';
 import { PdfService } from 'src/services/pdf.service';
+import { AuthGuard } from 'src/auth.guard';
 
 @Controller('async')
 export class AsyncController {
@@ -33,6 +36,8 @@ export class AsyncController {
   ) {}
 
   @Post('start')
+  @UseGuards(AuthGuard)
+  @ApiBasicAuth()
   @UseInterceptors(
     FileInterceptor('file', { limits: { fileSize: 50_000_000 } }),
   )
@@ -71,6 +76,8 @@ export class AsyncController {
   }
 
   @Get(':id/raw')
+  @UseGuards(AuthGuard)
+  @ApiBasicAuth()
   @ApiCreatedResponse({
     description: 'Extracted raw text from the uploaded file',
     content: {
@@ -102,6 +109,8 @@ export class AsyncController {
   }
 
   @Get(':id/file')
+  @UseGuards(AuthGuard)
+  @ApiBasicAuth()
   @ApiCreatedResponse({
     description: 'PDF file created from the uploaded image',
     content: {

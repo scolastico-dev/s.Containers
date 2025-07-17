@@ -4,14 +4,21 @@ import {
   UploadedFile,
   UseInterceptors,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { OcrService } from '../services/ocr.service';
 import { Response } from 'express';
-import { ApiBody, ApiConsumes, ApiCreatedResponse } from '@nestjs/swagger';
+import {
+  ApiBasicAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiCreatedResponse,
+} from '@nestjs/swagger';
 import { JobService } from 'src/services/job.service';
 import { S3Service } from 'src/services/s3.service';
 import { PdfService } from 'src/services/pdf.service';
+import { AuthGuard } from 'src/auth.guard';
 
 @Controller('sync')
 export class SyncController {
@@ -23,6 +30,8 @@ export class SyncController {
   ) {}
 
   @Post('file')
+  @UseGuards(AuthGuard)
+  @ApiBasicAuth()
   @UseInterceptors(
     FileInterceptor('file', { limits: { fileSize: 50_000_000 } }),
   )
@@ -65,6 +74,8 @@ export class SyncController {
   }
 
   @Post('raw')
+  @UseGuards(AuthGuard)
+  @ApiBasicAuth()
   @UseInterceptors(
     FileInterceptor('file', { limits: { fileSize: 50_000_000 } }),
   )

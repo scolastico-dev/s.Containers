@@ -3,11 +3,18 @@ import {
   Post,
   Res,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiCreatedResponse } from '@nestjs/swagger';
+import {
+  ApiBasicAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiCreatedResponse,
+} from '@nestjs/swagger';
 import { Response } from 'express';
+import { AuthGuard } from 'src/auth.guard';
 import { PdfService } from 'src/services/pdf.service';
 
 @Controller('merge')
@@ -15,6 +22,8 @@ export class MergeController {
   constructor(private readonly pdf: PdfService) {}
 
   @Post()
+  @UseGuards(AuthGuard)
+  @ApiBasicAuth()
   @UseInterceptors(
     FilesInterceptor('files', 1000, { limits: { fileSize: 50_000_000 } }),
   )

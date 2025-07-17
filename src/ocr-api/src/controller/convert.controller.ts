@@ -3,11 +3,18 @@ import {
   Post,
   Res,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiCreatedResponse } from '@nestjs/swagger';
+import {
+  ApiBasicAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiCreatedResponse,
+} from '@nestjs/swagger';
 import { Response } from 'express';
+import { AuthGuard } from 'src/auth.guard';
 import { PdfService } from 'src/services/pdf.service';
 
 @Controller('convert')
@@ -15,6 +22,8 @@ export class ConvertController {
   constructor(private readonly pdf: PdfService) {}
 
   @Post()
+  @UseGuards(AuthGuard)
+  @ApiBasicAuth()
   @UseInterceptors(
     FileInterceptor('file', { limits: { fileSize: 50_000_000 } }),
   )

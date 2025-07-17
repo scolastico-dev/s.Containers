@@ -20,6 +20,8 @@ Send pdf, png or jpg file to an OCR API and get either text or a PDF with the te
 | `ASYNC_CACHE_TTL`                     | int    | `600`                 | The time to live for async cache in seconds.                               |
 | `FONT_PATH`                           | string | `/noto-sans.ttf`      | The path to the font file used for text overlay.                           |
 | `PNG_QUALITY`                         | int    | `2`                   | The quality of the PNG images generated from PDF pages.                    |
+| `BASIC_AUTH_USERNAME`                 | string | `null`                | The username for basic authentication.                                     |
+| `BASIC_AUTH_PASSWORD`                 | string | `null`                | The password for basic authentication.                                     |
 
 ## Example
 
