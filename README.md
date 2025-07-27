@@ -168,3 +168,7 @@ A simple SMTP relay container which can be used to relay emails to a second SMTP
 ### [`s.containers/ocr-api`](./src/ocr-api/README.md)
 
 Send pdf, png or jpg file to an OCR API and get either text or a PDF with the text overlayed on the original file back.
+
+### [`s.containers/receiptio-server`](./src/receiptio-server/README.md)
+
+An HTTP API for printing receipts using "text only" thermal printers, utilizing the `GS v 0` printer command set with the [ReceiptIO](https://github.com/receiptline/receiptio) library.

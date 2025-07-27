@@ -1,0 +1,13 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      TARGET_DEVICE: /dev/usb/lp2
+    ports:
+      - 3000:3000
+    devices:
+      - /dev/usb/lp2:/dev/usb/lp2
+    privileged: true

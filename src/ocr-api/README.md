@@ -30,13 +30,11 @@ services:
   app:
     image: ghcr.io/scolastico-dev/s.containers/ocr-api:latest
     restart: unless-stopped
+    ports:
+      - 3000:3000
     environment:
       AWS_ACCESS_KEY_ID: YOUR_AWS_ACCESS_KEY_ID
       AWS_SECRET_ACCESS_KEY: YOUR_AWS_SECRET_ACCESS_KEY
       AWS_REGION: eu-central-1
       S3_BUCKET: my-ocr-api-bucket
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.ocr-api.rule=Host(`ocr-api.example.com`)
-      - traefik.http.services.ocr-api.loadbalancer.server.port=3000
 ```
