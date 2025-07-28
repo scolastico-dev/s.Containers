@@ -25,6 +25,9 @@ RUN apt-get update && apt-get install -y \
     --no-install-recommends && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
+ENV PUPPETEER_SKIP_DOWNLOAD=true
+ENV CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium
+
 RUN npm install -g pnpm
 COPY package.json .
 COPY pnpm-workspace.yaml .
@@ -37,7 +40,5 @@ RUN pnpm prune --prod
 
 EXPOSE 3000
 ENV NODE_ENV=production
-ENV PUPPETEER_SKIP_DOWNLOAD=true
-ENV CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium
 STOPSIGNAL SIGKILL
 CMD ["node", "dist/src/main.js"]
