@@ -6,17 +6,20 @@ export type Release = () => void;
 export class QueueService {
   private waiting: Array<() => void> = [];
   private processing = false;
-  private destroyed = false;
 
   acquire(): Promise<Release> {
     return new Promise<Release>((resolve) => {
       const grant = () => {
         let released = false;
         this.processing = true;
+        // eslint-disable-next-line prefer-const
+        let release: Release;
+        const timeout = setTimeout(() => release(), 300_000);
 
-        const release: Release = () => {
+        release = () => {
           if (released) return;
           released = true;
+          clearTimeout(timeout);
           this.processing = false;
           this.dispatchNext();
         };
