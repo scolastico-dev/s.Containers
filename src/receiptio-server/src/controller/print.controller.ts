@@ -29,11 +29,19 @@ export class PrintController {
     enum: ['left', 'center', 'right'],
     default: 'left',
   })
+  @ApiQuery({
+    name: 'cut',
+    required: false,
+    description: 'If true, cut the receipt after printing',
+    enum: ['true', 'false'],
+    default: 'false',
+  })
   @ApiConsumes('text/plain')
   async printReceipt(
     @Body() receipt: string,
     @Query('format') format: string,
     @Query('align') align: string,
+    @Query('cut') cut: string,
   ): Promise<string> {
     if (!receipt) throw new HttpException('Receipt content is empty', 400);
     if (!['left', 'center', 'right', undefined].includes(align))
@@ -58,6 +66,7 @@ export class PrintController {
         release();
         throw new HttpException(`Unknown format: ${format}`, 400);
     }
+    if (cut === 'true') await this.print.cutReceipt();
     release();
     return result;
   }
