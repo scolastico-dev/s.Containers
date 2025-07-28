@@ -35,8 +35,13 @@ export class ImageController {
   @UseInterceptors(FileInterceptor('file'))
   async printImage(@UploadedFile() file: Express.Multer.File): Promise<string> {
     const release = await this.queue.acquire();
-    const res = await this.print.printPng(file.buffer);
-    release();
-    return res;
+    try {
+      const res = await this.print.printPng(file.buffer);
+      release();
+      return res;
+    } catch (error) {
+      release();
+      throw error;
+    }
   }
 }

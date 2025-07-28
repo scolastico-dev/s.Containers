@@ -14,8 +14,13 @@ export class CutController {
   @Get('cut')
   async cutReceipt(): Promise<string> {
     const release = await this.queue.acquire();
-    const res = await this.print.cutReceipt();
-    release();
-    return res;
+    try {
+      const res = await this.print.cutReceipt();
+      release();
+      return res;
+    } catch (error) {
+      release();
+      throw error;
+    }
   }
 }

@@ -48,26 +48,31 @@ export class PrintController {
       throw new HttpException(`Unknown alignment: ${align}`, 400);
     if (!align) align = 'left';
     const release = await this.queue.acquire();
-    let result: string;
-    switch (format) {
-      case 'receiptio':
-        result = await this.print.printReceipt(receipt);
-        break;
-      case 'raw':
-        result = await this.print.printRaw(Buffer.from(receipt, 'ascii'));
-        break;
-      case 'html':
-        result = await this.print.printHtml(receipt);
-        break;
-      case 'text':
-        result = await this.print.printText(receipt, align as any);
-        break;
-      default:
-        release();
-        throw new HttpException(`Unknown format: ${format}`, 400);
+    try {
+      let result: string;
+      switch (format) {
+        case 'receiptio':
+          result = await this.print.printReceipt(receipt);
+          break;
+        case 'raw':
+          result = await this.print.printRaw(Buffer.from(receipt, 'ascii'));
+          break;
+        case 'html':
+          result = await this.print.printHtml(receipt);
+          break;
+        case 'text':
+          result = await this.print.printText(receipt, align as any);
+          break;
+        default:
+          release();
+          throw new HttpException(`Unknown format: ${format}`, 400);
+      }
+      if (cut === 'true') await this.print.cutReceipt();
+      release();
+      return result;
+    } catch (error) {
+      release();
+      throw error;
     }
-    if (cut === 'true') await this.print.cutReceipt();
-    release();
-    return result;
   }
 }
