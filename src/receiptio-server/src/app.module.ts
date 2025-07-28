@@ -3,10 +3,11 @@ import { AppController } from './controller/app.controller';
 import { CutController } from './controller/cut.controller';
 import { ImageController } from './controller/image.controller';
 import { PrintController } from './controller/print.controller';
+import { JobController } from './controller/job.controller';
 import { CfgService } from './services/cfg.service';
+import { CacheService } from './services/cache.service';
 import { QueueService } from './services/queue.service';
 import { PrintService } from './services/print.service';
-import { JobController } from './controller/job.controller';
 
 @Module({
   imports: [],
@@ -17,6 +18,6 @@ import { JobController } from './controller/job.controller';
     PrintController,
     JobController,
   ],
-  providers: [CfgService, QueueService, PrintService],
+  providers: [CfgService, CacheService, QueueService, PrintService],
 })
 export class AppModule {}

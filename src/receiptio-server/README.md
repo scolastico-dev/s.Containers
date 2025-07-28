@@ -21,6 +21,8 @@ It mainly utilizes the `GS v 0` printer command set, to print images, html or ma
 | `PRINT_IMAGE_MAX_WIDTH`               | int    | `504`                 | Maximum width for image printing in dots. See printer manual for details.         |
 | `PRINT_TEXT_CHARS_PER_LINE`           | int    | `42`                  | Characters per line feed directly printing text without the `GS v 0` command set. |
 | `PRINT_TEXT_ENCODING`                 | string | `cp437`               | Encoding for text printing.\*\*                                                   |
+| `PRINT_IMAGE_RASTER_CACHE_MAX`       | int    | `20`                  | Maximum number of image rasters to keep in the cache.                            |
+| `PRINT_HTML_PNG_CACHE_MAX`           | int    | `20`                  | Maximum number of HTML PNGs to keep in the cache.                                |
 
 \* = 0=8-dot single, 1=8-dot double, 32=24-dot single, 33=24-dot double.
 

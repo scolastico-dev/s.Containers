@@ -1,14 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { CfgService } from './cfg.service';
+import { CacheService, RasterCacheValue } from './cache.service';
 import { createWriteStream, existsSync } from 'fs';
 import * as iconv from 'iconv-lite';
 import * as receiptio from 'receiptio';
 import { PNG } from 'pngjs';
 import puppeteer from 'puppeteer';
+import { createHash } from 'crypto';
 
 @Injectable()
 export class PrintService {
-  constructor(private readonly cfg: CfgService) {}
+  constructor(
+    private readonly cfg: CfgService,
+    private readonly cache: CacheService,
+  ) {}
 
   private readonly ESC = 0x1b;
   private readonly GS = 0x1d;
@@ -48,7 +53,6 @@ export class PrintService {
       for (let x = 0; x < width; x++) {
         const pixelIndex = y * width + x;
         const pixelValue = imageData[pixelIndex] || 0;
-        // simple threshold: if pixel value is below 128, consider it black (print dot)
         const pixelOn = pixelValue < 128;
         if (pixelOn) {
           const byteIndex = y * widthBytes + (x >> 3);
@@ -60,6 +64,12 @@ export class PrintService {
     return { raster, widthBytes, height };
   }
 
+  private sha1(...parts: (string | Buffer | number)[]): string {
+    const h = createHash('sha1');
+    for (const p of parts) h.update(typeof p === 'number' ? String(p) : p);
+    return h.digest('hex');
+  }
+
   async printPng(data: Buffer, width: number = 1): Promise<string> {
     const png: PNG = PNG.sync.read(data);
     const maxWidth = this.cfg.printImageMaxWidth;
@@ -68,11 +78,26 @@ export class PrintService {
     const scale = targetWidth / png.width;
     const targetHeight = Math.max(1, Math.round(png.height * scale));
 
+    // cache key for the final raster we will send to the printer
+    const rasterKey = this.sha1(
+      data,
+      '|',
+      targetWidth,
+      '|',
+      targetHeight,
+      '|',
+      this.cfg.printImageDensity,
+    );
+
+    const cached = this.cache.getImageRaster(rasterKey);
+    if (cached) {
+      return this.printRaster(cached);
+    }
+
     // scale to target size and convert to grayscale
     const imageData = Buffer.alloc(targetWidth * targetHeight);
     for (let y = 0; y < targetHeight; y++) {
       for (let x = 0; x < targetWidth; x++) {
-        // nearest neighbor scaling
         const srcX = Math.min(png.width - 1, Math.round(x / scale));
         const srcY = Math.min(png.height - 1, Math.round(y / scale));
         const idx = (png.width * srcY + srcX) << 2;
@@ -93,6 +118,22 @@ export class PrintService {
       widthBytes,
       height: rasterHeight,
     } = this.makeImageRaster(imageData, targetWidth, targetHeight);
+
+    const value: RasterCacheValue = {
+      raster,
+      widthBytes,
+      height: rasterHeight,
+    };
+    this.cache.setImageRaster(rasterKey, value);
+
+    return this.printRaster(value);
+  }
+
+  private async printRaster({
+    raster,
+    widthBytes,
+    height: rasterHeight,
+  }: RasterCacheValue): Promise<string> {
     const xL = widthBytes & 0xff;
     const xH = (widthBytes >> 8) & 0xff;
     const yL = rasterHeight & 0xff;
@@ -117,47 +158,66 @@ export class PrintService {
   }
 
   async printHtml(html: string): Promise<string> {
-    const browser = await puppeteer.launch({
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    });
-    const page = await browser.newPage();
-    await page.setContent(
-      [
-        '<!DOCTYPE html>',
-        '<html lang="en">',
-        '<head>',
-        '<meta charset="UTF-8">',
-        '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
-        `<title>Receipt</title>`,
-        '</head>',
-        `<body>${html}</body>`,
-        '</html>',
-      ].join(''),
+    // cache the PNG buffer produced by puppeteer
+    const htmlKey = this.sha1(
+      html,
+      '|',
+      this.cfg.printHtmlFont,
+      '|',
+      this.cfg.printHtmlWidth,
     );
-    await page.addStyleTag({
-      url: `https://fonts.googleapis.com/css2?family=${encodeURIComponent(this.cfg.printHtmlFont)}:wght@400;700&display=swap`,
-    });
-    await page.addStyleTag({
-      content: [
-        `body { font-family: '${this.cfg.printHtmlFont}', sans-serif; }`,
-        'body, p, h1, h2, h3, h4, h5, h6 { margin: 0; padding: 0; }',
-        `body { width: ${this.cfg.printHtmlWidth}; }`,
-        'h1 { font-size: 1.5em; }',
-        'h2 { font-size: 1.25em; }',
-        'h3 { font-size: 1.1em; }',
-        'h4, h5, h6 { font-size: 1em; }',
-        'p { font-size: 0.9em; }',
-        'svg { max-width: 100%; height: auto; }',
-      ].join('\n'),
-    });
-    const el = await page.$('body');
-    const buffer = await el.screenshot({
-      type: 'png',
-      encoding: 'binary',
-      omitBackground: true,
-      captureBeyondViewport: true,
-    });
-    await browser.close();
+
+    let buffer = this.cache.getHtmlPng(htmlKey);
+    if (!buffer) {
+      const browser = await puppeteer.launch({
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      });
+      const page = await browser.newPage();
+      await page.setContent(
+        [
+          '<!DOCTYPE html>',
+          '<html lang="en">',
+          '<head>',
+          '<meta charset="UTF-8">',
+          '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
+          `<title>Receipt</title>`,
+          '</head>',
+          `<body>${html}</body>`,
+          '</html>',
+        ].join(''),
+      );
+      await page.addStyleTag({
+        url: `https://fonts.googleapis.com/css2?family=${encodeURIComponent(
+          this.cfg.printHtmlFont,
+        )}:wght@400;700&display=swap`,
+      });
+      await page.addStyleTag({
+        content: [
+          `body { font-family: '${this.cfg.printHtmlFont}', sans-serif; }`,
+          'body, p, h1, h2, h3, h4, h5, h6 { margin: 0; padding: 0; }',
+          `body { width: ${this.cfg.printHtmlWidth}; }`,
+          'h1 { font-size: 1.5em; }',
+          'h2 { font-size: 1.25em; }',
+          'h3 { font-size: 1.1em; }',
+          'h4, h5, h6 { font-size: 1em; }',
+          'p { font-size: 0.9em; }',
+          'svg { max-width: 100%; height: auto; }',
+        ].join('\n'),
+      });
+      const el = await page.$('body');
+      buffer = Buffer.from(
+        await el.screenshot({
+          type: 'png',
+          encoding: 'binary',
+          omitBackground: true,
+          captureBeyondViewport: true,
+        }),
+      );
+      await browser.close();
+
+      this.cache.setHtmlPng(htmlKey, Buffer.from(buffer));
+    }
+
     return await this.printPng(Buffer.from(buffer));
   }
 
@@ -171,7 +231,6 @@ export class PrintService {
     text: string,
     align: 'left' | 'center' | 'right' = 'left',
   ): Promise<string> {
-    // wrap text to fit within the configured character width, prefer whitespace for wrapping
     const charsPerLine = this.cfg.printTextCharsPerLine;
     const lines: string[] = [];
     let currentLine = '';
@@ -183,7 +242,7 @@ export class PrintService {
       currentLine += word + ' ';
     }
     if (currentLine) lines.push(currentLine.trim());
-    // align lines
+
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
       const padding = charsPerLine - line.length;
@@ -204,7 +263,7 @@ export class PrintService {
         }
       }
     }
-    // convert lines to cp437 encoding
+
     const encoded = iconv.encode(
       lines.join('\n') + '\n',
       this.cfg.printTextEncoding,

@@ -64,4 +64,16 @@ export class CfgService {
    * @see {@link https://www.npmjs.com/package/iconv-lite}
    */
   readonly printTextEncoding = $str('PRINT_TEXT_ENCODING', 'cp437');
+
+  /**
+   * The maximum number of image rasters to keep in the cache.
+   * @example PRINT_IMAGE_RASTER_CACHE_MAX=20
+   */
+  readonly printImageRasterCacheMax = $int('PRINT_IMAGE_RASTER_CACHE_MAX', 20);
+
+  /**
+   * The maximum number of HTML PNGs to keep in the cache.
+   * @example PRINT_HTML_PNG_CACHE_MAX=20
+   */
+  readonly printHtmlPngCacheMax = $int('PRINT_HTML_PNG_CACHE_MAX', 20);
 }
