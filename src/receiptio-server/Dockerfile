@@ -21,8 +21,9 @@ RUN apt-get update && apt-get install -y \
     libgbm1 \
     xdg-utils \
     wget \
-    --no-install-recommends \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    chromium \
+    --no-install-recommends && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN npm install -g pnpm
 COPY package.json .
@@ -36,5 +37,7 @@ RUN pnpm prune --prod
 
 EXPOSE 3000
 ENV NODE_ENV=production
+ENV PUPPETEER_SKIP_DOWNLOAD=true
+ENV CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium
 STOPSIGNAL SIGKILL
 CMD ["node", "dist/src/main.js"]
