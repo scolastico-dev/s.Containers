@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CfgService } from './cfg.service';
-import { createWriteStream } from 'fs';
+import { createWriteStream, existsSync } from 'fs';
 import * as iconv from 'iconv-lite';
 import * as receiptio from 'receiptio';
 import { PNG } from 'pngjs';
@@ -16,6 +16,11 @@ export class PrintService {
   private readonly LINE_FEED = Buffer.from('\n');
 
   printRaw(data: Buffer): Promise<string> {
+    if (!existsSync(this.cfg.targetDevice)) {
+      return Promise.reject(
+        new Error(`Target device ${this.cfg.targetDevice} does not exist`),
+      );
+    }
     const stream = createWriteStream(this.cfg.targetDevice);
     return new Promise((resolve, reject) => {
       stream.on('finish', () => resolve('Print job completed'));
