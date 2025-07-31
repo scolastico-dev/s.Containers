@@ -7,13 +7,17 @@ import * as receiptio from 'receiptio';
 import { PNG } from 'pngjs';
 import puppeteer from 'puppeteer';
 import { createHash } from 'crypto';
+import { IdLogger } from 'src/id.logger';
 
 @Injectable()
 export class PrintService {
   constructor(
     private readonly cfg: CfgService,
     private readonly cache: CacheService,
-  ) {}
+    private readonly logger: IdLogger,
+  ) {
+    logger.setContext(PrintService.name);
+  }
 
   private readonly ESC = 0x1b;
   private readonly GS = 0x1d;
@@ -26,9 +30,13 @@ export class PrintService {
         new Error(`Target device ${this.cfg.targetDevice} does not exist`),
       );
     }
+    this.logger.log(`Sending raw bytes to ${this.cfg.targetDevice}`);
     const stream = createWriteStream(this.cfg.targetDevice);
     return new Promise((resolve, reject) => {
-      stream.on('finish', () => resolve('Print job completed'));
+      stream.on('finish', () => {
+        this.logger.log('Target device accepted data');
+        resolve('Print job completed');
+      });
       stream.on('error', (err) => reject(`Print job failed: ${err.message}`));
       stream.write(data);
       stream.end();
@@ -36,6 +44,7 @@ export class PrintService {
   }
 
   async cutReceipt(): Promise<string> {
+    this.logger.log('Cutting receipt');
     const cut = Buffer.from([this.GS, 0x56, 0x00]); // GS V 0
     return await this.printRaw(
       Buffer.concat([this.INIT, ...Array(5).fill(this.LINE_FEED), cut]),
@@ -47,6 +56,7 @@ export class PrintService {
     width: number,
     height: number,
   ): { raster: Buffer; widthBytes: number; height: number } {
+    this.logger.log(`Creating image raster for ${width}x${height}`);
     const widthBytes = Math.ceil(width / 8);
     const raster = Buffer.alloc(widthBytes * height, 0x00);
     for (let y = 0; y < height; y++) {
@@ -71,6 +81,7 @@ export class PrintService {
   }
 
   async printPng(data: Buffer, width: number = 1): Promise<string> {
+    this.logger.log(`Printing PNG image with width factor ${width}`);
     const png: PNG = PNG.sync.read(data);
     const maxWidth = this.cfg.printImageMaxWidth;
     let targetWidth = Math.round(maxWidth * Math.max(0, Math.min(width, 1)));
@@ -158,6 +169,7 @@ export class PrintService {
   }
 
   async printHtml(html: string): Promise<string> {
+    this.logger.log('Printing HTML content');
     // cache the PNG buffer produced by puppeteer
     const htmlKey = this.sha1(
       html,
@@ -222,6 +234,7 @@ export class PrintService {
   }
 
   async printReceipt(md: string): Promise<string> {
+    this.logger.log('Printing receipt from Markdown (ReceiptIO)');
     return await this.printHtml(
       await receiptio.print(md, `${this.cfg.receiptIoArguments} -p svg`),
     );
@@ -231,6 +244,7 @@ export class PrintService {
     text: string,
     align: 'left' | 'center' | 'right' = 'left',
   ): Promise<string> {
+    this.logger.log(`Printing text with alignment: ${align}`);
     const charsPerLine = this.cfg.printTextCharsPerLine;
     const lines: string[] = [];
     let currentLine = '';

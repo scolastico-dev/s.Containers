@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { ClsModule } from 'nestjs-cls';
+import { randomUUID } from 'crypto';
 import { AppController } from './controller/app.controller';
 import { CutController } from './controller/cut.controller';
 import { ImageController } from './controller/image.controller';
@@ -8,9 +10,20 @@ import { CfgService } from './services/cfg.service';
 import { CacheService } from './services/cache.service';
 import { QueueService } from './services/queue.service';
 import { PrintService } from './services/print.service';
+import { AppLogger } from './app.logger';
+import { IdLogger } from './id.logger';
 
 @Module({
-  imports: [],
+  imports: [
+    ClsModule.forRoot({
+      global: true,
+      middleware: {
+        mount: true,
+        generateId: true,
+        idGenerator: () => randomUUID(),
+      },
+    }),
+  ],
   controllers: [
     AppController,
     CutController,
@@ -18,6 +31,14 @@ import { PrintService } from './services/print.service';
     PrintController,
     JobController,
   ],
-  providers: [CfgService, CacheService, QueueService, PrintService],
+  providers: [
+    AppLogger,
+    IdLogger,
+    CfgService,
+    CacheService,
+    QueueService,
+    PrintService,
+  ],
+  exports: [AppLogger],
 })
 export class AppModule {}

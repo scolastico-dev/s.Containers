@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CfgService } from './cfg.service';
+import { IdLogger } from 'src/id.logger';
 
 export interface RasterCacheValue {
   raster: Buffer;
@@ -9,7 +10,12 @@ export interface RasterCacheValue {
 
 @Injectable()
 export class CacheService {
-  constructor(private readonly cfg: CfgService) {}
+  constructor(
+    private readonly cfg: CfgService,
+    private readonly logger: IdLogger,
+  ) {
+    logger.setContext(CacheService.name);
+  }
 
   private readonly imageRasterCache = new Map<string, RasterCacheValue>();
   private readonly htmlPngCache = new Map<string, Buffer>();
@@ -17,6 +23,7 @@ export class CacheService {
   getImageRaster(key: string): RasterCacheValue | undefined {
     const v = this.imageRasterCache.get(key);
     if (!v) return undefined;
+    this.logger.debug(`Hit in image raster cache for key: ${key}`);
     this.imageRasterCache.delete(key);
     this.imageRasterCache.set(key, v);
     return v;
@@ -30,6 +37,7 @@ export class CacheService {
   getHtmlPng(key: string): Buffer | undefined {
     const v = this.htmlPngCache.get(key);
     if (!v) return undefined;
+    this.logger.debug(`Hit in HTML PNG cache for key: ${key}`);
     this.htmlPngCache.delete(key);
     this.htmlPngCache.set(key, v);
     return v;
