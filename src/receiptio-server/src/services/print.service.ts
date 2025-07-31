@@ -7,7 +7,7 @@ import * as receiptio from 'receiptio';
 import { PNG } from 'pngjs';
 import puppeteer from 'puppeteer';
 import { createHash } from 'crypto';
-import QRCode from 'qrcode';
+import * as QRCode from 'qrcode';
 import { IdLogger } from 'src/id.logger';
 
 export type Align = 'left' | 'center' | 'right';
