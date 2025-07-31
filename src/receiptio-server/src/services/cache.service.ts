@@ -57,7 +57,7 @@ export class CacheService {
       const fullPath = join(this.cfg.staticCacheDir, filePath);
       const data = readFileSync(fullPath, 'utf-8');
       utimesSync(fullPath, new Date(), new Date());
-      return JSON.parse(data) as T;
+      return Buffer.from(data, 'base64') as T;
     } catch (error) {
       this.logger.error(
         `Failed to read from file ${filePath}: ${error.message}`,
@@ -70,7 +70,7 @@ export class CacheService {
     try {
       writeFileSync(
         join(this.cfg.staticCacheDir, filePath),
-        JSON.stringify(value),
+        Buffer.from(value as Buffer).toString('base64'),
         'utf-8',
       );
     } catch (error) {
