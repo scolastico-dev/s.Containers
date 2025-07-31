@@ -24,7 +24,7 @@ It mainly utilizes the `GS v 0` printer command set, to print images, html or ma
 | `PRINT_IMAGE_RASTER_CACHE_MAX`        | int     | `20`                  | Maximum number of image rasters to keep in the cache.                             |
 | `PRINT_HTML_PNG_CACHE_MAX`            | int     | `20`                  | Maximum number of HTML PNGs to keep in the cache.                                 |
 | `STATIC_CACHE_ENABLED`                | boolean | `false`               | Enable file, instead of in-memory caching.                                        |
-| `STATIC_CACHE_DIR`                    | string  | `/var/cache/receiptio`| Directory for static cache files. Must be writable by the container user.         |
+| `STATIC_CACHE_DIR`                    | string  | `./cache`             | Directory for static cache files. Must be writable by the container user.         |
 | `STATIC_CACHE_LIFETIME`               | int     | `604800`              | Lifetime of static cache files in seconds (default: 7 days).                      |
 
 \* = 0=8-dot single, 1=8-dot double, 32=24-dot single, 33=24-dot double.
@@ -42,7 +42,13 @@ services:
       - 3000:3000
     environment:
       TARGET_DEVICE: /dev/usb/lp2
+      STATIC_CACHE_DIR: /cache
     devices:
       - /dev/usb/lp2:/dev/usb/lp2
+    volumes:
+      - cache:/cache
     privileged: true
+
+volumes:
+  cache:
 ```
