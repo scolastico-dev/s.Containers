@@ -20,7 +20,7 @@ export class PrintController {
     name: 'format',
     required: false,
     description: 'Format of the receipt to print (default: "receiptio")',
-    enum: ['receiptio', 'raw', 'text', 'html'],
+    enum: ['receiptio', 'raw', 'text', 'html', 'qr'],
   })
   @ApiQuery({
     name: 'align',
@@ -62,6 +62,9 @@ export class PrintController {
           break;
         case 'text':
           result = await this.print.printText(receipt, align as any);
+          break;
+        case 'qr':
+          result = await this.print.printQrCode(receipt);
           break;
         default:
           release();

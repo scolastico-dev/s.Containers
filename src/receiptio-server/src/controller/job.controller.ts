@@ -7,10 +7,10 @@ export class PrintJobDTO {
   @ApiProperty()
   content?: string;
   @ApiProperty({
-    enum: ['receiptio', 'raw', 'text', 'html', 'cut', 'png'],
+    enum: ['receiptio', 'raw', 'text', 'html', 'cut', 'png', 'qr'],
     default: 'receiptio',
   })
-  format?: 'receiptio' | 'raw' | 'text' | 'html' | 'cut' | 'png';
+  format?: 'receiptio' | 'raw' | 'text' | 'html' | 'cut' | 'png' | 'qr';
   @ApiProperty({
     enum: ['left', 'center', 'right'],
     default: 'left',
@@ -70,6 +70,10 @@ export class JobController {
           case 'png':
             const buffer = Buffer.from(job.content, 'base64');
             res.push(await this.print.printPng(buffer));
+            break;
+          case 'qr':
+            res.push(await this.print.printQrCode(job.content));
+            break;
           default:
             release();
             throw new HttpException(`Unknown format: ${job.format}`, 400);

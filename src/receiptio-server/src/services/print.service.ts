@@ -7,6 +7,7 @@ import * as receiptio from 'receiptio';
 import { PNG } from 'pngjs';
 import puppeteer from 'puppeteer';
 import { createHash } from 'crypto';
+import QRCode from 'qrcode';
 import { IdLogger } from 'src/id.logger';
 
 @Injectable()
@@ -283,5 +284,15 @@ export class PrintService {
       this.cfg.printTextEncoding,
     );
     return await this.printRaw(encoded);
+  }
+
+  async printQrCode(data: string): Promise<string> {
+    this.logger.log('Printing QR code');
+    const qrCode = await QRCode.toBuffer(data, {
+      errorCorrectionLevel: 'H',
+      type: 'png',
+      margin: 1,
+    });
+    return await this.printPng(qrCode);
   }
 }
