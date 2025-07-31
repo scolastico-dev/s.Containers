@@ -19,8 +19,9 @@ export class PrintController {
   @ApiQuery({
     name: 'format',
     required: false,
-    description: 'Format of the receipt to print (default: "receiptio")',
-    enum: ['receiptio', 'raw', 'text', 'html', 'qr'],
+    description: 'Format of the receipt to print',
+    enum: ['receiptio', 'raw', 'text', 'html', 'qr', 'base64'],
+    default: 'receiptio',
   })
   @ApiQuery({
     name: 'align',
@@ -68,6 +69,9 @@ export class PrintController {
           break;
         case 'raw':
           result = await this.print.printRaw(Buffer.from(receipt, 'ascii'));
+          break;
+        case 'base64':
+          result = await this.print.printRaw(Buffer.from(receipt, 'base64'));
           break;
         case 'html':
           result = await this.print.printHtml(receipt);

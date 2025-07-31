@@ -7,10 +7,18 @@ export class PrintJobDTO {
   @ApiProperty()
   content?: string;
   @ApiProperty({
-    enum: ['receiptio', 'raw', 'text', 'html', 'cut', 'png', 'qr'],
+    enum: ['receiptio', 'raw', 'text', 'html', 'cut', 'png', 'qr', 'base64'],
     default: 'receiptio',
   })
-  format?: 'receiptio' | 'raw' | 'text' | 'html' | 'cut' | 'png' | 'qr';
+  format?:
+    | 'receiptio'
+    | 'raw'
+    | 'text'
+    | 'html'
+    | 'cut'
+    | 'png'
+    | 'qr'
+    | 'base64';
   @ApiProperty({
     enum: ['left', 'center', 'right'],
     default: 'left',
@@ -72,6 +80,10 @@ export class JobController {
               await this.print.printRaw(Buffer.from(job.content, 'ascii')),
             );
             break;
+          case 'base64':
+            res.push(
+              await this.print.printRaw(Buffer.from(job.content, 'base64')),
+            );
           case 'html':
             res.push(await this.print.printHtml(job.content));
             break;
