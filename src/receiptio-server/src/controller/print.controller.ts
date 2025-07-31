@@ -36,17 +36,29 @@ export class PrintController {
     enum: ['true', 'false'],
     default: 'false',
   })
+  @ApiQuery({
+    name: 'width',
+    required: false,
+    default: 1,
+    type: 'number',
+    description: 'Width of the QR Code in percentage (0.01 to 1.0)',
+  })
   @ApiConsumes('text/plain')
   async printReceipt(
     @Body() receipt: string,
     @Query('format') format: string,
     @Query('align') align: string,
     @Query('cut') cut: string,
+    @Query('width') width: string,
   ): Promise<string> {
     if (!receipt) throw new HttpException('Receipt content is empty', 400);
     if (!['left', 'center', 'right', undefined].includes(align))
       throw new HttpException(`Unknown alignment: ${align}`, 400);
     if (!align) align = 'left';
+    if (!width) width = '1';
+    const widthValue = parseFloat(width);
+    if (isNaN(widthValue) || widthValue <= 0 || widthValue > 1)
+      throw new HttpException(`Invalid width: ${width}`, 400);
     const release = await this.queue.acquire();
     try {
       let result: string;
@@ -64,7 +76,11 @@ export class PrintController {
           result = await this.print.printText(receipt, align as any);
           break;
         case 'qr':
-          result = await this.print.printQrCode(receipt);
+          result = await this.print.printQrCode(
+            receipt,
+            widthValue,
+            align as any,
+          );
           break;
         default:
           release();

@@ -10,6 +10,8 @@ import { createHash } from 'crypto';
 import QRCode from 'qrcode';
 import { IdLogger } from 'src/id.logger';
 
+export type Align = 'left' | 'center' | 'right';
+
 @Injectable()
 export class PrintService {
   constructor(
@@ -81,8 +83,14 @@ export class PrintService {
     return h.digest('hex');
   }
 
-  async printPng(data: Buffer, width: number = 1): Promise<string> {
-    this.logger.log(`Printing PNG image with width factor ${width}`);
+  async printPng(
+    data: Buffer,
+    width: number = 1,
+    align: Align = 'center',
+  ): Promise<string> {
+    this.logger.log(
+      `Printing PNG image with width factor ${width} and align ${align}`,
+    );
     const png: PNG = PNG.sync.read(data);
     const maxWidth = this.cfg.printImageMaxWidth;
     let targetWidth = Math.round(maxWidth * Math.max(0, Math.min(width, 1)));
@@ -99,6 +107,8 @@ export class PrintService {
       targetHeight,
       '|',
       this.cfg.printImageDensity,
+      '|',
+      align,
     );
 
     const cached = this.cache.getImageRaster(rasterKey);
@@ -125,11 +135,35 @@ export class PrintService {
       }
     }
 
+    // Alignment: if width < 1, pad left/center/right with white pixels
+    let finalImageData: Buffer;
+    let finalWidth = maxWidth;
+    if (targetWidth < maxWidth) {
+      finalImageData = Buffer.alloc(maxWidth * targetHeight, 255); // white background
+      let offset = 0;
+      if (align === 'center') {
+        offset = Math.floor((maxWidth - targetWidth) / 2);
+      } else if (align === 'right') {
+        offset = maxWidth - targetWidth;
+      }
+      for (let y = 0; y < targetHeight; y++) {
+        imageData.copy(
+          finalImageData,
+          y * maxWidth + offset,
+          y * targetWidth,
+          y * targetWidth + targetWidth,
+        );
+      }
+    } else {
+      finalImageData = imageData;
+      finalWidth = targetWidth;
+    }
+
     const {
       raster,
       widthBytes,
       height: rasterHeight,
-    } = this.makeImageRaster(imageData, targetWidth, targetHeight);
+    } = this.makeImageRaster(finalImageData, finalWidth, targetHeight);
 
     const value: RasterCacheValue = {
       raster,
@@ -241,10 +275,7 @@ export class PrintService {
     );
   }
 
-  async printText(
-    text: string,
-    align: 'left' | 'center' | 'right' = 'left',
-  ): Promise<string> {
+  async printText(text: string, align: Align = 'left'): Promise<string> {
     this.logger.log(`Printing text with alignment: ${align}`);
     const charsPerLine = this.cfg.printTextCharsPerLine;
     const lines: string[] = [];
@@ -286,13 +317,17 @@ export class PrintService {
     return await this.printRaw(encoded);
   }
 
-  async printQrCode(data: string): Promise<string> {
+  async printQrCode(
+    data: string,
+    width = 1,
+    align: Align = 'center',
+  ): Promise<string> {
     this.logger.log('Printing QR code');
     const qrCode = await QRCode.toBuffer(data, {
       errorCorrectionLevel: 'H',
       type: 'png',
       margin: 1,
     });
-    return await this.printPng(qrCode);
+    return await this.printPng(qrCode, width, align);
   }
 }

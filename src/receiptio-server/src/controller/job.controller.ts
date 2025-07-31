@@ -16,6 +16,12 @@ export class PrintJobDTO {
     default: 'left',
   })
   align?: 'left' | 'center' | 'right';
+  @ApiProperty({
+    type: Number,
+    default: 1,
+    description: 'Width of the Image / QR Code in percentage (0.01 to 1.0)',
+  })
+  width?: number;
 }
 
 @Controller()
@@ -48,6 +54,11 @@ export class JobController {
           release();
           throw new HttpException(`Unknown alignment: ${job.align}`, 400);
         }
+        if (!job.width) job.width = 1;
+        if (isNaN(job.width) || job.width <= 0 || job.width > 1) {
+          release();
+          throw new HttpException(`Invalid width: ${job.width}`, 400);
+        }
         if (!job.align) job.align = 'left';
         switch (job.format) {
           case 'cut':
@@ -69,10 +80,18 @@ export class JobController {
             break;
           case 'png':
             const buffer = Buffer.from(job.content, 'base64');
-            res.push(await this.print.printPng(buffer));
+            res.push(
+              await this.print.printPng(buffer, job.width, job.align as any),
+            );
             break;
           case 'qr':
-            res.push(await this.print.printQrCode(job.content));
+            res.push(
+              await this.print.printQrCode(
+                job.content,
+                job.width,
+                job.align as any,
+              ),
+            );
             break;
           default:
             release();
