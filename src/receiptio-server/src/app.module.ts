@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { ClsModule } from 'nestjs-cls';
 import { randomUUID } from 'crypto';
 import { AppController } from './controller/app.controller';
@@ -15,6 +16,7 @@ import { IdLogger } from './id.logger';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ClsModule.forRoot({
       global: true,
       middleware: {

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { $int, $str } from '@scolastico-dev/env-helper';
+import { $bool, $int, $str } from '@scolastico-dev/env-helper';
 import * as dotenv from 'dotenv';
 
 @Injectable()
@@ -76,4 +76,22 @@ export class CfgService {
    * @example PRINT_HTML_PNG_CACHE_MAX=20
    */
   readonly printHtmlPngCacheMax = $int('PRINT_HTML_PNG_CACHE_MAX', 20);
+
+  /**
+   * Enable the static cache for storing cache items in the filesystem.
+   * @example STATIC_CACHE_ENABLED=false
+   */
+  readonly staticCacheEnabled = $bool('STATIC_CACHE_ENABLED', false);
+
+  /**
+   * The static cache directory for storing cache files of converted images.
+   * @example STATIC_CACHE_DIR='./cache'
+   */
+  readonly staticCacheDir = $str('STATIC_CACHE_DIR', './cache');
+
+  /**
+   * The static cache lifetime in seconds since the last access.
+   * @example STATIC_CACHE_LIFETIME=604800
+   */
+  readonly staticCacheLifetime = $int('STATIC_CACHE_LIFETIME', 604800);
 }
