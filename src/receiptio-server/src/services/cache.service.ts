@@ -9,7 +9,7 @@ import {
   rmSync,
   utimesSync,
 } from 'fs';
-import { join } from 'path';
+import { join, resolve } from 'path';
 import { Cron } from '@nestjs/schedule';
 
 export interface RasterCacheValue {
@@ -52,25 +52,25 @@ export class CacheService {
     }
   }
 
-  private getFromFile<T>(filePath: string): T | undefined {
+  private getFromFile(filePath: string): string | undefined {
     try {
-      const fullPath = join(this.cfg.staticCacheDir, filePath);
+      const fullPath = join(resolve(this.cfg.staticCacheDir), filePath);
       const data = readFileSync(fullPath, 'utf-8');
       utimesSync(fullPath, new Date(), new Date());
-      return Buffer.from(data, 'base64') as T;
+      return data;
     } catch (error) {
-      this.logger.error(
+      this.logger.warn(
         `Failed to read from file ${filePath}: ${error.message}`,
       );
       return undefined;
     }
   }
 
-  private setToFile<T>(filePath: string, value: T): void {
+  private setToFile(filePath: string, value: string): void {
     try {
       writeFileSync(
-        join(this.cfg.staticCacheDir, filePath),
-        Buffer.from(value as Buffer).toString('base64'),
+        join(resolve(this.cfg.staticCacheDir), filePath),
+        value,
         'utf-8',
       );
     } catch (error) {
@@ -81,8 +81,16 @@ export class CacheService {
   }
 
   getImageRaster(key: string): RasterCacheValue | undefined {
-    if (this.cfg.staticCacheEnabled)
-      return this.getFromFile<RasterCacheValue>(key);
+    if (this.cfg.staticCacheEnabled) {
+      const data = this.getFromFile(key);
+      if (!data) return undefined;
+      const parsed = JSON.parse(data);
+      return {
+        raster: Buffer.from(parsed.raster, 'base64'),
+        widthBytes: parsed.widthBytes,
+        height: parsed.height,
+      };
+    }
     const v = this.imageRasterCache.get(key);
     if (!v) return undefined;
     this.logger.debug(`Hit in image raster cache for key: ${key}`);
@@ -93,7 +101,14 @@ export class CacheService {
 
   setImageRaster(key: string, value: RasterCacheValue): void {
     if (this.cfg.staticCacheEnabled) {
-      this.setToFile<RasterCacheValue>(key, value);
+      this.setToFile(
+        key,
+        JSON.stringify({
+          raster: value.raster.toString('base64'),
+          widthBytes: value.widthBytes,
+          height: value.height,
+        }),
+      );
       return;
     }
     this.imageRasterCache.set(key, value);
@@ -101,7 +116,11 @@ export class CacheService {
   }
 
   getHtmlPng(key: string): Buffer | undefined {
-    if (this.cfg.staticCacheEnabled) return this.getFromFile<Buffer>(key);
+    if (this.cfg.staticCacheEnabled) {
+      const data = this.getFromFile(key);
+      if (!data) return undefined;
+      return Buffer.from(data, 'base64');
+    }
     const v = this.htmlPngCache.get(key);
     if (!v) return undefined;
     this.logger.debug(`Hit in HTML PNG cache for key: ${key}`);
@@ -112,7 +131,7 @@ export class CacheService {
 
   setHtmlPng(key: string, value: Buffer): void {
     if (this.cfg.staticCacheEnabled) {
-      this.setToFile<Buffer>(key, value);
+      this.setToFile(key, value.toString('base64'));
       return;
     }
     this.htmlPngCache.set(key, value);
