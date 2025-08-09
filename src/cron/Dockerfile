@@ -1,4 +1,4 @@
-FROM debian:bullseye
+FROM debian:bookworm
 MAINTAINER Joschua Becker EDV <support@scolasti.co>
 
 RUN apt-get update
