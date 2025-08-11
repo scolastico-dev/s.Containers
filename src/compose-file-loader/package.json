@@ -1,6 +1,13 @@
 {
+  "source": "src/main.ts",
+  "main": "dist/main.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "FILE_TEST_PATH=./test.txt FILE_TEST_CONTENT=Hello FILE_TEST_DELETE_PATH=./test.txt FILE_TEST_DELETE_MODE=delete ORDER=TEST_DELETE,TEST SLEEP_AFTER=0 node index.js"
+    "start": "node dist/main.js",
+    "dev": "FILE_TEST_PATH=./test.txt FILE_TEST_CONTENT=Hello FILE_TEST_DELETE_PATH=./test.txt FILE_TEST_DELETE_MODE=delete ORDER=TEST_DELETE,TEST SLEEP_AFTER=0 node dist/main.js",
+    "build": "parcel build"
+  },
+  "devDependencies": {
+    "@types/node": "^24.2.1",
+    "parcel": "^2.15.4"
   }
 }
