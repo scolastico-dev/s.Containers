@@ -242,12 +242,12 @@ export class PrintService {
         content: [
           `body { font-family: '${this.cfg.printHtmlFont}', sans-serif; }`,
           'body, p, h1, h2, h3, h4, h5, h6 { margin: 0; padding: 0; }',
-          `body { width: ${this.cfg.printHtmlWidth}; }`,
+          `body { width: ${this.cfg.printHtmlWidth}; word-break: break-word; overflow-wrap: anywhere; }`,
           'h1 { font-size: 1.5em; }',
           'h2 { font-size: 1.25em; }',
           'h3 { font-size: 1.1em; }',
           'h4, h5, h6 { font-size: 1em; }',
-          'p { font-size: 0.9em; }',
+          'p { font-size: 0.9em; word-break: break-word; overflow-wrap: anywhere; }',
           'svg { max-width: 100%; height: auto; }',
         ].join('\n'),
       });
