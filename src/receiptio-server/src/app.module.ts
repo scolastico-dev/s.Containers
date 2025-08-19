@@ -13,6 +13,7 @@ import { QueueService } from './services/queue.service';
 import { PrintService } from './services/print.service';
 import { AppLogger } from './app.logger';
 import { IdLogger } from './id.logger';
+import { PullService } from './services/pull.service';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { IdLogger } from './id.logger';
     CacheService,
     QueueService,
     PrintService,
+    PullService,
   ],
   exports: [AppLogger],
 })

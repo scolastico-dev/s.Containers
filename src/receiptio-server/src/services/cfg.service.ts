@@ -94,4 +94,17 @@ export class CfgService {
    * @example STATIC_CACHE_LIFETIME=604800
    */
   readonly staticCacheLifetime = $int('STATIC_CACHE_LIFETIME', 604800);
+
+  /**
+   * The url to pull print jobs from.
+   * Expects a JSON object of the PrintJobDTO format.
+   * @example PULL_URL='https://example.com/print-jobs'
+   */
+  readonly pullUrl = $str('PULL_URL', '');
+
+  /**
+   * The interval in milliseconds to pull print jobs.
+   * @example PULL_INTERVAL=5000
+   */
+  readonly pullInterval = $int('PULL_INTERVAL', 5000);
 }
