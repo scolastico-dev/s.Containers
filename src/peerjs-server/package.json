@@ -1,0 +1,6 @@
+{
+	"dependencies": {
+		"@scolastico-dev/env-helper": "^1.0.0",
+		"peer": "^1.0.2"
+	}
+}
