@@ -172,3 +172,7 @@ Send pdf, png or jpg file to an OCR API and get either text or a PDF with the te
 ### [`s.containers/receiptio-server`](./src/receiptio-server/README.md)
 
 An HTTP API for printing receipts using "text only" thermal printers, utilizing the `GS v 0` printer command set with the [ReceiptIO](https://github.com/receiptline/receiptio) library.
+
+### [`s.containers/peerjs-server`](./src/peerjs-server/README.md)
+
+A PeerJS server variant with environment variable support and ARM architecture compatibility.
