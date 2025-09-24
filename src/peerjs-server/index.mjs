@@ -1,4 +1,5 @@
-import { $str, $min, $int, $list, $bool, $range } from "@scolastico-dev/env-helper";
+import envHelper from "@scolastico-dev/env-helper";
+const { $str, $min, $int, $list, $bool, $range } = envHelper;
 import { PeerServer } from "peer";
 
 const peer = new PeerServer({
@@ -20,4 +21,12 @@ const peer = new PeerServer({
     maxAge: $int("CORS_MAX_AGE", 86400),
     preflightContinue: $bool("CORS_PREFLIGHT_CONTINUE", false),
   },
+});
+
+peer.on("connection", (client) => {
+  console.log(`Client connected: ${client.getId()}`);
+});
+
+peer.on("disconnect", (client) => {
+  console.log(`Client disconnected: ${client.getId()}`);
 });
