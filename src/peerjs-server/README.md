@@ -11,7 +11,7 @@ The PeerJS server is an essential component for establishing peer-to-peer connec
 | Name                          | Type   | Default Value                                              | Description                                                            |
 |:------------------------------|:-------|:-----------------------------------------------------------|:-----------------------------------------------------------------------|
 | `PORT`                        | int    | `9000`                                                     | The port the PeerServer will listen on.                                |
-| `PATH`                        | string | `/`                                                        | The path for the PeerServer.                                           |
+| `PEERJS_PATH`                 | string | `/`                                                        | The path for the PeerServer.                                           |
 | `ALLOW_DISCOVERY`             | bool   | `false`                                                    | Allow discovery of PeerJS servers.                                     |
 | `PROXIED`                     | bool   | `true`                                                     | Enable proxy support.                                                  |
 | `CONCURRENT_LIMIT`            | int    | `5000`                                                     | The maximum number of concurrent connections.                          |

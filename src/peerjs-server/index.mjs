@@ -4,7 +4,7 @@ import { PeerServer } from "peer";
 
 const peer = new PeerServer({
   port: $range("PORT", 1, 65535, 9000),
-  path: $str("PATH", "/"),
+  path: $str("PEERJS_PATH", "/"),
   allow_discovery: $bool("ALLOW_DISCOVERY", false),
   proxied: $bool("PROXIED", true),
   concurrent_limit: $min("CONCURRENT_LIMIT", 1, 5_000),
