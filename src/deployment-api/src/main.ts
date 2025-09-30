@@ -7,6 +7,6 @@ async function bootstrap() {
     rawBody: true,
   });
   app.useBodyParser('raw', { limit: "500mb" });
-  await app.listen(Number(process.env.APP_PORT) || 3000);
+  await app.listen(Number(process.env.PORT) || 3000);
 }
 bootstrap().then();
