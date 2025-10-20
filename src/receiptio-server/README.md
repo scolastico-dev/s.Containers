@@ -73,13 +73,15 @@ services:
       - 3000:3000
     environment:
       CUPS_PRINTER_NAME: receipt_printer
-      CUPS_SERVER: cups.local
+      CUPS_SERVER: host.docker.internal
       CUPS_PORT: 631
       CUPS_USERNAME: admin
       CUPS_PASSWORD: password
       STATIC_CACHE_DIR: /cache
     volumes:
       - cache:/cache
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
 volumes:
   cache:
