@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { CfgService } from './cfg.service';
 import { CacheService, RasterCacheValue } from './cache.service';
-import { createWriteStream, existsSync } from 'fs';
+import { createWriteStream, existsSync, writeFileSync, unlinkSync } from 'fs';
+import { tmpdir } from 'os';
+import { join } from 'path';
+import { spawn } from 'child_process';
 import * as iconv from 'iconv-lite';
 import * as receiptio from 'receiptio';
 import { PNG } from 'pngjs';
@@ -28,6 +31,12 @@ export class PrintService {
   private readonly LINE_FEED = Buffer.from('\n');
 
   printRaw(data: Buffer): Promise<string> {
+    // Check if CUPS printer is configured
+    if (this.cfg.cupsPrinterName) {
+      return this.printWithCups(data);
+    }
+
+    // Use direct device access
     if (!existsSync(this.cfg.targetDevice)) {
       return Promise.reject(
         new Error(`Target device ${this.cfg.targetDevice} does not exist`),
@@ -43,6 +52,85 @@ export class PrintService {
       stream.on('error', (err) => reject(`Print job failed: ${err.message}`));
       stream.write(data);
       stream.end();
+    });
+  }
+
+  private printWithCups(data: Buffer): Promise<string> {
+    this.logger.log(
+      `Sending raw bytes to CUPS printer ${this.cfg.cupsPrinterName}`,
+    );
+
+    return new Promise((resolve, reject) => {
+      // Create temporary file for the raw data
+      const tempFile = join(tmpdir(), `print-job-${Date.now()}.raw`);
+
+      try {
+        writeFileSync(tempFile, data);
+
+        // Build lpr command arguments
+        const args = ['-P', this.cfg.cupsPrinterName, '-o', 'raw', tempFile];
+
+        // Add server if specified
+        if (this.cfg.cupsServer && this.cfg.cupsServer !== 'localhost') {
+          args.unshift('-h', `${this.cfg.cupsServer}:${this.cfg.cupsPort}`);
+        }
+
+        this.logger.log(`Executing: lpr ${args.join(' ')}`);
+
+        // Set up environment for CUPS authentication
+        const env = { ...process.env };
+        if (this.cfg.cupsUsername) {
+          env.CUPS_USER = this.cfg.cupsUsername;
+        }
+        if (this.cfg.cupsPassword) {
+          env.CUPS_PASSWORD = this.cfg.cupsPassword;
+        }
+
+        const lpr = spawn('lpr', args, { env });
+
+        let stderr = '';
+
+        lpr.stderr.on('data', (data) => {
+          stderr += data.toString();
+        });
+
+        lpr.on('close', (code) => {
+          // Clean up temporary file
+          try {
+            unlinkSync(tempFile);
+          } catch (cleanupError) {
+            this.logger.warn(
+              `Failed to clean up temp file ${tempFile}: ${cleanupError}`,
+            );
+          }
+
+          if (code === 0) {
+            this.logger.log('CUPS printer accepted data');
+            resolve('Print job completed via CUPS');
+          } else {
+            const error = `CUPS print job failed with code ${code}: ${stderr}`;
+            this.logger.error(error);
+            reject(new Error(error));
+          }
+        });
+
+        lpr.on('error', (error) => {
+          // Clean up temporary file
+          try {
+            unlinkSync(tempFile);
+          } catch (cleanupError) {
+            this.logger.warn(
+              `Failed to clean up temp file ${tempFile}: ${cleanupError}`,
+            );
+          }
+
+          this.logger.error(`Failed to execute lpr: ${error.message}`);
+          reject(new Error(`CUPS print job failed: ${error.message}`));
+        });
+      } catch (error) {
+        this.logger.error(`Failed to create temporary file: ${error.message}`);
+        reject(new Error(`CUPS print job failed: ${error.message}`));
+      }
     });
   }
 

@@ -114,4 +114,34 @@ export class CfgService {
    * @example AMQP_URL='amqp://user:password@localhost:5672/%2f/queue_name'
    */
   readonly amqpUrl = $str('AMQP_URL', '');
+
+  /**
+   * CUPS printer name for printing. If set, printing will use CUPS instead of direct device access.
+   * @example CUPS_PRINTER_NAME='receipt_printer'
+   */
+  readonly cupsPrinterName = $str('CUPS_PRINTER_NAME', '');
+
+  /**
+   * CUPS server hostname or IP address.
+   * @example CUPS_SERVER='localhost'
+   */
+  readonly cupsServer = $str('CUPS_SERVER', 'localhost');
+
+  /**
+   * CUPS server port.
+   * @example CUPS_PORT=631
+   */
+  readonly cupsPort = $int('CUPS_PORT', 631);
+
+  /**
+   * CUPS username for authentication (optional).
+   * @example CUPS_USERNAME='admin'
+   */
+  readonly cupsUsername = $str('CUPS_USERNAME', '');
+
+  /**
+   * CUPS password for authentication (optional).
+   * @example CUPS_PASSWORD='password'
+   */
+  readonly cupsPassword = $str('CUPS_PASSWORD', '');
 }

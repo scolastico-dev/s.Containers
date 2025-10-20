@@ -28,12 +28,19 @@ It mainly utilizes the `GS v 0` printer command set, to print images, html or ma
 | `STATIC_CACHE_LIFETIME`        | int     | `604800`                           | Lifetime of static cache files in seconds (default: 7 days).                      |
 | `PULL_INTERVAL`                | int     | `5000`                             | Interval in milliseconds to pull new print jobs from the queue.                   |
 | `PULL_URL`                     | string  | `http://localhost:3000/print/pull` | URL to pull print jobs from. This should be the URL of the queue service.         |
+| `CUPS_PRINTER_NAME`            | string  | `''`                               | CUPS printer name. If set, printing will use CUPS instead of direct device access.|
+| `CUPS_SERVER`                  | string  | `localhost`                        | CUPS server hostname or IP address.                                               |
+| `CUPS_PORT`                    | int     | `631`                              | CUPS server port.                                                                  |
+| `CUPS_USERNAME`                | string  | `''`                               | CUPS username for authentication (optional).                                      |
+| `CUPS_PASSWORD`                | string  | `''`                               | CUPS password for authentication (optional).                                      |
 
 \* = 0=8-dot single, 1=8-dot double, 32=24-dot single, 33=24-dot double.
 
 \*\* =  Anything supported by [iconv-lite](https://www.npmjs.com/package/iconv-lite) can be used, e.g. `cp437`, `utf-8`, `iso-8859-1`, etc.
 
 ## Example
+
+### Direct Device Access
 
 ```yml
 services:
@@ -43,13 +50,36 @@ services:
     ports:
       - 3000:3000
     environment:
-      TARGET_DEVICE: /dev/usb/lp2
+      TARGET_DEVICE: &printer /dev/usb/lp1
       STATIC_CACHE_DIR: /cache
     devices:
-      - /dev/usb/lp2:/dev/usb/lp2
+      - *printer
     volumes:
       - cache:/cache
     privileged: true
+
+volumes:
+  cache:
+```
+
+### CUPS Printer
+
+```yml
+services:
+  app:
+    image: ghcr.io/scolastico-dev/s.containers/receiptio-server:latest
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    environment:
+      CUPS_PRINTER_NAME: receipt_printer
+      CUPS_SERVER: cups.local
+      CUPS_PORT: 631
+      CUPS_USERNAME: admin
+      CUPS_PASSWORD: password
+      STATIC_CACHE_DIR: /cache
+    volumes:
+      - cache:/cache
 
 volumes:
   cache:
