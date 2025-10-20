@@ -107,4 +107,11 @@ export class CfgService {
    * @example PULL_INTERVAL=5000
    */
   readonly pullInterval = $int('PULL_INTERVAL', 5000);
+
+  /**
+   * AMQP URL to connect to a RabbitMQ server for receiving print jobs.
+   * Expects a JSON object of the PrintJobDTO format.
+   * @example AMQP_URL='amqp://user:password@localhost:5672/%2f/queue_name'
+   */
+  readonly amqpUrl = $str('AMQP_URL', '');
 }

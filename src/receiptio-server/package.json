@@ -21,6 +21,8 @@
     "@nestjs/schedule": "^6.0.0",
     "@nestjs/swagger": "^11.2.0",
     "@scolastico-dev/env-helper": "^1.0.0",
+    "@types/amqplib": "^0.10.7",
+    "amqplib": "^0.10.8",
     "axios": "^1.11.0",
     "dotenv": "^17.2.1",
     "iconv-lite": "^0.6.3",

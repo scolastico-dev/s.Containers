@@ -27,7 +27,7 @@ It mainly utilizes the `GS v 0` printer command set, to print images, html or ma
 | `STATIC_CACHE_DIR`             | string  | `./cache`                          | Directory for static cache files. Must be writable by the container user.         |
 | `STATIC_CACHE_LIFETIME`        | int     | `604800`                           | Lifetime of static cache files in seconds (default: 7 days).                      |
 | `PULL_INTERVAL`                | int     | `5000`                             | Interval in milliseconds to pull new print jobs from the queue.                   |
-| `PULL_URL`                     | string  | ``                                 | URL to pull print jobs from. This should be the URL of the queue service.         |
+| `PULL_URL`                     | string  | `http://localhost:3000/print/pull` | URL to pull print jobs from. This should be the URL of the queue service.         |
 
 \* = 0=8-dot single, 1=8-dot double, 32=24-dot single, 33=24-dot double.
 
