@@ -72,7 +72,7 @@ export class PrintService {
 
         // Add server if specified
         if (this.cfg.cupsServer && this.cfg.cupsServer !== 'localhost') {
-          args.unshift('-h', `${this.cfg.cupsServer}:${this.cfg.cupsPort}`);
+          args.unshift('-H', `${this.cfg.cupsServer}:${this.cfg.cupsPort}`);
         }
 
         this.logger.log(`Executing: lpr ${args.join(' ')}`);
