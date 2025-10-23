@@ -46,9 +46,6 @@ export class PdfService {
         const x = box.Left * width;
         const y = (1 - box.Top) * height - box.Height * height;
         const size = box.Height * height;
-        page.drawText('', {
-          x,
-        }); // Ensure content stream exists
         const defaultWidth = font.widthOfTextAtSize(word || '', size);
         const scale = (box.Width * width) / defaultWidth;
         const { newFontKey } = (page as any).setOrEmbedFont(font); // Accessing private method
