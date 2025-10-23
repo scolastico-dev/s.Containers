@@ -1,6 +1,18 @@
 import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { readFileSync } from 'fs';
-import { PDFDocument, rgb } from 'pdf-lib';
+import {
+  beginText,
+  endText,
+  PDFDocument,
+  PDFOperator,
+  popGraphicsState,
+  pushGraphicsState,
+  rgb,
+  setFontAndSize,
+  setTextMatrix,
+  setTextRenderingMode,
+  showText,
+} from 'pdf-lib';
 import * as fontkit from '@pdf-lib/fontkit';
 import { Block } from '@aws-sdk/client-textract';
 import { CfgService } from './cfg.service';
@@ -33,14 +45,24 @@ export class PdfService {
         } = b;
         const x = box.Left * width;
         const y = (1 - box.Top) * height - box.Height * height;
-        page.drawText(word, {
+        const size = box.Height * height;
+        page.drawText('', {
           x,
-          y,
-          size: box.Height * height,
-          font,
-          color: rgb(0, 0, 0),
-          opacity: 0,
-        });
+        }); // Ensure content stream exists
+        const defaultWidth = font.widthOfTextAtSize(word || '', size);
+        const scale = (box.Width * width) / defaultWidth;
+        const { newFontKey } = (page as any).setOrEmbedFont(font); // Accessing private method
+        page.pushOperators(
+          pushGraphicsState(),
+          beginText(),
+          setTextRenderingMode(3),
+          setFontAndSize(newFontKey, size),
+          PDFOperator.of('Tz' as any, [(scale * 100).toFixed(2).toString()]),
+          setTextMatrix(1, 0, 0, 1, x, y),
+          showText(font.encodeText(word || '')),
+          endText(),
+          popGraphicsState(),
+        );
         if (this.cfg.drawBoundingBox)
           page.drawRectangle({
             width: box.Width * width,
@@ -131,7 +153,7 @@ export class PdfService {
   }
 
   async pdfToImageToPdf(buffer: Buffer): Promise<Buffer> {
-    const images = await pdfToPng(buffer, {
+    const images = await pdfToPng(buffer as any, {
       viewportScale: this.cfg.pngQuality,
     });
     const oldPdf = await PDFDocument.load(buffer);
