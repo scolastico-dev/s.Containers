@@ -339,6 +339,7 @@ export class PrintService {
           'svg { max-width: 100%; height: auto; }',
         ].join('\n'),
       });
+      await page.waitForNetworkIdle({ idleTime: 500, timeout: 5000 });
       const el = await page.$('body');
       buffer = Buffer.from(
         await el.screenshot({
