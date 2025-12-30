@@ -41,21 +41,56 @@ export class PdfService {
       pageBlocks.forEach((b) => {
         const {
           Text: word,
-          Geometry: { BoundingBox: box },
+          Geometry: { BoundingBox: box, Polygon: polygon },
         } = b;
-        const x = box.Left * width;
-        const y = (1 - box.Top) * height - box.Height * height;
-        const size = box.Height * height;
-        const defaultWidth = font.widthOfTextAtSize(word || '', size);
-        const scale = (box.Width * width) / defaultWidth;
         const { newFontKey } = (page as any).setOrEmbedFont(font); // Accessing private method
+        const p0 = polygon[0];
+        const p1 = polygon[1];
+        const run = (p1.X - p0.X) * width;
+        const rise = (p1.Y - p0.Y) * height; // Y is inverted in PDF space calculation usually, but Textract is 0-1.
+        // Note: In PDF, Y grows upwards. In Textract, Y grows downwards.
+        // We usually invert Y for calculation or handle it in the matrix.
+        // For simplicity, let's just get the geometric angle on the page surface.
+        const angle = Math.atan2(rise, run);
+
+        // 2. Calculate "True" Height (Font Size) and Width
+        // Distance between Point 0 and Point 3 is the height (roughly)
+        const p3 = polygon[3];
+        const h_dx = (p3.X - p0.X) * width;
+        const h_dy = (p3.Y - p0.Y) * height;
+        const trueHeight = Math.sqrt(h_dx * h_dx + h_dy * h_dy);
+
+        // Distance between Point 0 and Point 1 is the width
+        const trueWidth = Math.sqrt(run * run + rise * rise);
+
+        // 3. Coordinate calculation (Start at Point 3 - Bottom Left of the text for PDF standard usually,
+        // or Point 0 Top-Left depending on how you want to anchor. Textract is Top-Left based.
+        // pdf-lib drawText usually expects bottom-left baseline.
+        // Let's stick to the box logic but rotated)
+        // Using Point 3 (Bottom-Left in text orientation) as anchor for PDF baseline is often safest.
+        const x = p3.X * width;
+        const y = (1 - p3.Y) * height; // Invert Y for PDF coordinates
+
+        const defaultWidth = font.widthOfTextAtSize(word || '', trueHeight);
+        const scale = trueWidth / defaultWidth;
+
+        // 4. Calculate Rotation Matrix components
+        // PDF rotation is counter-clockwise. Textract angle might need sign flip depending on Y-axis logic.
+        // A standard rotation matrix is [cos, sin, -sin, cos, x, y].
+        // Because PDF Y-axis is up, and screen/image Y-axis is down, -angle is often needed.
+        const rad = -angle;
+        const c = Math.cos(rad);
+        const s = Math.sin(rad);
+
         page.pushOperators(
           pushGraphicsState(),
           beginText(),
           setTextRenderingMode(3),
-          setFontAndSize(newFontKey, size),
+          // Use the TRUE height calculated from polygon side, not bounding box height
+          setFontAndSize(newFontKey, trueHeight),
           PDFOperator.of('Tz' as any, [(scale * 100).toFixed(2).toString()]),
-          setTextMatrix(1, 0, 0, 1, x, y),
+          // Apply rotation matrix
+          setTextMatrix(c, s, -s, c, x, y),
           showText(font.encodeText(word || '')),
           endText(),
           popGraphicsState(),
