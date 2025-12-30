@@ -153,18 +153,16 @@ export class PdfService {
     const images = await pdfToPng(buffer as any, {
       viewportScale: this.cfg.pngQuality,
     });
-    const oldPdf = await PDFDocument.load(buffer);
     const newPdf = await PDFDocument.create();
     for (let i = 0; i < images.length; i++) {
       const image = images[i];
-      const oldPage = oldPdf.getPage(i);
       const img = await newPdf.embedPng(image.content);
-      const page = newPdf.addPage([oldPage.getWidth(), oldPage.getHeight()]);
+      const page = newPdf.addPage([image.width, image.height]);
       page.drawImage(img, {
         x: 0,
         y: 0,
-        width: oldPage.getWidth(),
-        height: oldPage.getHeight(),
+        width: image.width,
+        height: image.height,
       });
     }
     this.logger.log(`Converted PDF to image and back to PDF`);
