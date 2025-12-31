@@ -11,6 +11,7 @@ import { JobService } from './services/job.service';
 import { S3Service } from './services/s3.service';
 import { MergeController } from './controller/merge.controller';
 import { PdfService } from './services/pdf.service';
+import { TextController } from './controller/text.controller';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { PdfService } from './services/pdf.service';
     MergeController,
     AsyncController,
     SyncController,
+    TextController,
   ],
   exports: [CfgService],
 })

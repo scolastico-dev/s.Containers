@@ -3,6 +3,7 @@ import { readFileSync } from 'fs';
 import {
   beginText,
   endText,
+  PageSizes,
   PDFDocument,
   PDFOperator,
   popGraphicsState,
@@ -202,5 +203,94 @@ export class PdfService {
     }
     this.logger.log(`Converted PDF to image and back to PDF`);
     return Buffer.from(await newPdf.save());
+  }
+
+  async addTextPages(
+    buffer: Buffer,
+    text: string,
+    format: string = 'A4',
+    suffix: boolean = true,
+  ): Promise<Buffer> {
+    const pdfDoc = await PDFDocument.load(buffer);
+    pdfDoc.registerFontkit(fontkit);
+    const fontBytes = readFileSync(this.cfg.fontPath);
+    const font = await pdfDoc.embedFont(fontBytes);
+
+    const fontSize = 12;
+    const margin = 50;
+    const pageSize = PageSizes[format] || PageSizes.A4;
+    const [pageWidth, pageHeight] = pageSize;
+    const maxTextWidth = pageWidth - 2 * margin;
+    const lineHeight = fontSize * 1.2;
+
+    const lines = this.wrapText(text, font, fontSize, maxTextWidth);
+
+    // Calculate how many lines fit on a page
+    const maxLinesPerPage = Math.floor((pageHeight - 2 * margin) / lineHeight);
+
+    const pagesNeeded = Math.ceil(lines.length / maxLinesPerPage);
+    const createdPages: any[] = [];
+    const allPages = !suffix ? pdfDoc.getPages() : [];
+    if (!suffix) for (const {} of allPages) pdfDoc.removePage(0); // Temporarily remove existing pages
+
+    for (let i = 0; i < pagesNeeded; i++) {
+      const page = pdfDoc.addPage(pageSize);
+      const startLine = i * maxLinesPerPage;
+      const endLine = Math.min(startLine + maxLinesPerPage, lines.length);
+      const pageLines = lines.slice(startLine, endLine);
+
+      let yPosition = pageHeight - margin - fontSize;
+
+      for (const line of pageLines) {
+        page.drawText(line, {
+          x: margin,
+          y: yPosition,
+          size: fontSize,
+          font: font,
+          color: rgb(0, 0, 0),
+        });
+        yPosition -= lineHeight;
+      }
+      createdPages.push(page);
+    }
+
+    for (const p of allPages) pdfDoc.addPage(p); // Re-add existing pages at end if suffix
+
+    this.logger.log(
+      `Added ${createdPages.length} text pages to PDF (suffix: ${suffix})`,
+    );
+    return Buffer.from(await pdfDoc.save());
+  }
+
+  private wrapText(
+    text: string,
+    font: any,
+    size: number,
+    maxWidth: number,
+  ): string[] {
+    const lines: string[] = [];
+    const paragraphs = text.split('\n');
+
+    for (const paragraph of paragraphs) {
+      if (paragraph === '') {
+        lines.push('');
+        continue;
+      }
+      const words = paragraph.split(' ');
+      let currentLine = '';
+
+      for (const word of words) {
+        const testLine = currentLine ? `${currentLine} ${word}` : word;
+        const width = font.widthOfTextAtSize(testLine, size);
+        if (width <= maxWidth) {
+          currentLine = testLine;
+        } else {
+          if (currentLine) lines.push(currentLine);
+          currentLine = word;
+        }
+      }
+      if (currentLine) lines.push(currentLine);
+    }
+    return lines;
   }
 }
