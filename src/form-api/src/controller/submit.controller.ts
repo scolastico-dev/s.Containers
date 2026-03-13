@@ -6,6 +6,7 @@ import {
   Param,
   Body,
   Logger,
+  Ip,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -42,12 +43,32 @@ export class CaptchaResponse {
   response: string;
 }
 
+export class AltchaResponse {
+  @ApiProperty({ description: 'The verification data', required: false })
+  verificationData?: string;
+  @ApiProperty({ description: 'The signature' })
+  signature: string;
+  @ApiProperty({ description: 'The time of verification', required: false })
+  time?: number;
+  @ApiProperty({ description: 'The challenge', required: false })
+  challenge?: string;
+  @ApiProperty({ description: 'The algorithm', required: false })
+  algorithm?: string;
+  @ApiProperty({ description: 'The salt', required: false })
+  salt?: string;
+}
+
 export class SubmitRequest {
   @ApiProperty({
     description: 'The captcha response, if required.',
     required: false,
   })
   captcha?: CaptchaResponse;
+  @ApiProperty({
+    description: 'The altcha response, if required.',
+    required: false,
+  })
+  altchaData?: AltchaResponse;
   @ApiProperty({ description: 'The form data to submit' })
   data: any;
 }
@@ -95,6 +116,7 @@ export class SubmitController {
   async getCaptcha(
     @Param('id') id: string,
     @Body() body: SubmitRequest,
+    @Ip() ip: string,
   ): Promise<{ success: boolean }> {
     const email = process.env[`CFG_${id}_EMAIL`];
     if (!email)
@@ -127,6 +149,42 @@ export class SubmitController {
         'Request body too large',
         HttpStatus.PAYLOAD_TOO_LARGE,
       );
+
+    // Altcha validation, if required
+    const altchaUrl = process.env[`CFG_${id}_ALTCHA_VERIFY_URL`];
+    if (altchaUrl) {
+      if (!body.altchaData || !body.altchaData.signature) {
+        throw new HttpException(
+          'Malformed or missing altcha response',
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
+
+      const altchaDomain = process.env[`CFG_${id}_ALTCHA_DOMAIN`];
+
+      try {
+        const verifyRes = await axios.post(altchaUrl, {
+          domain: altchaDomain,
+          verificationData: body.altchaData.verificationData,
+          signature: body.altchaData.signature,
+          time: body.altchaData.time,
+          ip: ip,
+        });
+
+        if (!verifyRes.data || verifyRes.data.valid !== true) {
+          throw new HttpException(
+            'Invalid altcha response',
+            HttpStatus.FORBIDDEN,
+          );
+        }
+      } catch (err: any) {
+        this.log.error(`Altcha verification failed for ${id}: ${err.message}`);
+        throw new HttpException(
+          'Invalid altcha response',
+          HttpStatus.FORBIDDEN,
+        );
+      }
+    }
 
     // Captcha validation, if required
     const secret = process.env[`CFG_${id}_CAPTCHA_SECRET`];
