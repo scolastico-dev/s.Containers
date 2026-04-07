@@ -21,6 +21,7 @@ Form API is a simple form to email service. It is a simple way to send form data
 | `SMTP_PASSWORD`                     | string | `null`             | The SMTP password.                                                                                     |
 | `CAPTCHA_VERIFY_IP`                 | bool   | `true`             | Whether to verify the ip address of the captcha response.                                              |
 | `ALLOW_FORWARDED_FOR`               | bool   | `false`            | Whether to allow the `X-Forwarded-For` header to be used as the ip address.                            |
+| `CFG_GLOBAL_IP_HEADER`              | string | `null`             | A global configuration option to specify an HTTP header (e.g. `x-forwarded-for`, `cf-connecting-ip`) from which to safely extract the client IP address. |
 | `CFG_<name>_EMAIL`                  | string | `null`             | The email address to send the form data to.                                                            |
 | `CFG_<name>_SUBJECT`                | string | `Form-API: <name>` | The subject of the email.                                                                              |
 | `CFG_<name>_CAPTCHA_SECRET`         | string | `null`             | The secret of the captcha. If no captcha strength is chosen the captcha is expected to be a reCAPTCHA. |

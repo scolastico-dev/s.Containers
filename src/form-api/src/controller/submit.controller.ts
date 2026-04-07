@@ -7,6 +7,7 @@ import {
   Body,
   Logger,
   Ip,
+  Headers,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -96,8 +97,20 @@ export class SubmitController {
   async getCaptcha(
     @Param('id') id: string,
     @Body() body: SubmitRequest,
-    @Ip() ip: string,
+    @Ip() reqIp: string,
+    @Headers() headers: Record<string, string | string[]>,
   ): Promise<{ success: boolean }> {
+    const ipHeader = process.env.CFG_GLOBAL_IP_HEADER;
+    let ip = reqIp;
+    if (ipHeader) {
+      const headerVal = headers[ipHeader.toLowerCase()];
+      if (typeof headerVal === 'string') {
+        ip = headerVal.split(',')[0].trim();
+      } else if (Array.isArray(headerVal) && headerVal.length > 0) {
+        ip = headerVal[0].split(',')[0].trim();
+      }
+    }
+
     const email = process.env[`CFG_${id}_EMAIL`];
     if (!email)
       throw new HttpException('Form not configured', HttpStatus.NOT_FOUND);
@@ -129,23 +142,20 @@ export class SubmitController {
       const altchaDomain = process.env[`CFG_${id}_ALTCHA_DOMAIN`];
       try {
         let altchaPayload;
-        let verifyRequestBody: any = {};
+
         if (body.captcha.response.trim().startsWith('{')) {
           altchaPayload = JSON.parse(body.captcha.response);
-          verifyRequestBody = {
-            ...altchaPayload,
-            domain: altchaDomain,
-            ip: ip,
-          };
         } else {
           altchaPayload = JSON.parse(atob(body.captcha.response));
-          verifyRequestBody = {
-            payload: body.captcha.response,
-            domain: altchaDomain,
-            ip: ip,
-            data: body.data,
-          };
         }
+
+        const verifyRequestBody = {
+          verificationData: altchaPayload.verificationData,
+          signature: altchaPayload.signature,
+          time: altchaPayload.time,
+          domain: altchaDomain,
+          ip: ip,
+        };
 
         const verifyRes = await axios.post(altchaUrl, verifyRequestBody);
 
