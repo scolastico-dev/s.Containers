@@ -122,26 +122,39 @@ export class SubmitController {
       const altchaDomain = process.env[`CFG_${id}_ALTCHA_DOMAIN`];
       try {
         let altchaPayload;
+        let verifyRequestBody: any = {};
         if (body.captcha.response.trim().startsWith('{')) {
           altchaPayload = JSON.parse(body.captcha.response);
+          verifyRequestBody = {
+            ...altchaPayload,
+            domain: altchaDomain,
+            ip: ip,
+          };
         } else {
           altchaPayload = JSON.parse(atob(body.captcha.response));
+          verifyRequestBody = {
+            payload: body.captcha.response,
+            domain: altchaDomain,
+            ip: ip,
+            data: body.data,
+          };
         }
 
-        const verifyRes = await axios.post(altchaUrl, {
-          ...altchaPayload,
-          domain: altchaDomain,
-          ip: ip,
-        });
+        const verifyRes = await axios.post(altchaUrl, verifyRequestBody);
 
-        if (!verifyRes.data || verifyRes.data.valid !== true) {
+        if (
+          !verifyRes.data ||
+          (verifyRes.data.valid !== true && verifyRes.data.verified !== true)
+        ) {
           throw new HttpException(
             'Invalid altcha response',
             HttpStatus.FORBIDDEN,
           );
         }
 
-        if (altchaPayload.verificationData) {
+        if (verifyRes.data && verifyRes.data.fields) {
+          body.data = { ...body.data, ...verifyRes.data.fields };
+        } else if (altchaPayload.verificationData) {
           try {
             let decoded: any;
             if (typeof altchaPayload.verificationData === 'string') {
