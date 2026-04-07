@@ -29,33 +29,18 @@ import ajv from 'ajv';
 
 export class CaptchaResponse {
   @ApiProperty({
-    description: 'The hash of the captcha response, not required for reCAPTCHA',
+    description: 'The hash of the captcha response, not required for reCAPTCHA or altcha',
     required: false,
   })
   hash?: string;
   @ApiProperty({
     description:
-      'The timestamp from the captcha request, not required for reCAPTCHA',
+      'The timestamp from the captcha request, not required for reCAPTCHA or altcha',
     required: false,
   })
   timestamp?: number;
   @ApiProperty({ description: 'The response to the captcha challenge' })
   response: string;
-}
-
-export class AltchaResponse {
-  @ApiProperty({ description: 'The verification data', required: false })
-  verificationData?: string;
-  @ApiProperty({ description: 'The signature' })
-  signature: string;
-  @ApiProperty({ description: 'The time of verification', required: false })
-  time?: number;
-  @ApiProperty({ description: 'The challenge', required: false })
-  challenge?: string;
-  @ApiProperty({ description: 'The algorithm', required: false })
-  algorithm?: string;
-  @ApiProperty({ description: 'The salt', required: false })
-  salt?: string;
 }
 
 export class SubmitRequest {
@@ -64,11 +49,6 @@ export class SubmitRequest {
     required: false,
   })
   captcha?: CaptchaResponse;
-  @ApiProperty({
-    description: 'The altcha response, if required.',
-    required: false,
-  })
-  altchaData?: AltchaResponse;
   @ApiProperty({ description: 'The form data to submit' })
   data: any;
 }
@@ -122,6 +102,76 @@ export class SubmitController {
     if (!email)
       throw new HttpException('Form not configured', HttpStatus.NOT_FOUND);
 
+    // Max body size check
+    const maxBodySize = Number(process.env[`CFG_${id}_MAX_SIZE`]) || 0;
+    if (JSON.stringify(body).length > maxBodySize)
+      throw new HttpException(
+        'Request body too large',
+        HttpStatus.PAYLOAD_TOO_LARGE,
+      );
+
+    // Altcha validation, if required
+    const altchaUrl = process.env[`CFG_${id}_ALTCHA_VERIFY_URL`];
+    if (altchaUrl) {
+      if (!body.captcha || !body.captcha.response) {
+        throw new HttpException(
+          'Malformed or missing captcha response',
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
+      const altchaDomain = process.env[`CFG_${id}_ALTCHA_DOMAIN`];
+      try {
+        let altchaPayload;
+        if (body.captcha.response.trim().startsWith('{')) {
+          altchaPayload = JSON.parse(body.captcha.response);
+        } else {
+          altchaPayload = JSON.parse(atob(body.captcha.response));
+        }
+
+        const verifyRes = await axios.post(altchaUrl, {
+          ...altchaPayload,
+          domain: altchaDomain,
+          ip: ip,
+        });
+
+        if (!verifyRes.data || verifyRes.data.valid !== true) {
+          throw new HttpException(
+            'Invalid altcha response',
+            HttpStatus.FORBIDDEN,
+          );
+        }
+
+        if (altchaPayload.verificationData) {
+          try {
+            let decoded: any;
+            if (typeof altchaPayload.verificationData === 'string') {
+              const vDataStr = altchaPayload.verificationData.trim();
+              decoded = vDataStr.startsWith('{')
+                ? JSON.parse(vDataStr)
+                : JSON.parse(atob(vDataStr));
+            } else if (typeof altchaPayload.verificationData === 'object') {
+              decoded = altchaPayload.verificationData;
+            }
+
+            if (decoded && decoded.fields) {
+              body.data = { ...body.data, ...decoded.fields };
+            }
+          } catch (e: any) {
+            this.log.error(
+              `Failed to parse altcha verificationData: ${e.message}`,
+            );
+          }
+        }
+      } catch (err: any) {
+        if (err instanceof HttpException) throw err;
+        this.log.error(`Altcha verification failed for ${id}: ${err.message}`);
+        throw new HttpException(
+          'Invalid altcha response',
+          HttpStatus.FORBIDDEN,
+        );
+      }
+    }
+
     // Json Schema check
     let schema = process.env[`CFG_${id}_JSON_SCHEMA`];
     const schemaUrl = process.env[`CFG_${id}_JSON_SCHEMA_URL`];
@@ -140,50 +190,6 @@ export class SubmitController {
           'The JSON schema of the form data does not match the expected schema',
           HttpStatus.BAD_REQUEST,
         );
-    }
-
-    // Max body size check
-    const maxBodySize = Number(process.env[`CFG_${id}_MAX_SIZE`]) || 0;
-    if (JSON.stringify(body).length > maxBodySize)
-      throw new HttpException(
-        'Request body too large',
-        HttpStatus.PAYLOAD_TOO_LARGE,
-      );
-
-    // Altcha validation, if required
-    const altchaUrl = process.env[`CFG_${id}_ALTCHA_VERIFY_URL`];
-    if (altchaUrl) {
-      if (!body.altchaData || !body.altchaData.signature) {
-        throw new HttpException(
-          'Malformed or missing altcha response',
-          HttpStatus.UNAUTHORIZED,
-        );
-      }
-
-      const altchaDomain = process.env[`CFG_${id}_ALTCHA_DOMAIN`];
-
-      try {
-        const verifyRes = await axios.post(altchaUrl, {
-          domain: altchaDomain,
-          verificationData: body.altchaData.verificationData,
-          signature: body.altchaData.signature,
-          time: body.altchaData.time,
-          ip: ip,
-        });
-
-        if (!verifyRes.data || verifyRes.data.valid !== true) {
-          throw new HttpException(
-            'Invalid altcha response',
-            HttpStatus.FORBIDDEN,
-          );
-        }
-      } catch (err: any) {
-        this.log.error(`Altcha verification failed for ${id}: ${err.message}`);
-        throw new HttpException(
-          'Invalid altcha response',
-          HttpStatus.FORBIDDEN,
-        );
-      }
     }
 
     // Captcha validation, if required
