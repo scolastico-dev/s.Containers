@@ -111,8 +111,15 @@ export class SubmitController {
       );
 
     // Altcha validation, if required
-    const altchaUrl = process.env[`CFG_${id}_ALTCHA_VERIFY_URL`];
+    const altchaUrl =
+      process.env[`CFG_${id}_ALTCHA_VALIDATE_URL`] ||
+      process.env[`CFG_${id}_ALTCHA_VERIFY_URL`];
     if (altchaUrl) {
+      const altchaRequireSigning =
+        (
+          process.env[`CFG_${id}_ALTCHA_REQUIRE_SIGNING`] || 'false'
+        ).toLowerCase() === 'true';
+
       if (!body.captcha || !body.captcha.response) {
         throw new HttpException(
           'Malformed or missing captcha response',
@@ -152,8 +159,11 @@ export class SubmitController {
           );
         }
 
+        let didSignContent = false;
+
         if (verifyRes.data && verifyRes.data.fields) {
           body.data = { ...body.data, ...verifyRes.data.fields };
+          didSignContent = Object.keys(verifyRes.data.fields).length > 0;
         } else if (altchaPayload.verificationData) {
           try {
             let decoded: any;
@@ -168,12 +178,20 @@ export class SubmitController {
 
             if (decoded && decoded.fields) {
               body.data = { ...body.data, ...decoded.fields };
+              didSignContent = Object.keys(decoded.fields).length > 0;
             }
           } catch (e: any) {
             this.log.error(
               `Failed to parse altcha verificationData: ${e.message}`,
             );
           }
+        }
+
+        if (altchaRequireSigning && !didSignContent) {
+          throw new HttpException(
+            'Altcha content signing is required',
+            HttpStatus.FORBIDDEN,
+          );
         }
       } catch (err: any) {
         if (err instanceof HttpException) throw err;

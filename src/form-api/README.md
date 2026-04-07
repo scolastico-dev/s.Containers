@@ -8,28 +8,29 @@ Form API is a simple form to email service. It is a simple way to send form data
 
 ## Environment Variables
 
-| Name                           | Type   | Default Value      | Description                                                                                            |
-| ------------------------------ | ------ | ------------------ | ------------------------------------------------------------------------------------------------------ |
-| `DISABLE_SWAGGER`              | bool   | `false`            | Whether to disable the swagger documentation.                                                          |
-| `ENABLE_DEBUG_ENDPOINT`        | bool   | `false`            | Whether to enable the debug endpoint.                                                                  |
-| `SMTP_HOST`                    | string | `null`             | The SMTP host.                                                                                         |
-| `SMTP_PORT`                    | number | `587`              | The SMTP port.                                                                                         |
-| `SMTP_TLS`                     | bool   | `true`             | Whether to use TLS.                                                                                    |
-| `SMTP_TLS_CHECK`               | bool   | `true`             | Whether to check the TLS certificate.                                                                  |
-| `SMTP_USER`                    | string | `null`             | The SMTP user.                                                                                         |
-| `SMTP_FROM`                    | string | `$SMTP_USER`       | The SMTP from address.                                                                                 |
-| `SMTP_PASSWORD`                | string | `null`             | The SMTP password.                                                                                     |
-| `CAPTCHA_VERIFY_IP`            | bool   | `true`             | Whether to verify the ip address of the captcha response.                                              |
-| `ALLOW_FORWARDED_FOR`          | bool   | `false`            | Whether to allow the `X-Forwarded-For` header to be used as the ip address.                            |
-| `CFG_<name>_EMAIL`             | string | `null`             | The email address to send the form data to.                                                            |
-| `CFG_<name>_SUBJECT`           | string | `Form-API: <name>` | The subject of the email.                                                                              |
-| `CFG_<name>_CAPTCHA_SECRET`    | string | `null`             | The secret of the captcha. If no captcha strength is chosen the captcha is expected to be a reCAPTCHA. |
-| `CFG_<name>_CAPTCHA_GENERATE`  | bool   | `false`            | Whether to generate a captcha.                                                                         |
-| `CFG_<name>_MAX_SIZE`          | number | `1000000`          | The maximum size of the form data.                                                                     |
-| `CFG_<name>_JSON_SCHEMA`       | string | `null`             | The JSON schema to validate the form data.                                                             |
-| `CFG_<name>_JSON_SCHEMA_URL`   | string | `null`             | The URL to fetch the JSON schema from.                                                                 |
-| `CFG_<name>_ALTCHA_VERIFY_URL` | string | `null`             | The URL of the validation server to check the OpenALTCHA payload against.                              |
-| `CFG_<name>_ALTCHA_DOMAIN`     | string | `null`             | The domain name configured on the OpenALTCHA validation server.                                        |
+| Name                                | Type   | Default Value      | Description                                                                                            |
+| ----------------------------------- | ------ | ------------------ | ------------------------------------------------------------------------------------------------------ |
+| `DISABLE_SWAGGER`                   | bool   | `false`            | Whether to disable the swagger documentation.                                                          |
+| `ENABLE_DEBUG_ENDPOINT`             | bool   | `false`            | Whether to enable the debug endpoint.                                                                  |
+| `SMTP_HOST`                         | string | `null`             | The SMTP host.                                                                                         |
+| `SMTP_PORT`                         | number | `587`              | The SMTP port.                                                                                         |
+| `SMTP_TLS`                          | bool   | `true`             | Whether to use TLS.                                                                                    |
+| `SMTP_TLS_CHECK`                    | bool   | `true`             | Whether to check the TLS certificate.                                                                  |
+| `SMTP_USER`                         | string | `null`             | The SMTP user.                                                                                         |
+| `SMTP_FROM`                         | string | `$SMTP_USER`       | The SMTP from address.                                                                                 |
+| `SMTP_PASSWORD`                     | string | `null`             | The SMTP password.                                                                                     |
+| `CAPTCHA_VERIFY_IP`                 | bool   | `true`             | Whether to verify the ip address of the captcha response.                                              |
+| `ALLOW_FORWARDED_FOR`               | bool   | `false`            | Whether to allow the `X-Forwarded-For` header to be used as the ip address.                            |
+| `CFG_<name>_EMAIL`                  | string | `null`             | The email address to send the form data to.                                                            |
+| `CFG_<name>_SUBJECT`                | string | `Form-API: <name>` | The subject of the email.                                                                              |
+| `CFG_<name>_CAPTCHA_SECRET`         | string | `null`             | The secret of the captcha. If no captcha strength is chosen the captcha is expected to be a reCAPTCHA. |
+| `CFG_<name>_CAPTCHA_GENERATE`       | bool   | `false`            | Whether to generate a captcha.                                                                         |
+| `CFG_<name>_MAX_SIZE`               | number | `1000000`          | The maximum size of the form data.                                                                     |
+| `CFG_<name>_JSON_SCHEMA`            | string | `null`             | The JSON schema to validate the form data.                                                             |
+| `CFG_<name>_JSON_SCHEMA_URL`        | string | `null`             | The URL to fetch the JSON schema from.                                                                 |
+| `CFG_<name>_ALTCHA_VALIDATE_URL`    | string | `null`             | The URL of the validation server to check the OpenALTCHA payload against.                              |
+| `CFG_<name>_ALTCHA_DOMAIN`          | string | `null`             | The domain name configured on the OpenALTCHA validation server.                                        |
+| `CFG_<name>_ALTCHA_REQUIRE_SIGNING` | bool   | `false`            | If true, requires form submission to include content signing validation.                               |
 
 The captcha secret is optional and can be used to verify a [Google reCAPTCHA](https://developers.google.com/recaptcha) response. The captcha secret is used to verify the response. The captcha secret can be set in the [Google reCAPTCHA admin console](https://www.google.com/recaptcha/admin/create).
 
@@ -38,7 +39,7 @@ If the `CFG_<name>_CAPTCHA_GENERATE` is set to `true` a captcha is locally gener
 ### OpenALTCHA & Content Signing (Spam Protection)
 
 Form API natively supports [OpenALTCHA](https://github.com/scolastico-dev/open-altcha) and leverages its remote validation endpoints (e.g. Sentinel).
-Set the `CFG_<name>_ALTCHA_VERIFY_URL` and `CFG_<name>_ALTCHA_DOMAIN` variables to enable backend simulation validation.
+Set the `CFG_<name>_ALTCHA_VALIDATE_URL` and `CFG_<name>_ALTCHA_DOMAIN` variables to enable backend simulation validation. (The legacy `CFG_<name>_ALTCHA_VERIFY_URL` provides seamless backward compatibility).
 
 When content-signing (spam protection) is enabled in your OpenALTCHA widget configuration, the Form API securely parses the signed verification fields and automatically overwrites the unverified, user-submitted form data. This ensures that any data validation via JSON Schema strictly evaluates the tamper-proof fields.
 
