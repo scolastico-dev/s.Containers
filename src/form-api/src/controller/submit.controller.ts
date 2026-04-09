@@ -30,7 +30,8 @@ import ajv from 'ajv';
 
 export class CaptchaResponse {
   @ApiProperty({
-    description: 'The hash of the captcha response, not required for reCAPTCHA or altcha',
+    description:
+      'The hash of the captcha response, not required for reCAPTCHA or altcha',
     required: false,
   })
   hash?: string;
@@ -143,10 +144,19 @@ export class SubmitController {
       try {
         let altchaPayload;
 
-        if (body.captcha.response.trim().startsWith('{')) {
-          altchaPayload = JSON.parse(body.captcha.response);
+        if (typeof body.captcha.response === 'object') {
+          altchaPayload = body.captcha.response;
+        } else if (typeof body.captcha.response === 'string') {
+          if (body.captcha.response.trim().startsWith('{')) {
+            altchaPayload = JSON.parse(body.captcha.response);
+          } else {
+            altchaPayload = JSON.parse(atob(body.captcha.response));
+          }
         } else {
-          altchaPayload = JSON.parse(atob(body.captcha.response));
+          throw new HttpException(
+            'Invalid captcha response format',
+            HttpStatus.BAD_REQUEST,
+          );
         }
 
         const verifyRequestBody = {
@@ -154,7 +164,8 @@ export class SubmitController {
           signature: altchaPayload.signature,
           time: altchaPayload.time,
           domain: altchaDomain,
-          ip: ip,
+          ip:
+            process.env[`CFG_${id}_ALTCHA_SKIP_IP`] === 'true' ? undefined : ip,
         };
 
         const verifyRes = await axios.post(altchaUrl, verifyRequestBody);
@@ -163,6 +174,11 @@ export class SubmitController {
           !verifyRes.data ||
           (verifyRes.data.valid !== true && verifyRes.data.verified !== true)
         ) {
+          this.log.error(
+            `Invalid altcha response for ${id}: ${JSON.stringify(
+              verifyRes.data,
+            )}`,
+          );
           throw new HttpException(
             'Invalid altcha response',
             HttpStatus.FORBIDDEN,
@@ -206,6 +222,12 @@ export class SubmitController {
       } catch (err: any) {
         if (err instanceof HttpException) throw err;
         this.log.error(`Altcha verification failed for ${id}: ${err.message}`);
+        if (err.response && err.response.data) {
+          this.log.error(
+            'Altcha verification response:',
+            JSON.stringify(err.response.data),
+          );
+        }
         throw new HttpException(
           'Invalid altcha response',
           HttpStatus.FORBIDDEN,
