@@ -2,6 +2,9 @@
 
 ### [Back to index](../../README.md)
 
+> [!WARNING]  
+> **DEPRECATED**: This container is now deprecated because Docker Compose natively supports managing, mounting, and dynamically rendering configurations using Docker Compose Configs. You are strongly encouraged to migrate to native [Docker Compose Configs](https://docs.docker.com/reference/compose-file/configs/) instead of using this container workaround.
+
 ## Why?
 
 At times, I find myself desiring a feature akin to Kubernetes' ConfigMaps.
